@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo} + ' - Gestión de Alumnos'">MetaMapa - Mapea la realidad de forma colaborativa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+<!-- Navbar -->
+<nav th:fragment="navegacion" class="bg-white border-b border-gray-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo on the left with icon and text -->
+            <div class="flex items-center">
+                <a th:href="@{/alumnos}" class="flex items-center space-x-2">
+                    <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 2.18l8 3.6v7.22c0 4.52-3.13 8.78-8 9.82-4.87-1.04-8-5.3-8-9.82V7.78l8-3.6z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <span class="text-xl font-bold text-gray-900">MetaMapa</span>
+                </a>
+            </div>
+
+            <!-- Center navigation links matching the image -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a th:href="@{/alumnos}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">
+                    Explorar Hechos
+                </a>
+                <a sec:authorize="hasAuthority('CREAR_ALUMNOS')" th:href="@{/alumnos/nuevo}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">
+                    Explorar Colecciones
+                </a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Contribuir</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Acerca de</a>
+            </div>
+
+            <!-- Right side auth buttons matching the image -->
+            <div class="flex items-center space-x-3">
+                <form th:action="@{/logout}" method="post" class="inline">
+                    <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" type="submit">
+                        Iniciar Sesión
+                    </button>
+                </form>
+                <a href="#" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                    Registrarse
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main content area with th:replace for dynamic content injection -->
+<main class="container my-4 flex-grow-1">
+    <div th:replace="${contenido} :: contenido"></div>
+</main>
+
+<!-- Footer -->
+<footer th:fragment="footer" class="bg-gray-900 text-gray-300 py-12 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-12 mb-8">
+            <!-- Column 1 - Brand -->
+            <div>
+                <div class="flex items-center mb-4">
+                    <svg class="w-8 h-8 text-indigo-400 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 2.18l8 3.6v7.22c0 4.52-3.13 8.78-8 9.82-4.87-1.04-8-5.3-8-9.82V7.78l8-3.6z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <span class="text-xl font-bold text-white">MetaMapa</span>
+                </div>
+                <p class="text-gray-400 mb-4 leading-relaxed">
+                    Plataforma colaborativa para documentar, verificar y visualizar hechos importantes del Internet transparente y accesible.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">
+                        <i class="fab fa-facebook text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Column 2 - Platform -->
+            <div>
+                <h4 class="text-white font-semibold mb-4">Plataforma</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Explorar Mapa</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Colecciones</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Contribuir</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">API</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3 - Support -->
+            <div>
+                <h4 class="text-white font-semibold mb-4">Soporte</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Documentación</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Guías</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Política de Privacidad</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Términos de Uso</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800 pt-8 text-center">
+            <p class="text-gray-400 text-sm">
+                © 2025 MetaMapa. Todos los derechos reservados
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script src="/js/common.js"></script>
+</body>
+</html>
