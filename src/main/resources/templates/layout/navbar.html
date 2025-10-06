@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="navegacion" class="bg-white border-b border-gray-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            Logo on the left with icon and text
+            <div class="flex items-center">
+                <a th:href="@{/alumnos}" class="flex items-center space-x-2">
+                    <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 2.18l8 3.6v7.22c0 4.52-3.13 8.78-8 9.82-4.87-1.04-8-5.3-8-9.82V7.78l8-3.6z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <span class="text-xl font-bold text-gray-900">MetaMapa</span>
+                </a>
+            </div>
+
+            Center navigation links matching the image
+            <div class="hidden md:flex items-center space-x-8">
+                <a th:href="@{/alumnos}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">
+                    Explorar Hechos
+                </a>
+                <a sec:authorize="hasAuthority('CREAR_ALUMNOS')" th:href="@{/alumnos/nuevo}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">
+                    Explorar Colecciones
+                </a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Contribuir</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Acerca de</a>
+            </div>
+
+            Right side auth buttons matching the image
+            <div class="flex items-center space-x-3">
+                <form th:action="@{/logout}" method="post" class="inline">
+                    <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" type="submit">
+                        Iniciar Sesión
+                    </button>
+                </form>
+                <a href="#" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                    Registrarse
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
