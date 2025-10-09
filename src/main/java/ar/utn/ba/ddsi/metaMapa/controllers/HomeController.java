@@ -1,4 +1,4 @@
-package ar.utn.ba.ddsi.gestionDeAlumnos.controllers;
+package ar.utn.ba.ddsi.metaMapa.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +9,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "redirect:/alumnos";
+        return "redirect:/landingPage";
     }
 
     @GetMapping("/404")

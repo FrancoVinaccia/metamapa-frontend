@@ -1,4 +1,4 @@
-package ar.utn.ba.ddsi.gestionDeAlumnos.models.entities;
+package ar.utn.ba.ddsi.metaMapa.models.entities;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,4 @@
-package ar.utn.ba.ddsi.gestionDeAlumnos.exceptions;
-
-import ar.utn.ba.ddsi.gestionDeAlumnos.models.entities.Alumno;
+package ar.utn.ba.ddsi.metaMapa.exceptions;
 
 public class NotFoundException extends RuntimeException {
 

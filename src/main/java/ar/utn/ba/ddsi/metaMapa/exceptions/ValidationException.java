@@ -1,4 +1,4 @@
-package ar.utn.ba.ddsi.gestionDeAlumnos.exceptions;
+package ar.utn.ba.ddsi.metaMapa.exceptions;
 
 import java.util.HashMap;
 import java.util.Map;

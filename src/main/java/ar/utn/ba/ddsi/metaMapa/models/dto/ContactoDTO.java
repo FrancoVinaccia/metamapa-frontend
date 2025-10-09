@@ -1,6 +1,6 @@
-package ar.utn.ba.ddsi.gestionDeAlumnos.models.dto;
+package ar.utn.ba.ddsi.metaMapa.models.dto;
 
-import ar.utn.ba.ddsi.gestionDeAlumnos.models.entities.TipoContacto;
+import ar.utn.ba.ddsi.metaMapa.models.entities.TipoContacto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

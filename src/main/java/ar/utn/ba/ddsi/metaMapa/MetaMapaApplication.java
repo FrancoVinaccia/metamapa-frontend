@@ -1,13 +1,13 @@
-package ar.utn.ba.ddsi.gestionDeAlumnos;
+package ar.utn.ba.ddsi.metaMapa;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GestionDeAlumnosApplication {
+public class MetaMapaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GestionDeAlumnosApplication.class, args);
+		SpringApplication.run(MetaMapaApplication.class, args);
 	}
 
 }
