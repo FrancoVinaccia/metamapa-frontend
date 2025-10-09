@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${titulo} + ' - Gestión de Hechos'">MetaMapa - Mapea la realidad de forma colaborativa</title>
+    <title> Metamapa </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
@@ -38,7 +38,7 @@
         <div class="flex justify-between items-center h-16">
             <!-- Logo on the left with icon and text -->
             <div class="flex items-center">
-                <a th:href="@{/alumnos}" class="flex items-center space-x-2">
+                <a th:href="@{/landingPage}" class="flex items-center space-x-2">
                     <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 2.18l8 3.6v7.22c0 4.52-3.13 8.78-8 9.82-4.87-1.04-8-5.3-8-9.82V7.78l8-3.6z"/>
                         <circle cx="12" cy="12" r="3"/>
@@ -49,14 +49,13 @@
 
             <!-- Center navigation links matching the image -->
             <div class="hidden md:flex items-center space-x-8">
-                <a th:href="@{/alumnos}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">
+                <a th:href="@{/hechos}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">
                     Explorar Hechos
                 </a>
-                <a sec:authorize="hasAuthority('CREAR_ALUMNOS')" th:href="@{/alumnos/nuevo}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">
+                <a th:href="@{/colecciones}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">
                     Explorar Colecciones
                 </a>
-                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Contribuir</a>
-                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Acerca de</a>
+                <a th:href="@{/hechos/formularioCrear}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Contribuir</a>
             </div>
 
             <!-- Right side auth buttons matching the image -->

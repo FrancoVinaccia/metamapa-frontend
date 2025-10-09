@@ -15,6 +15,7 @@ public class LandingPageController {
 
     @GetMapping
     public String listarAlumnos(Model model) {
+        model.addAttribute("titulo", "Landing Page");
         return "home/landing";
     }
 }
