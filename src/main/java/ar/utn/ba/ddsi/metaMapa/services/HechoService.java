@@ -7,9 +7,26 @@ import java.util.List;
 
 @Service
 public class HechoService {
+
+    //TODO: logica servcice
+
     public List<HechoDTO> obtenerTodosLosHechos() {
-        //TODO:
         // Lógica para obtener todos los hechos del repositorio
-        return List.of(); // Retorna una lista vacía por ahora
+        return List.of();
+    }
+
+    public List<HechoDTO> hechosDestacados() {
+        HechoDTO h1 = new HechoDTO(); h1.setId(1); h1.setTitulo("Hecho mock 1");
+        h1.setDescripcion("Descripción mock 1");
+
+        HechoDTO h2 = new HechoDTO(); h2.setId(2); h2.setTitulo("Hecho mock 2");
+        h2.setDescripcion("Descripción mock 2");
+
+        return List.of(h1, h2);
+    }
+
+    public HechoDTO visualizarHecho(Long id) {
+        // Lógica para obtener un hecho por su ID
+        return new HechoDTO();
     }
 }

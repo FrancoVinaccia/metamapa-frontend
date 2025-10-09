@@ -23,8 +23,11 @@ public class HechoController {
         model.addAttribute("hechos", hechos);
         model.addAttribute("titulo", "Lista de Hechos");
         model.addAttribute("totalDeHechos", hechos.size());
-        return "hecho/listaHechos";
+        return "lista";
     }
+
+    @GetMapping("{id}")
+    public String visualizarHecho() { return "hecho/hecho";}
 
     @GetMapping("hecho/formulario")
     public String formularioCrearHecho() { return "hecho/formularioCreacion";}

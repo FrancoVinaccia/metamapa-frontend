@@ -1,0 +1,22 @@
+<!-- templates/hecho/cardHecho.html -->
+<div th:fragment="cardHecho(hecho)"
+     th:if="${hecho != null}"
+     class="bg-white rounded-xl overflow-hidden shadow-md card-hover border border-gray-200">
+
+    <!-- Sin th:src porque HechoDTO no tiene 'imagen' -->
+    <div class="w-full h-48 bg-gray-200"></div>
+
+    <div class="p-6">
+        <h3 class="text-xl font-semibold text-gray-900 mb-2"
+            th:text="${hecho.titulo != null ? hecho.titulo : 'Título del Hecho'}">Título del Hecho</h3>
+
+        <p class="text-gray-600 mb-4"
+           th:text="${hecho.descripcion != null ? hecho.descripcion : 'Descripción del hecho'}">Descripción del hecho</p>
+
+        <a th:href="@{/hecho/{id}(id=${hecho.id != null ? hecho.id : 0})}"
+           class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center">
+            Ver hecho
+            <i class="fas fa-arrow-right ml-2 text-sm"></i>
+        </a>
+    </div>
+</div>
