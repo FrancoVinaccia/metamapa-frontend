@@ -8,25 +8,34 @@ import java.util.List;
 @Service
 public class HechoService {
 
-    //TODO: logica servcice
-
     public List<HechoDTO> obtenerTodosLosHechos() {
-        // Lógica para obtener todos los hechos del repositorio
-        return List.of();
+        // Si querés, podés reutilizar el mock de destacados acá
+        return hechosDestacados();
     }
 
     public List<HechoDTO> hechosDestacados() {
-        HechoDTO h1 = new HechoDTO(); h1.setId(1); h1.setTitulo("Hecho mock 1");
+        HechoDTO h1 = new HechoDTO();
+        h1.setId(1);
+        h1.setTitulo("Hecho mock 1");
         h1.setDescripcion("Descripción mock 1");
+        h1.setImagen("https://picsum.photos/seed/hecho-1/800/400"); // <-- imagen
 
-        HechoDTO h2 = new HechoDTO(); h2.setId(2); h2.setTitulo("Hecho mock 2");
+        HechoDTO h2 = new HechoDTO();
+        h2.setId(2);
+        h2.setTitulo("Hecho mock 2");
         h2.setDescripcion("Descripción mock 2");
+        h2.setImagen("https://picsum.photos/seed/hecho-2/800/400"); // <-- imagen
 
         return List.of(h1, h2);
     }
 
     public HechoDTO visualizarHecho(Long id) {
-        // Lógica para obtener un hecho por su ID
-        return new HechoDTO();
+        // Mock simple para vista detalle
+        HechoDTO h = new HechoDTO();
+        h.setId(id != null ? id.intValue() : 0);
+        h.setTitulo("Detalle de Hecho " + h.getId());
+        h.setDescripcion("Descripción mock para el hecho " + h.getId());
+        h.setImagen("https://picsum.photos/seed/hecho-" + h.getId() + "/1200/600");
+        return h;
     }
 }

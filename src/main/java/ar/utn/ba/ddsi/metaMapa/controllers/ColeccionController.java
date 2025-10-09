@@ -15,8 +15,24 @@ import java.util.List;
 @RequestMapping("/colecciones")
 @RequiredArgsConstructor
 public class ColeccionController {
+
     private final ColeccionService coleccionService;
 
-    @GetMapping("{id}")
-    public String visualizarColeccion() { return "coleccion/coleccion";}
+    @GetMapping
+    public String listarColecciones(Model model) {
+        List<ColeccionDTO> colecciones = coleccionService.obtenerTodasLasColecciones();
+        model.addAttribute("colecciones", colecciones);            // <-- key correcta
+        model.addAttribute("titulo", "Lista de Colecciones");      // <-- texto correcto
+        model.addAttribute("totalColecciones", colecciones.size()); // <-- contador correcto
+        return "coleccion/colecciones"; // templates/coleccion/colecciones.html
+    }
+
+    /*@GetMapping("/{id}")
+    public String visualizarColeccion(@PathVariable Long id, Model model) {
+        // Si tenés detalle, traer y setear:
+        // ColeccionDTO c = coleccionService.visualizarColeccion(id.intValue());
+        // model.addAttribute("coleccion", c);
+        // model.addAttribute("titulo", c.getTitulo());
+        return "coleccion/coleccion";
+    }*/
 }

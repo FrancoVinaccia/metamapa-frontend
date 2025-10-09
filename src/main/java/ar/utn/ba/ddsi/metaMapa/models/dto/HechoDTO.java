@@ -14,6 +14,7 @@ public class HechoDTO {
     private Integer id;
     private String titulo;
     private String descripcion;
+    private String imagen;
 
     public HechoDTO() {
 

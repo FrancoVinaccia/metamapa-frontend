@@ -1,6 +1,6 @@
 <html th:replace="~{layout/base :: html(contenido=~{::contenido})}" xmlns:th="http://www.thymeleaf.org">
 
-<!-- Content fragment that will be injected into index.html -->
+<!-- Content fragment that will be injected into base.html -->
 <div th:fragment="contenido" class="row">
     <!-- Hero Section -->
     <section class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-20">
@@ -83,14 +83,32 @@
                 Explora nuestras colecciones más completas y bien documentadas
             </p>
 
-            <!-- Using th:each to loop through collections array -->
+            <!-- GRID DE COLECCIONES (inline, sin fragmentos) -->
             <div class="grid md:grid-cols-3 gap-8"
-                 th:if="${coleccionesDestacadas != null and !#lists.isEmpty(coleccionesDestacadas)}">
+                 th:if="${coleccionesDestacadas != null and #lists.size(coleccionesDestacadas) > 0}">
                 <div th:each="coleccion : ${coleccionesDestacadas}"
-                     th:replace="~{coleccion/cardColeccion :: cardColeccion(coleccion=${coleccion})}">
+                     class="bg-white rounded-xl overflow-hidden shadow-md card-hover border border-gray-200"
+                     th:with="ph=@{/img/placeholder.jpg}">
+
+                    <img class="w-full h-48 object-cover"
+                         th:src="${coleccion != null and coleccion.imagen != null and !#strings.isEmpty(coleccion.imagen)} ? ${coleccion.imagen} : ${ph}"
+                         th:alt="${coleccion != null and coleccion.titulo != null ? coleccion.titulo : 'Colección'}" />
+
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2"
+                            th:text="${coleccion != null and coleccion.titulo != null ? coleccion.titulo : 'Título'}">Título</h3>
+
+                        <p class="text-gray-600 mb-4"
+                           th:text="${coleccion != null and coleccion.descripcion != null ? coleccion.descripcion : 'Descripción'}">Descripción</p>
+
+                        <a th:href="@{/coleccion/{id}(id=${coleccion != null and coleccion.id != null ? coleccion.id : 0})}"
+                           class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center">
+                            Ver colección
+                            <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-
 
             <div class="text-center mt-12">
                 <a th:href="@{/colecciones}" class="inline-block bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
@@ -103,22 +121,38 @@
     <!-- Featured Facts Section -->
     <section class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Blue border container -->
             <div class="rounded-2xl p-8 bg-white">
                 <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">Hechos Destacados</h2>
                 <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
                     Explora nuestros hechos más populares y bien documentados
                 </p>
 
-                <!-- Using th:each to loop through facts array -->
+                <!-- GRID DE HECHOS (inline, sin fragmentos) -->
                 <div class="grid md:grid-cols-3 gap-8"
-                     th:if="${hechosDestacados != null and !#lists.isEmpty(hechosDestacados)}">
+                     th:if="${hechosDestacados != null and #lists.size(hechosDestacados) > 0}">
                     <div th:each="hecho : ${hechosDestacados}"
-                         th:replace="~{hecho/cardHecho :: cardHecho(hecho=${hecho})}">
+                         class="bg-white rounded-xl overflow-hidden shadow-md card-hover border border-gray-200"
+                         th:with="ph=@{/img/placeholder.jpg}">
+
+                        <img class="w-full h-48 object-cover"
+                             th:src="${hecho != null and hecho.imagen != null and !#strings.isEmpty(hecho.imagen)} ? ${hecho.imagen} : ${ph}"
+                             th:alt="${hecho != null and hecho.titulo != null ? hecho.titulo : 'Hecho'}" />
+
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2"
+                                th:text="${hecho != null and hecho.titulo != null ? hecho.titulo : 'Título del Hecho'}">Título del Hecho</h3>
+
+                            <p class="text-gray-600 mb-4"
+                               th:text="${hecho != null and hecho.descripcion != null ? hecho.descripcion : 'Descripción del hecho'}">Descripción del hecho</p>
+
+                            <a th:href="@{/hecho/{id}(id=${hecho != null and hecho.id != null ? hecho.id : 0})}"
+                               class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center">
+                                Ver hecho
+                                <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
-
-
 
                 <div class="text-center mt-12">
                     <a th:href="@{/hechos}" class="inline-block bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
@@ -128,11 +162,11 @@
             </div>
         </div>
 
+        <!-- Debug opcional -->
         <script th:inline="javascript">
             /*<![CDATA[*/
             const colecciones = /*[[${coleccionesDestacadas}]]*/ [];
             const hechos = /*[[${hechosDestacados}]]*/ [];
-
             console.log("Colecciones destacadas:", colecciones);
             console.log("Hechos destacados:", hechos);
             /*]]>*/
@@ -148,25 +182,18 @@
             </p>
 
             <div class="grid md:grid-cols-4 gap-8">
-                <!-- Stat 1 -->
                 <div class="text-center">
                     <div class="text-5xl font-bold text-blue-500 mb-2">1247</div>
                     <div class="text-gray-400 text-sm">hechos documentados</div>
                 </div>
-
-                <!-- Stat 2 -->
                 <div class="text-center">
                     <div class="text-5xl font-bold text-green-500 mb-2">89</div>
                     <div class="text-gray-400 text-sm">colaboradores activos</div>
                 </div>
-
-                <!-- Stat 3 -->
                 <div class="text-center">
                     <div class="text-5xl font-bold text-yellow-500 mb-2">23</div>
                     <div class="text-gray-400 text-sm">Colecciones activas</div>
                 </div>
-
-                <!-- Stat 4 -->
                 <div class="text-center">
                     <div class="text-5xl font-bold text-red-500 mb-2">96%</div>
                     <div class="text-gray-400 text-sm">Tasa de verificación</div>
@@ -176,5 +203,3 @@
     </section>
 </div>
 </html>
-
-

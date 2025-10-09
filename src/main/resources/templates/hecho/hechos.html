@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(contenido=~{::contenido})}" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Content fragment that will be injected into base.html -->
+<div th:fragment="contenido">
+    <!-- Page Header -->
+    <section class="bg-white border-b border-gray-200 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold text-gray-900 text-center mb-2">Hechos</h1>
+            <p class="text-gray-600 text-center">Explora todos los hechos documentados</p>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="bg-gray-50 border-b border-gray-200 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <form th:action="@{/hechos}" method="get" class="space-y-4">
+                <!-- Filter Row 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Tema -->
+                    <div>
+                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-tag text-blue-500 mr-2"></i>
+                            Tema
+                        </label>
+                        <select name="tema" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Todos los temas</option>
+                            <option value="ambiente">Medio Ambiente</option>
+                            <option value="social">Social</option>
+                            <option value="politica">Política</option>
+                            <option value="economia">Economía</option>
+                            <option value="tecnologia">Tecnología</option>
+                        </select>
+                    </div>
+
+                    <!-- Ubicación -->
+                    <div>
+                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                            Ubicación
+                        </label>
+                        <select name="ubicacion" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Todas las ubicaciones</option>
+                            <option value="global">Global</option>
+                            <option value="america">América</option>
+                            <option value="europa">Europa</option>
+                            <option value="asia">Asia</option>
+                            <option value="africa">África</option>
+                            <option value="oceania">Oceanía</option>
+                        </select>
+                    </div>
+
+                    <!-- Categoría -->
+                    <div>
+                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-folder text-blue-500 mr-2"></i>
+                            Categoría
+                        </label>
+                        <select name="categoria" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Todas las categorías</option>
+                            <option value="protesta">Protesta</option>
+                            <option value="evento">Evento</option>
+                            <option value="desastre">Desastre</option>
+                            <option value="celebracion">Celebración</option>
+                        </select>
+                    </div>
+
+                    <!-- Fuente -->
+                    <div>
+                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-newspaper text-blue-500 mr-2"></i>
+                            Fuente
+                        </label>
+                        <select name="fuente" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Todas los hechos</option>
+                            <option value="oficial">Oficial</option>
+                            <option value="comunidad">Comunidad</option>
+                            <option value="verificado">Verificado</option>
+                            <option value="pendiente">Pendiente Verificación</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Filter Row 2 - Date -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-calendar text-blue-500 mr-2"></i>
+                            Fecha
+                        </label>
+                        <input type="date" name="fecha" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3">
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center">
+                        <i class="fas fa-filter mr-2"></i>
+                        Aplicar Filtros
+                    </button>
+                    <button type="button" onclick="this.closest('form').reset();" class="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center">
+                        <i class="fas fa-undo mr-2"></i>
+                        Limpiar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Results Count -->
+            <div class="mb-6 text-sm text-gray-600">
+                <span th:text="${totalDeHechos != null ? totalDeHechos : 0}">0</span> hechos encontrados
+            </div>
+
+            <!-- Facts Grid -->
+            <div class="grid md:grid-cols-3 gap-6" th:if="${hechos != null and #lists.size(hechos) > 0}">
+                <div th:each="hecho : ${hechos}">
+                    <!-- Opción A: usar fragmento -->
+                    <div th:replace="~{hecho/cardHecho :: cardHecho(hecho=${hecho})}"></div>
+
+                    <!-- Opción B (comentada): inline sin fragmento
+                    <div class="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200" th:with="ph=@{/img/placeholder.jpg}">
+                      <img class="w-full h-48 object-cover"
+                           th:src="${hecho != null and hecho.imagen != null and !#strings.isEmpty(hecho.imagen)} ? ${hecho.imagen} : ${ph}"
+                           th:alt="${hecho != null and hecho.titulo != null ? hecho.titulo : 'Hecho'}" />
+                      <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2" th:text="${hecho.titulo != null ? hecho.titulo : 'Título'}">Título</h3>
+                        <p class="text-gray-600 mb-4" th:text="${hecho.descripcion != null ? hecho.descripcion : 'Descripción'}">Descripción</p>
+                        <a th:href="@{/hechos/{id}(id=${hecho.id})}" class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center">
+                          Ver hecho <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                        </a>
+                      </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${hechos == null or #lists.isEmpty(hechos)}" class="text-center py-16">
+                <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">No se encontraron hechos</h3>
+                <p class="text-gray-600">Intenta ajustar los filtros o contribuye documentando un nuevo hecho</p>
+            </div>
+
+            <!-- Pagination (estática de demo) -->
+            <div th:if="${hechos != null and #lists.size(hechos) > 0}" class="mt-8 flex justify-center">
+                <nav class="flex items-center gap-2">
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">1</button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">2</button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">3</button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </section>
+</div>
+</html>

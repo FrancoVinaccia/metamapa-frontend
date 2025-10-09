@@ -12,6 +12,7 @@ public class ColeccionDTO {
     private Long id;
     private String titulo;
     private String descripcion;
+    private String imagen;
 
     public ColeccionDTO() {
 
