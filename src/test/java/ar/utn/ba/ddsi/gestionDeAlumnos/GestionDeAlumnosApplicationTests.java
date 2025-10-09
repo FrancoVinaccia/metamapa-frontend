@@ -1,10 +1,10 @@
-package application;
+package ar.utn.ba.ddsi.gestionDeAlumnos;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ClienteLivianoDisenioApplicationTests {
+class GestionDeAlumnosApplicationTests {
 
 	@Test
 	void contextLoads() {
