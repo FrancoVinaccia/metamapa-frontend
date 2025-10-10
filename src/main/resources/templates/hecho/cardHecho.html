@@ -1,4 +1,3 @@
-<!-- templates/hecho/cardHecho.html -->
 <div th:fragment="cardHecho(hecho) "
      th:if="${hecho != null}"
      class="bg-white rounded-xl overflow-hidden shadow-md card-hover border border-gray-200"
@@ -15,7 +14,7 @@
         <p class="text-gray-600 mb-4"
            th:text="${hecho != null and hecho.descripcion != null ? hecho.descripcion : 'Descripción del hecho'}">Descripción del hecho</p>
 
-        <a th:href="@{/hecho/{id}(id=${hecho != null and hecho.id != null ? hecho.id : 0})}"
+        <a th:href="@{/hechos/{id}(id=${hecho.id})}"
            class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center">
             Ver hecho
             <i class="fas fa-arrow-right ml-2 text-sm"></i>

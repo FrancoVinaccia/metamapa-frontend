@@ -12,6 +12,8 @@ public class HomeController {
         return "redirect:/landingPage";
     }
 
+
+
     @GetMapping("/404")
     public String notFound(Model model) {
         model.addAttribute("titulo", "No encontrado");

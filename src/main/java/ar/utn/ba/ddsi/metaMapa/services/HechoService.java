@@ -13,6 +13,13 @@ public class HechoService {
         return hechosDestacados();
     }
 
+    public HechoDTO obtenerHecho(long id) {
+        // Mock simple para vista detalle
+        List <HechoDTO> hechos = hechosDestacados();
+        return hechos.stream().filter(h -> h.getId() == id).findFirst().orElse(null);
+
+    }
+
     public List<HechoDTO> hechosDestacados() {
         HechoDTO h1 = new HechoDTO();
         h1.setId(1);
