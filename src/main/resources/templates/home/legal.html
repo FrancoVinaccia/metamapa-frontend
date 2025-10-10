@@ -1,0 +1,59 @@
+<!-- templates/legal/legal.html -->
+<html th:replace="~{layout/base :: html(contenido=~{::contenido})}" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="contenido" class="py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Información legal y privacidad</h1>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">1. Introducción</h2>
+                <p class="text-gray-600">
+                    Esta página describe los términos legales, la política de privacidad y el tratamiento de datos
+                    personales en MetaMapa.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">2. Datos que recopilamos</h2>
+                <ul class="list-disc pl-6 text-gray-600 space-y-1">
+                    <li>Datos de cuenta (nombre, email).</li>
+                    <li>Contenido aportado por usuarios (hechos, colecciones, comentarios).</li>
+                    <li>Datos técnicos mínimos para seguridad y funcionamiento.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">3. Uso de la información</h2>
+                <p class="text-gray-600">
+                    Utilizamos los datos para operar la plataforma, moderar contenido y mejorar la experiencia.
+                    No vendemos datos personales.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">4. Derechos de las personas usuarias</h2>
+                <p class="text-gray-600">
+                    Podés solicitar acceso, rectificación o eliminación de tus datos. Escribinos a
+                    <a href="mailto:soporte@metamapa.example" class="text-indigo-600 hover:text-indigo-700">soporte@metamapa.example</a>.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">5. Términos de uso</h2>
+                <p class="text-gray-600">
+                    Al usar MetaMapa aceptás nuestros términos, incluyendo normas de conducta y licencias de contenido.
+                </p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">6. Contacto</h2>
+                <p class="text-gray-600">
+                    Para dudas legales o de privacidad, contactanos en
+                    <a href="mailto:legal@metamapa.example" class="text-indigo-600 hover:text-indigo-700">legal@metamapa.example</a>.
+                </p>
+            </section>
+        </div>
+    </div>
+</div>
+</html>

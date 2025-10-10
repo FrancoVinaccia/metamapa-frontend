@@ -35,8 +35,6 @@ public class HechoController {
         return "hecho/crearHecho";
     }
 
-
-
     @GetMapping("/{id}")
     public String visualizarHecho(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
        HechoDTO hecho = hechoService.obtenerHecho(id);

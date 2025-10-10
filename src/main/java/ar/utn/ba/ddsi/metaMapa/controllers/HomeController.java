@@ -12,7 +12,18 @@ public class HomeController {
         return "redirect:/landingPage";
     }
 
+    @GetMapping("/legal")
+    public String legal(Model model) {
+        model.addAttribute("titulo", "Información legal y privacidad");
+        return "home/legal";
+    }
 
+
+    @GetMapping("/enDesarrollo")
+    public String enDesarrollo(Model model) {
+        model.addAttribute("titulo", "Funcionalidad en desarrollo");
+        return "home/enDesarrollo";
+    }
 
     @GetMapping("/404")
     public String notFound(Model model) {

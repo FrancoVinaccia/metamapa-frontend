@@ -58,16 +58,16 @@
             </div>
 
             <!-- Auth buttons -->
+            <!-- Auth buttons -->
             <div class="flex items-center space-x-3">
-                <form th:action="@{/logout}" method="post" class="inline">
-                    <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" type="submit">
-                        Iniciar Sesión
-                    </button>
-                </form>
-                <a href="#" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                <a th:href="@{/login/formulario}" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    Iniciar Sesión
+                </a>
+                <a th:href="@{/signin/formulario}" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
                     Registrarse
                 </a>
             </div>
+
         </div>
     </div>
 </nav>
@@ -94,10 +94,10 @@
                     Plataforma colaborativa para documentar, verificar y visualizar hechos importantes del Internet transparente y accesible.
                 </p>
                 <div class="flex space-x-4">
-                    <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors"><i class="fab fa-twitter text-xl"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors"><i class="fab fa-facebook text-xl"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors"><i class="fab fa-instagram text-xl"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors"><i class="fab fa-github text-xl"></i></a>
+                    <a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+                    <a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors"><i class="fab fa-facebook text-xl"></i></a>
+                    <a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+                    <a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors"><i class="fab fa-github text-xl"></i></a>
                 </div>
             </div>
 
@@ -105,10 +105,10 @@
             <div>
                 <h4 class="text-white font-semibold mb-4">Plataforma</h4>
                 <ul class="space-y-3">
-                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Explorar Mapa</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Colecciones</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Contribuir</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">API</a></li>
+                    <li><a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors">Explorar Mapa</a></li>
+                    <li><a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors">Colecciones</a></li>
+                    <li><a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors">Contribuir</a></li>
+                    <li><a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors">API</a></li>
                 </ul>
             </div>
 
@@ -116,12 +116,13 @@
             <div>
                 <h4 class="text-white font-semibold mb-4">Soporte</h4>
                 <ul class="space-y-3">
-                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Documentación</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Guías</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Política de Privacidad</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">Términos de Uso</a></li>
+                    <li><a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors">Documentación</a></li>
+                    <li><a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors">Guías</a></li>
+                    <li><a th:href="@{/legal}" class="text-gray-400 hover:text-indigo-400 transition-colors">Política de Privacidad</a></li>
+                    <li><a th:href="@{/enDesarrollo}" class="text-gray-400 hover:text-indigo-400 transition-colors">Términos de Uso</a></li>
                 </ul>
             </div>
+
         </div>
 
         <div class="border-t border-gray-800 pt-8 text-center">

@@ -1,0 +1,15 @@
+<html th:replace="~{layout/base :: html(contenido=~{::contenido})}" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="contenido" class="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-center px-4">
+
+    <h1 class="text-5xl font-bold text-indigo-600 mb-6 mt-20">🚧 En desarrollo 🚧</h1>
+    <p class="text-lg text-gray-600 mb-8 max-w-xl leading-relaxed">
+        Esta funcionalidad aún no está disponible.
+        Estamos trabajando para incorporarla en futuras versiones de MetaMapa.
+    </p>
+
+    <a th:href="@{/landingPage}" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+        Volver al inicio
+    </a>
+
+</div>
+</html>
