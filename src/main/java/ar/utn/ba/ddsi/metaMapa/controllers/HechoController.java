@@ -1,6 +1,6 @@
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
-import ar.utn.ba.ddsi.metaMapa.models.dto.HechoDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
 import ar.utn.ba.ddsi.metaMapa.services.HechoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

@@ -21,7 +21,7 @@
             Error al crear la cuenta. Revisá los campos.
         </div>
 
-        <form th:action="@{/signin}" method="post" class="space-y-5">
+        <form th:action="@{/signin/submit}" method="post" class="space-y-5">
             <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
             <div class="grid grid-cols-2 gap-4">

@@ -1,0 +1,79 @@
+package ar.utn.ba.ddsi.metaMapa.config;
+
+import ar.utn.ba.ddsi.metaMapa.providers.CustomAuthProvider;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@EnableMethodSecurity(prePostEnabled = true)
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http, CustomAuthProvider provider) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(provider)
+                .build();
+    }
+
+
+    //todo ni idea me lo hizo gpt
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http
+                // ⛔ importante: permitir landing y recursos estáticos
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/",                      // root
+                                "/landingPage",           // landing pública
+                                "/home",                  // si la usás
+                                "/login", "/signin",      // vistas de auth
+                                "/error", "/403", "/404",
+                                "/favicon.ico",
+                                "/css/**", "/js/**", "/images/**", "/webjars/**"
+                        ).permitAll()
+
+                        // Visualización anónima (Entrega 5): GET a colecciones/hechos sin login
+                        .requestMatchers(HttpMethod.GET, "/colecciones/**", "/hechos/**").permitAll()
+
+                        // TODO: si tenés endpoints públicos adicionales, agregalos arriba
+
+                        .anyRequest().authenticated()
+                )
+
+                // Login y logout "clásicos"
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll()
+                        .defaultSuccessUrl("/landingPage", true)  // o donde quieras caer
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/landingPage")
+                        .permitAll()
+                )
+
+                // CSRF: dejalo ON para formularios Thymeleaf. Si tenés APIs, podés ignorar rutas puntuales.
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(
+                                "/signin",                // si haces POST sin token CSRF
+                                "/solicitudes/**"         // ejemplo API pública
+                        )
+                )
+
+                // Manejo de errores de autorización
+                .exceptionHandling(ex -> ex
+                        // si querés forzar redirección a login cuando no está autenticado:
+                        // .authenticationEntryPoint((req, res, e) -> res.sendRedirect("/login?unauthorized"))
+                        .accessDeniedHandler((req, res, e) -> res.sendRedirect("/403"))
+                );
+
+        return http.build();
+    }
+}

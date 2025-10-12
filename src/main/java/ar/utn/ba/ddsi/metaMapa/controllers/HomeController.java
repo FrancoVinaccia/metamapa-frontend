@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     @GetMapping("/")
+    public String vacio() {
+        return "redirect:/landingPage";
+    }
+
+    @GetMapping("/home")
     public String home() {
         return "redirect:/landingPage";
     }
@@ -17,7 +22,6 @@ public class HomeController {
         model.addAttribute("titulo", "Información legal y privacidad");
         return "home/legal";
     }
-
 
     @GetMapping("/enDesarrollo")
     public String enDesarrollo(Model model) {

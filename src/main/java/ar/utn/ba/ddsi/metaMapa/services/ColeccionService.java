@@ -1,6 +1,6 @@
 package ar.utn.ba.ddsi.metaMapa.services;
 
-import ar.utn.ba.ddsi.metaMapa.models.dto.ColeccionDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.ColeccionDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

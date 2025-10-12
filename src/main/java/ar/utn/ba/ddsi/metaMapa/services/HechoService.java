@@ -1,6 +1,6 @@
 package ar.utn.ba.ddsi.metaMapa.services;
 
-import ar.utn.ba.ddsi.metaMapa.models.dto.HechoDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

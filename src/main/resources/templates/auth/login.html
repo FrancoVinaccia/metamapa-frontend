@@ -24,8 +24,11 @@
             Sesión cerrada correctamente.
         </div>
 
-        <form th:action="@{/login}" method="post" class="space-y-5">
-            <!-- CSRF -->
+        <form th:action="@{/login/submit}" method="post" class="space-y-5">
+            <!-- CSRF
+            todo: esto ni idea
+            -->
+
             <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
             <div>

@@ -12,10 +12,10 @@ import org.springframework.ui.Model;
 @RequiredArgsConstructor
 public class AuthController {
 
-    @GetMapping("/login/formulario")
+    @GetMapping("/login")
     public String login() { return "auth/login"; }
 
-    @GetMapping("/signin/formulario")
+    @GetMapping("/signin")
     public String signin() { return "auth/signin"; }
 
 }
