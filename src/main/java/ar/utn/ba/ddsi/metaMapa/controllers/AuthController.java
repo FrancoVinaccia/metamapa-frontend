@@ -17,5 +17,4 @@ public class AuthController {
 
     @GetMapping("/signin")
     public String signin() { return "auth/signin"; }
-
 }

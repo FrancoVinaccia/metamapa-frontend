@@ -27,4 +27,6 @@ public class LandingPageController {
         System.out.println("Colecciones destacadas: " + servicioColecciones.coleccionesDestacadas().size());
         return "home/landing";
     }
+
+
 }

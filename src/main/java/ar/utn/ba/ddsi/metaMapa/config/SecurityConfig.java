@@ -32,7 +32,12 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",                      // root
                                 "/landingPage",           // landing pública
-                                "/home",                  // si la usás
+                                "/home",
+                                "estadisticas",
+                                "mapa",
+                                "/legal",
+                                "solicitudes",
+                                "enDesarrollo",// si la usás
                                 "/login", "/signin",      // vistas de auth
                                 "/error", "/403", "/404",
                                 "/favicon.ico",

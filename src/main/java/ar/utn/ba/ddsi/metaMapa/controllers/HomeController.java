@@ -12,9 +12,24 @@ public class HomeController {
         return "redirect:/landingPage";
     }
 
+    @GetMapping("/estadisticas")
+    public String stats() {
+        return "Fragments/estadisticas";
+    }
+
+    @GetMapping("/solicitudes")
+    public String solicitudes() {
+        return "Fragments/solicitudes";
+    }
+
     @GetMapping("/home")
     public String home() {
         return "redirect:/landingPage";
+    }
+
+    @GetMapping("/mapa")
+    public String mapa() {
+        return "home/mapa";
     }
 
     @GetMapping("/legal")

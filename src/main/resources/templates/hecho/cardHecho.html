@@ -14,10 +14,18 @@
         <p class="text-gray-600 mb-4"
            th:text="${hecho != null and hecho.descripcion != null ? hecho.descripcion : 'Descripción del hecho'}">Descripción del hecho</p>
 
+        <button
+                type="submit"
+                class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors flex items-right"
+        >
+            <i class="fas fa-save mr-2"></i>
+            Editar
+        </button>
+
         <a th:href="@{/hechos/{id}(id=${hecho.id})}"
            class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center">
             Ver hecho
             <i class="fas fa-arrow-right ml-2 text-sm"></i>
         </a>
-</div>
+    </div>
 </div>
