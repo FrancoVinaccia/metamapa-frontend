@@ -23,7 +23,7 @@ public class WebApiCallerService {
     private final WebClient webClient;
     private final String authServiceUrl;
 
-    public WebApiCallerService(@Value("${auth.service.url}") String authServiceUrl) {
+    public WebApiCallerService(@Value("${metamapa.dinamica.url}") String authServiceUrl) {
         this.webClient = WebClient.builder().build();
         this.authServiceUrl = authServiceUrl;
     }
@@ -51,7 +51,7 @@ public class WebApiCallerService {
                     AuthResponseDTO newTokens = refreshToken(refreshToken);
 
                     // Segundo intento con el nuevo token
-                    return apiCall.execute(newTokens.getAccessToken());
+                    return apiCall.execute(newTokens.getToken());
                 } catch (Exception refreshError) {
                     throw new RuntimeException("Error al refrescar token y reintentar: " + refreshError.getMessage(), refreshError);
                 }
@@ -179,7 +179,7 @@ public class WebApiCallerService {
                     .block();
 
             // Actualizar tokens en sesión
-            updateTokensInSession(response.getAccessToken(), response.getRefreshToken());
+            updateTokensInSession(response.getToken(), response.getRefreshToken());
             return response;
         } catch (Exception e) {
             throw new RuntimeException("Error al refrescar token: " + e.getMessage(), e);
