@@ -1,3 +1,5 @@
+// Ubicación: src/main/java/ar/utn/ba/ddsi/metaMapa/controllers/HomeController.java
+
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
 import org.springframework.stereotype.Controller;
@@ -14,22 +16,17 @@ public class HomeController {
 
     @GetMapping("/estadisticas")
     public String stats() {
-        return "Fragments/estadisticas";
+        return "estadisticas"; // CORREGIDO
     }
 
     @GetMapping("/solicitudes")
     public String solicitudes() {
-        return "Fragments/solicitudes";
-    }
-
-    @GetMapping("/home")
-    public String home() {
-        return "redirect:/landingPage";
+        return "solicitudes"; // CORREGIDO
     }
 
     @GetMapping("/mapa")
     public String mapa() {
-        return "home/mapa";
+        return "home/mapa"; // Asegúrate que exista templates/home/mapa.html
     }
 
     @GetMapping("/legal")

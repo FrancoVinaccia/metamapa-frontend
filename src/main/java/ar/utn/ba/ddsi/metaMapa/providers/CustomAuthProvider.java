@@ -65,6 +65,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
             return new UsernamePasswordAuthenticationToken(username, password, authorities);
 
         } catch (RuntimeException e) {
+            log.error("Error al llamar al servicio de autenticación:", e);
             throw new BadCredentialsException("Error en el sistema de autenticación: " + e.getMessage());
         }
     }
