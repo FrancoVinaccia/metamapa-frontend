@@ -22,28 +22,25 @@ public class MetaMapaApiService {
     private static final Logger log = LoggerFactory.getLogger(MetaMapaApiService.class);
     private final WebClient webClient;
     private final WebApiCallerService webApiCallerService;
-    private final String authServiceUrl;
-    private final String metaMapaServiceUrl;
+    private final String dinamicApi;
 
     @Autowired
     public MetaMapaApiService(
             WebApiCallerService webApiCallerService,
-            @Value("${auth.service.url}") String authServiceUrl,
-            @Value("${metamapa.service.url}") String metaMapaServiceUrl) { // <- propiedad actualizada
+            @Value("${metamapa.dinamica.url}") String dinamicApi) {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
-        this.authServiceUrl = authServiceUrl;
-        this.metaMapaServiceUrl = metaMapaServiceUrl;
+        this.dinamicApi = dinamicApi;
     }
 
     public AuthResponseDTO login(String username, String password) {
         try {
             AuthResponseDTO response = webClient
                     .post()
-                    .uri(authServiceUrl + "/auth")
+                    .uri(dinamicApi + "/logIn")
                     .bodyValue(Map.of(
-                            "username", username,
-                            "password", password
+                            "nombreUsuario", username,
+                            "contrasenia", password
                     ))
                     .retrieve()
                     .bodyToMono(AuthResponseDTO.class)
@@ -60,20 +57,6 @@ public class MetaMapaApiService {
         }
     }
 
-
-    public RolesPermisosDTO getRolesPermisos(String accessToken) {
-        try {
-            RolesPermisosDTO response = webApiCallerService.getWithAuth(
-                    authServiceUrl + "/auth/user/roles-permisos",
-                    accessToken,
-                    RolesPermisosDTO.class
-            );
-            return response;
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new RuntimeException("Error al obtener roles y permisos: " + e.getMessage(), e);
-        }
-    }
     /*
     public List<AlumnoDTO> obtenerTodosLosAlumnos() {
         List<AlumnoDTO> response = webApiCallerService.getList(alumnosServiceUrl + "/alumnos", AlumnoDTO.class);

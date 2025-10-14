@@ -1,6 +1,7 @@
 package ar.utn.ba.ddsi.metaMapa.providers;
 
 import ar.utn.ba.ddsi.metaMapa.dto.AuthResponseDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.Rol;
 import ar.utn.ba.ddsi.metaMapa.dto.RolesPermisosDTO;
 import ar.utn.ba.ddsi.metaMapa.services.MetaMapaApiService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.sql.Date;
 import java.util.ArrayList;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -46,28 +49,20 @@ public class CustomAuthProvider implements AuthenticationProvider {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
 
-            request.getSession().setAttribute("accessToken", authResponse.getAccessToken());
-            request.getSession().setAttribute("refreshToken", authResponse.getRefreshToken());
+            log.info("username: " + username + ", nombreUsuario: " + authResponse.getNombreUsuario());
+
+            request.getSession().setAttribute("id", authResponse.getId());
             request.getSession().setAttribute("username", username);
-
-
-            log.info("Buscando roles y permisos del usuario");
-            RolesPermisosDTO rolesPermisos = externalAuthService.getRolesPermisos(authResponse.getAccessToken());
-
-            log.info("Cargando roles y permisos del usuario en sesión");
-            request.getSession().setAttribute("rol", rolesPermisos.getRol());
-            request.getSession().setAttribute("permisos", rolesPermisos.getPermisos());
+            request.getSession().setAttribute("email", authResponse.getEmail());
+            request.getSession().setAttribute("fechaNacimiento", authResponse.getFechaNacimiento());
+            request.getSession().setAttribute("accessToken", authResponse.getToken());
+            request.getSession().setAttribute("refreshToken", authResponse.getRefreshToken());
+            request.getSession().setAttribute("rol", authResponse.getRol());
 
             List<GrantedAuthority> authorities = new ArrayList<>();
-            rolesPermisos.getPermisos().forEach(permiso -> {
-                authorities.add(new SimpleGrantedAuthority(permiso.name()));
-            });
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + rolesPermisos.getRol().name()));
-
-
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + authResponse.getRol().name()));
 
             return new UsernamePasswordAuthenticationToken(username, password, authorities);
-
 
         } catch (RuntimeException e) {
             throw new BadCredentialsException("Error en el sistema de autenticación: " + e.getMessage());
