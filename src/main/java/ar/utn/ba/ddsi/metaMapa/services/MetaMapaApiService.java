@@ -1,6 +1,7 @@
 // java
 package ar.utn.ba.ddsi.metaMapa.services;
 
+import ar.utn.ba.ddsi.metaMapa.dto.SignInRequestDTO;
 import ar.utn.ba.ddsi.metaMapa.exceptions.NotFoundException;
 import ar.utn.ba.ddsi.metaMapa.dto.AuthResponseDTO;
 import ar.utn.ba.ddsi.metaMapa.services.internal.WebApiCallerService;
@@ -73,6 +74,22 @@ public class MetaMapaApiService {
             log.error(e.getMessage());
             throw new RuntimeException("Error al obtener roles y permisos: " + e.getMessage(), e);
         }
+    }
+
+    public void register(SignInRequestDTO signinRequest) {
+        // Construye la URL completa para el endpoint de registro.
+        // Asegúrate que el endpoint en tu backend se llame "/register" o ajústalo.
+        String registerUrl = authServiceUrl + "/register";
+
+        // Imprime en consola para depuración (puedes quitarlo después).
+        System.out.println("Enviando solicitud de registro a: " + registerUrl);
+
+        webClient.post() // Indica que es una petición POST.
+                .uri(registerUrl) // La URL del endpoint.
+                .bodyValue(signinRequest) // El cuerpo de la petición será nuestro DTO.
+                .retrieve() // Ejecuta la petición.
+                .toBodilessEntity() // Espera una respuesta sin cuerpo. Si tu API devuelve algo, esto se puede cambiar.
+                .block(); // Espera a que la operación termine.
     }
     /*
     public List<AlumnoDTO> obtenerTodosLosAlumnos() {
