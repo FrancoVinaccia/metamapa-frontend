@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:fragment="html (contenido)">
+            xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+            th:fragment="html (contenido)" >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -105,7 +106,7 @@
             <!-- Auth buttons / User dropdown -->
             <div class="flex items-center space-x-3">
                 <!-- Si el usuario NO está logueado -->
-                <div th:if="${session.usuario == null}">
+                <div th:if="${session.username == null}">
                     <a th:href="@{/login}" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                         Iniciar Sesión
                     </a>
@@ -115,12 +116,12 @@
                 </div>
 
                 <!-- Si el usuario está logueado -->
-                <div th:if="${session.usuario != null}" class="relative">
+                <div th:if="${session.username != null}" class="relative">
                     <button id="userMenuButton" class="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                         </svg>
-                        <span th:text="${session.usuario.nombre}">Usuario</span>
+                        <span th:text="${session.username}">Usuario</span>
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                         </svg>
@@ -128,17 +129,14 @@
 
                     <div id="userDropdown" class="dropdown-menu">
                         <a th:href="@{/solicitudes}" class="dropdown-item">
-                            <i class="fas fa-inbox mr-2"></i>
-                            Solicitudes
+                            <i class="fas fa-inbox mr-2"></i> Solicitudes
                         </a>
                         <a th:href="@{/estadisticas}" class="dropdown-item">
-                            <i class="fas fa-chart-bar mr-2"></i>
-                            Estadísticas
+                            <i class="fas fa-chart-bar mr-2"></i> Estadísticas
                         </a>
                         <div class="dropdown-divider"></div>
                         <a th:href="@{/logout}" class="dropdown-item text-red-600">
-                            <i class="fas fa-sign-out-alt mr-2"></i>
-                            Cerrar Sesión
+                            <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
                         </a>
                     </div>
                 </div>

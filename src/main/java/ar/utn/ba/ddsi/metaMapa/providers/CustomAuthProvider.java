@@ -36,7 +36,6 @@ public class CustomAuthProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-
         try {
             // Llamada a servicio externo para obtener tokens
             AuthResponseDTO authResponse = externalAuthService.login(username, password);
@@ -49,7 +48,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
 
-            log.info("username: " + username + ", nombreUsuario: " + authResponse.getNombreUsuario());
+            log.info(String.valueOf(authResponse));
 
             request.getSession().setAttribute("id", authResponse.getId());
             request.getSession().setAttribute("username", username);
@@ -63,7 +62,6 @@ public class CustomAuthProvider implements AuthenticationProvider {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + authResponse.getRol().name()));
 
             return new UsernamePasswordAuthenticationToken(username, password, authorities);
-
         } catch (RuntimeException e) {
             log.error("Error al llamar al servicio de autenticación:", e);
             throw new BadCredentialsException("Error en el sistema de autenticación: " + e.getMessage());
