@@ -2,6 +2,7 @@
 
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ public class HomeController {
         return "redirect:/landingPage";
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/estadisticas")
     public String stats() {
         return "estadisticas"; // CORREGIDO

@@ -8,7 +8,7 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-    <button id="home-btn" onclick="window.location.href='/home'">Inicio</button>
+    <a th:href="@{/landingPage}" id="home-btn"> Inicio</a>
 
     <style>
         #map {

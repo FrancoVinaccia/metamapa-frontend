@@ -116,6 +116,7 @@
                 </div>
 
                 <!-- Si el usuario está logueado -->
+                <!-- Si el usuario está logueado -->
                 <div th:if="${session.username != null}" class="relative">
                     <button id="userMenuButton" class="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -127,11 +128,12 @@
                         </svg>
                     </button>
 
+                    <!-- Dropdown solo visible para ADMIN -->
                     <div id="userDropdown" class="dropdown-menu">
-                        <a th:href="@{/solicitudes}" class="dropdown-item">
+                        <a th:href="@{/solicitudes}" class="dropdown-item"  sec:authorize="hasRole('ADMINISTRADOR')">
                             <i class="fas fa-inbox mr-2"></i> Solicitudes
                         </a>
-                        <a th:href="@{/estadisticas}" class="dropdown-item">
+                        <a th:href="@{/estadisticas}" class="dropdown-item"  sec:authorize="hasRole('ADMINISTRADOR')">
                             <i class="fas fa-chart-bar mr-2"></i> Estadísticas
                         </a>
                         <div class="dropdown-divider"></div>
@@ -140,6 +142,7 @@
                         </a>
                     </div>
                 </div>
+
             </div>
 
         </div>
