@@ -35,10 +35,12 @@ public class SecurityConfig {
                                 "/",                      // root
                                 "/landingPage",           // landing pública
                                 "/home",
-                                "estadisticas",
+                                "/estadisticas",
                                 "mapa",
                                 "/legal",
                                 "solicitudes",
+                                "formularioSolicitud",
+                                "importarCsv",
                                 "enDesarrollo",// si la usás
                                 "/login", "/signin",      // vistas de auth
                                 "/error", "/403", "/404",

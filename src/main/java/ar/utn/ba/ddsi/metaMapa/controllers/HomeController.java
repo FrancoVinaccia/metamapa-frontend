@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class HomeController {
@@ -18,12 +19,19 @@ public class HomeController {
     @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/estadisticas")
     public String stats() {
-        return "estadisticas"; // CORREGIDO
+        return "Fragments/estadisticas"; // CORREGIDO
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/solicitudes")
     public String solicitudes() {
-        return "solicitudes"; // CORREGIDO
+        return "Fragments/solicitudes"; // CORREGIDO
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @GetMapping("/importarCsv")
+    public String importarCsv() {
+        return "Fragments/importarCsv"; // CORREGIDO
     }
 
     @GetMapping("/mapa")
@@ -54,4 +62,12 @@ public class HomeController {
         model.addAttribute("titulo", "Acceso denegado");
         return "403";
     }
+
+    @GetMapping("/formularioSolicitud")
+    public String crearSolicitud() {
+        return "Fragments/crearSolicitud"; // CORREGIDO
+    }
+
+
+
 }
