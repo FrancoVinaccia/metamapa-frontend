@@ -49,9 +49,9 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // Visualización anónima (Entrega 5): GET a colecciones/hechos sin login
-                        .requestMatchers(HttpMethod.GET, "/colecciones/**", "/hechos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/colecciones/**", "/hechos/**","/coleccion/**").permitAll()
 
-                        // TODO: si tenés endpoints públicos adicionales, agregalos arriba
+                        // TODO: endpoints públicos adicionales, agregalos arriba
 
                         .anyRequest().authenticated()
                 )

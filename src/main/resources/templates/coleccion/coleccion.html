@@ -1,10 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: html(contenido=~{::contenido})}">
 
-</body>
+<div th:fragment="contenido"
+     class="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-8">
+
+    <!-- Título -->
+    <div class="max-w-5xl mx-auto text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2"
+            th:text="${titulo}">Título de la colección</h1>
+        <p class="text-gray-600 italic"
+           th:text="${coleccion.descripcion}">Descripción breve de la colección</p>
+    </div>
+
+    <!-- Hechos dentro de la colección -->
+    <div class="max-w-6xl mx-auto grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div th:each="hecho : ${coleccion.hechos}"
+             class="bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl shadow hover:shadow-lg transition-all p-6">
+
+            <!-- Imagen -->
+            <img th:if="${hecho.imagen}" th:src="${hecho.imagen}" alt=""
+                 class="rounded-lg mb-4 w-full h-40 object-cover">
+
+            <!-- Título y descripción -->
+            <h2 class="text-xl font-semibold text-indigo-600 mb-2"
+                th:text="${hecho.titulo}">Título del hecho</h2>
+            <p class="text-gray-700 line-clamp-3 mb-4"
+               th:text="${hecho.descripcion}">
+                Descripción del hecho...
+            </p>
+
+            <!-- Información adicional (si tenés esos campos) -->
+            <div class="text-sm text-gray-500 space-y-1">
+                <p><strong>Categoría:</strong> <span th:text="${hecho.categoria}">Incendio</span></p>
+                <p><strong>Ubicación:</strong> <span th:text="${hecho.ubicacion}">Buenos Aires</span></p>
+                <p><strong>Fecha:</strong>
+                    <span th:text="${#temporals.format(hecho.fecha, 'dd/MM/yyyy')}">10/05/2025</span>
+                </p>
+            </div>
+
+            <!-- Botón para ver detalle -->
+            <div class="mt-4 text-right">
+                <a th:href="@{'/hechos/' + ${hecho.id}}"
+                   class="inline-block px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
+                    Ver detalle
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sin hechos -->
+    <div th:if="${#lists.isEmpty(coleccion.hechos)}"
+         class="max-w-3xl mx-auto mt-16 text-center text-gray-600">
+        <p>No hay hechos disponibles en esta colección.</p>
+    </div>
+
+    <!-- Volver -->
+    <div class="max-w-5xl mx-auto mt-12 text-center">
+        <a href="/colecciones"
+           class="inline-block px-5 py-2.5 text-sm font-medium text-indigo-600 border border-indigo-400 rounded-lg hover:bg-indigo-50 transition">
+            ← Volver al listado de colecciones
+        </a>
+    </div>
+
+</div>
 </html>
