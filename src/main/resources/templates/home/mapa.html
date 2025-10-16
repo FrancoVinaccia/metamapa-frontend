@@ -65,11 +65,78 @@
             longitud: -100.3161,
             enlace: 'https://es.wikipedia.org/wiki/Monterrey',
             titulo: 'Monterrey'
+        },
+        {
+            latitud: -34.6037,
+            longitud: -58.3816,
+            enlace: 'https://es.wikipedia.org/wiki/Buenos_Aires',
+            titulo: 'Buenos Aires'
+        },
+        {
+            latitud: -31.4201,
+            longitud: -64.1888,
+            enlace: 'https://es.wikipedia.org/wiki/C%C3%B3rdoba_(Argentina)',
+            titulo: 'Córdoba'
+        },
+        {
+            latitud: -32.9442,
+            longitud: -60.6505,
+            enlace: 'https://es.wikipedia.org/wiki/Rosario_(Argentina)',
+            titulo: 'Rosario'
+        },
+        {
+            latitud: -32.8895,
+            longitud: -68.8458,
+            enlace: 'https://es.wikipedia.org/wiki/Mendoza_(Argentina)',
+            titulo: 'Mendoza'
+        },
+        {
+            latitud: -34.9214,
+            longitud: -57.9544,
+            enlace: 'https://es.wikipedia.org/wiki/La_Plata',
+            titulo: 'La Plata'
+        },
+        {
+            latitud: -38.0055,
+            longitud: -57.5426,
+            enlace: 'https://es.wikipedia.org/wiki/Mar_del_Plata',
+            titulo: 'Mar del Plata'
+        },
+        {
+            latitud: -24.7821,
+            longitud: -65.4232,
+            enlace: 'https://es.wikipedia.org/wiki/Salta_(ciudad)',
+            titulo: 'Salta'
+        },
+        {
+            latitud: -26.8206,
+            longitud: -65.2176,
+            enlace: 'https://es.wikipedia.org/wiki/San_Miguel_de_Tucum%C3%A1n',
+            titulo: 'San Miguel de Tucumán'
+        },
+        {
+            latitud: -41.1335,
+            longitud: -71.3103,
+            enlace: 'https://es.wikipedia.org/wiki/San_Carlos_de_Bariloche',
+            titulo: 'San Carlos de Bariloche'
+        },
+        {
+            latitud: -54.8019,
+            longitud: -68.3030,
+            enlace: 'https://es.wikipedia.org/wiki/Ushuaia',
+            titulo: 'Ushuaia'
+        },
+        {
+            latitud: -35.022413,
+            longitud: -58.451601,
+            enlace: 'https://es.wikipedia.org/wiki/Cabra_Miot%C3%B3nica',
+            titulo: 'Casa de Fran'
         }
     ];
 
-    // Inicializar el mapa
-    const map = L.map('map').setView([19.4326, -99.1332], 5);
+    // Inicializar el mapa en argentina
+    const map = L.map('map').setView([ -38.4161, -63.6167], 4);
+    //const map = L.map('map').setView([19.4326, -99.1332], 5);
 
     // Añadir capa del mapa (OpenStreetMap)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

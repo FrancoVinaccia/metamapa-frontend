@@ -40,7 +40,7 @@ public class SecurityConfig {
                                 "/legal",
                                 "solicitudes",
                                 "formularioSolicitud",
-                                "importarCsv",
+                                "/importarCsv",
                                 "enDesarrollo",// si la usás
                                 "/login", "/signin",      // vistas de auth
                                 "/error", "/403", "/404",

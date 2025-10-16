@@ -3,6 +3,7 @@ package ar.utn.ba.ddsi.metaMapa.controllers;
 import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
 import ar.utn.ba.ddsi.metaMapa.services.HechoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,11 +30,13 @@ public class HechoController {
         return "hecho/hechos";
     }
 
+    @PreAuthorize("hasAnyRole('CONTRIBUYENTE')")
     @GetMapping("/nuevo")
     public String mostrarFormularioCrear(Model model) {
-
         return "hecho/crearHecho";
     }
+
+    @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
 
     @GetMapping("/{id}")
     public String visualizarHecho(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
@@ -43,9 +46,11 @@ public class HechoController {
         return "hecho/hecho";
     }
 
+    @PreAuthorize("hasAnyRole('CONTRIBUYENTE')")
     @GetMapping("hecho/formulario")
     public String formularioCrearHecho() { return "hecho/crearHecho";}
 
+    @PreAuthorize("hasAnyRole('CONTRIBUYENTE')")
     @PostMapping("hecho/crear")
     public String crearHecho() { return "hecho/creacion";}
 

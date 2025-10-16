@@ -17,26 +17,20 @@ public class HomeController {
     }
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
-    @GetMapping("/estadisticas")
-    public String stats() {
-        return "Fragments/estadisticas"; // CORREGIDO
-    }
-
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/solicitudes")
     public String solicitudes() {
-        return "Fragments/solicitudes"; // CORREGIDO
+        return "Fragments/solicitudes";
     }
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/importarCsv")
     public String importarCsv() {
-        return "Fragments/importarCsv"; // CORREGIDO
+        return "Fragments/importarCsv";
     }
 
     @GetMapping("/mapa")
     public String mapa() {
-        return "home/mapa"; // Asegúrate que exista templates/home/mapa.html
+        return "home/mapa";
     }
 
     @GetMapping("/legal")
@@ -63,6 +57,7 @@ public class HomeController {
         return "403";
     }
 
+    @PreAuthorize("hasAnyRole('CONTRIBUYENTE')")
     @GetMapping("/formularioSolicitud")
     public String crearSolicitud() {
         return "Fragments/crearSolicitud"; // CORREGIDO

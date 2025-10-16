@@ -100,7 +100,6 @@
                 <a th:href="@{/hechos}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Explorar Hechos</a>
                 <a th:href="@{/colecciones}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Explorar Colecciones</a>
                 <a th:href="@{/hechos/nuevo}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Crear Hecho</a>
-                <a th:href="@{/estadisticas}" class="text-gray-600 hover:text-gray-900 font-medium text-sm">Estadísticas </a>
             </div>
 
             <!-- Auth buttons / User dropdown -->
@@ -135,6 +134,12 @@
                         </a>
                         <a th:href="@{/estadisticas}" class="dropdown-item"  sec:authorize="hasRole('ADMINISTRADOR')">
                             <i class="fas fa-chart-bar mr-2"></i> Estadísticas
+                        </a>
+                        <a th:href="@{/importarCsv}" class="dropdown-item"  sec:authorize="hasRole('ADMINISTRADOR')">
+                            <i class="fas fa-chart-bar mr-2"></i> Importar CSV
+                        </a>
+                        <a th:href="@{/formularioSolicitud}" class="dropdown-item"  sec:authorize="hasRole('CONTRIBUYENTE')">
+                            <i class="fas fa-chart-bar mr-2"></i> Crear solicitud
                         </a>
                         <div class="dropdown-divider"></div>
                         <form th:action="@{/logout}" method="post" class="dropdown-item text-red-600">
