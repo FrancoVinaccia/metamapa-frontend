@@ -49,8 +49,5 @@ public class AuthController {
         return "colecciones";
     }
 
-    @GetMapping("/403")
-    public String accessDenied() {
-        return "403";
-    }
+
 }

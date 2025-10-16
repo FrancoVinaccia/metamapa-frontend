@@ -77,9 +77,14 @@ public class SecurityConfig {
 
                 // Manejo de errores de autorización
                 .exceptionHandling(ex -> ex
-                        // si querés forzar redirección a login cuando no está autenticado:
-                        // .authenticationEntryPoint((req, res, e) -> res.sendRedirect("/login?unauthorized"))
-                        .accessDeniedHandler((req, res, e) -> res.sendRedirect("/403"))
+                        // Usuario no autenticado → redirigir a login
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendRedirect("/login?unauthorized")
+                        )
+                        // Usuario autenticado pero sin permisos → redirigir a página de error
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                                response.sendRedirect("/403")
+                        )
                 );
 
         return http.build();
