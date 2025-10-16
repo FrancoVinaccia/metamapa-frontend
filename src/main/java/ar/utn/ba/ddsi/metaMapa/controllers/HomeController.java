@@ -57,11 +57,17 @@ public class HomeController {
         return "403";
     }
 
-    @PreAuthorize("hasAnyRole('CONTRIBUYENTE')")
-    @GetMapping("/formularioSolicitud")
-    public String crearSolicitud() {
-        return "Fragments/crearSolicitud"; // CORREGIDO
+    @GetMapping("/formularioSolicitudEliminacion")
+    public String crearSolicitudEli() {
+        return "Fragments/crearSolicitudEliminacion"; // CORREGIDO
     }
+
+    @PreAuthorize("hasAnyRole('CONTRIBUYENTE')")
+    @GetMapping("/formularioSolicitudCambio")
+    public String crearSolicitudCambio() {
+        return "Fragments/crearSolicitudCambio"; // CORREGIDO
+    }
+
 
 
 

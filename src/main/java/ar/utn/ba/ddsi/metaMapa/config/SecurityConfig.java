@@ -39,7 +39,8 @@ public class SecurityConfig {
                                 "mapa",
                                 "/legal",
                                 "solicitudes",
-                                "formularioSolicitud",
+                                "formularioSolicitudEliminacion",
+                                "formularioSolicitudCambio",
                                 "/importarCsv",
                                 "enDesarrollo",// si la usás
                                 "/login", "/signin",      // vistas de auth

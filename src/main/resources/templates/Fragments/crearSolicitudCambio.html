@@ -1,68 +1,26 @@
 <!DOCTYPE html>
 <html th:replace="~{layout/base :: html(contenido=~{::contenido})}" xmlns:th="http://www.thymeleaf.org">
 
-Content fragment that will be injected into base.html
+<!-- Content fragment that will be injected into base.html -->
 <div th:fragment="contenido" class="container mx-auto px-4 py-8 max-w-3xl">
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
         <div class="mb-6">
             <div class="flex items-center mb-2">
-                <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <h1 class="text-2xl font-bold text-gray-900">Crear Nueva Solicitud</h1>
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-edit text-white text-lg"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900">Solicitud de Cambio</h1>
             </div>
-            <p class="text-sm text-gray-500">Solicita cambios o eliminación de hechos existentes</p>
+            <p class="text-sm text-gray-500">Solicita modificaciones en un hecho existente</p>
         </div>
 
-        <form id="crearSolicitudForm" action="/solicitudes/crear" method="POST">
-
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-3">
-                    Tipo de Solicitud <span class="text-red-500">*</span>
-                </label>
-                <div class="grid grid-cols-2 gap-4">
-                    <label class="relative cursor-pointer">
-                        <input
-                                type="radio"
-                                name="tipoSolicitud"
-                                value="cambio"
-                                class="peer sr-only"
-                                required
-                        >
-                        <div class="border-2 border-gray-300 rounded-lg p-4 transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:border-blue-300">
-                            <div class="flex items-center justify-center mb-2">
-                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-edit text-white text-xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-center font-semibold text-gray-900">Cambio</p>
-                            <p class="text-xs text-gray-500 text-center mt-1">Modificar información</p>
-                        </div>
-                    </label>
-
-                    <label class="relative cursor-pointer">
-                        <input
-                                type="radio"
-                                name="tipoSolicitud"
-                                value="eliminacion"
-                                class="peer sr-only"
-                        >
-                        <div class="border-2 border-gray-300 rounded-lg p-4 transition-all peer-checked:border-red-500 peer-checked:bg-red-50 hover:border-red-300">
-                            <div class="flex items-center justify-center mb-2">
-                                <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-trash-alt text-white text-xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-center font-semibold text-gray-900">Eliminación</p>
-                            <p class="text-xs text-gray-500 text-center mt-1">Eliminar hecho</p>
-                        </div>
-                    </label>
-                </div>
-            </div>
+        <form id="solicitudCambioForm" action="/solicitudes/cambio/crear" method="POST">
+            <!-- Hidden input for tipo de solicitud -->
+            <input type="hidden" name="tipoSolicitud" value="cambio">
 
             <div class="mb-6">
                 <label for="hechoId" class="block text-sm font-semibold text-gray-700 mb-2">
-                    Hecho a Modificar/Eliminar <span class="text-red-500">*</span>
+                    Hecho a Modificar <span class="text-red-500">*</span>
                 </label>
                 <select
                         id="hechoId"
@@ -76,7 +34,7 @@ Content fragment that will be injected into base.html
                     <option value="3">Inauguración de hospital en Mendoza - 10/01/2024</option>
                     <option value="4">Concierto benéfico en Rosario - 05/03/2024</option>
                 </select>
-                <p class="text-xs text-gray-500 mt-1">Busca y selecciona el hecho que deseas modificar o eliminar</p>
+                <p class="text-xs text-gray-500 mt-1">Busca y selecciona el hecho que deseas modificar</p>
             </div>
 
             <div id="hechoPreview" class="mb-6 hidden">
@@ -103,22 +61,6 @@ Content fragment that will be injected into base.html
             </div>
 
             <div class="mb-6">
-                <label for="razon" class="block text-sm font-semibold text-gray-700 mb-2">
-                    Razón de la Solicitud <span class="text-red-500">*</span>
-                </label>
-                <textarea
-                        id="razon"
-                        name="razon"
-                        rows="4"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm resize-none"
-                        placeholder="Explica detalladamente por qué solicitas este cambio o eliminación..."
-                        maxlength="500"
-                        required
-                ></textarea>
-                <p class="text-xs text-gray-500 mt-1">Máximo 500 caracteres</p>
-            </div>
-
-            <div id="camposCambio" class="hidden space-y-6 mb-6">
                 <div class="bg-blue-50 rounded-lg p-5 border border-blue-200">
                     <div class="flex items-center mb-4">
                         <i class="fas fa-info-circle text-blue-600 mr-2"></i>
@@ -133,6 +75,7 @@ Content fragment that will be injected into base.html
                                 id="campoModificar"
                                 name="campoModificar"
                                 class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm bg-white"
+                                required
                         >
                             <option value="">Selecciona un campo</option>
                             <option value="titulo">Título</option>
@@ -167,25 +110,27 @@ Content fragment that will be injected into base.html
                                 name="valorPropuesto"
                                 class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm"
                                 placeholder="Ingresa el nuevo valor"
+                                required
                         >
                     </div>
                 </div>
             </div>
 
-            <div id="camposEliminacion" class="hidden mb-6">
-                <div class="bg-red-50 rounded-lg p-5 border border-red-200">
-                    <div class="flex items-start">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-lg mr-3 mt-0.5"></i>
-                        <div>
-                            <p class="text-sm font-semibold text-red-900 mb-2">Advertencia</p>
-                            <p class="text-sm text-red-800">
-                                Esta solicitud será revisada por los moderadores. Asegúrate de proporcionar una razón válida y detallada para la eliminación del hecho.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <div class="mb-6">
+                <label for="razon" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Razón del Cambio <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                        id="razon"
+                        name="razon"
+                        rows="4"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm resize-none"
+                        placeholder="Explica detalladamente por qué solicitas este cambio. Incluye fuentes o referencias si es posible..."
+                        maxlength="500"
+                        required
+                ></textarea>
+                <p class="text-xs text-gray-500 mt-1">Máximo 500 caracteres</p>
             </div>
-
 
             <div class="flex flex-wrap gap-3 justify-end items-center pt-6 border-t border-gray-200">
                 <button
@@ -200,7 +145,7 @@ Content fragment that will be injected into base.html
                         class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
                 >
                     <i class="fas fa-paper-plane mr-2"></i>
-                    Enviar Solicitud
+                    Enviar Solicitud de Cambio
                 </button>
             </div>
         </form>
@@ -240,29 +185,6 @@ Content fragment that will be injected into base.html
         }
     };
 
-    // Mostrar/ocultar campos según tipo de solicitud
-    const radioButtons = document.querySelectorAll('input[name="tipoSolicitud"]');
-    const camposCambio = document.getElementById('camposCambio');
-    const camposEliminacion = document.getElementById('camposEliminacion');
-
-    radioButtons.forEach(radio => {
-        radio.addEventListener('change', function() {
-            if (this.value === 'cambio') {
-                camposCambio.classList.remove('hidden');
-                camposEliminacion.classList.add('hidden');
-                // Hacer campos de cambio requeridos
-                document.getElementById('campoModificar').required = true;
-                document.getElementById('valorPropuesto').required = true;
-            } else if (this.value === 'eliminacion') {
-                camposCambio.classList.add('hidden');
-                camposEliminacion.classList.remove('hidden');
-                // Quitar requerimiento de campos de cambio
-                document.getElementById('campoModificar').required = false;
-                document.getElementById('valorPropuesto').required = false;
-            }
-        });
-    });
-
     // Mostrar vista previa del hecho seleccionado
     const hechoSelect = document.getElementById('hechoId');
     const hechoPreview = document.getElementById('hechoPreview');
@@ -299,28 +221,36 @@ Content fragment that will be injected into base.html
     });
 
     // Validación del formulario
-    document.getElementById('crearSolicitudForm').addEventListener('submit', function(e) {
+    document.getElementById('solicitudCambioForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        const tipoSolicitud = document.querySelector('input[name="tipoSolicitud"]:checked');
+        const hechoId = document.getElementById('hechoId').value;
+        const campoModificar = document.getElementById('campoModificar').value;
+        const valorPropuesto = document.getElementById('valorPropuesto').value.trim();
+        const razon = document.getElementById('razon').value.trim();
 
-        if (!tipoSolicitud) {
-            alert('Por favor selecciona un tipo de solicitud');
+        if (!hechoId) {
+            alert('Por favor selecciona un hecho para modificar');
             return;
         }
 
-        if (tipoSolicitud.value === 'cambio') {
-            const campoModificar = document.getElementById('campoModificar').value;
-            const valorPropuesto = document.getElementById('valorPropuesto').value;
+        if (!campoModificar) {
+            alert('Por favor selecciona el campo a modificar');
+            return;
+        }
 
-            if (!campoModificar || !valorPropuesto) {
-                alert('Por favor completa todos los campos de cambio');
-                return;
-            }
+        if (!valorPropuesto) {
+            alert('Por favor ingresa el valor propuesto');
+            return;
+        }
+
+        if (!razon) {
+            alert('Por favor proporciona una razón para el cambio');
+            return;
         }
 
         // Aquí iría la lógica para enviar el formulario
-        alert('Solicitud enviada correctamente');
+        alert('Solicitud de cambio enviada correctamente');
         // this.submit();
     });
 </script>
