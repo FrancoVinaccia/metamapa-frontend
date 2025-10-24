@@ -79,7 +79,6 @@ public class ColeccionService {
                     .imagen("https://picsum.photos/seed/h-101/600/300")
                     .categoria("Política Internacional")
                     .ubicacion("Ginebra, Suiza")
-                    .fecha(java.time.LocalDate.of(2025, 5, 10))
                     .build());
             hechos.add(HechoDTO.builder()
                     .id(102)
@@ -88,7 +87,6 @@ public class ColeccionService {
                     .imagen("https://picsum.photos/seed/h-102/600/300")
                     .categoria("Diplomacia")
                     .ubicacion("Bruselas, Bélgica")
-                    .fecha(java.time.LocalDate.of(2025, 6, 2))
                     .build());
         }
         // … idem para coleccionId 2 y 3
