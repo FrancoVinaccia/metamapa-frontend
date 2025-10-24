@@ -1,6 +1,7 @@
 // java
 package ar.utn.ba.ddsi.metaMapa.services;
 
+import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.SignInRequestDTO;
 import ar.utn.ba.ddsi.metaMapa.exceptions.NotFoundException;
 import ar.utn.ba.ddsi.metaMapa.dto.AuthResponseDTO;
@@ -58,6 +59,15 @@ public class MetaMapaApiService {
         }
     }
 
+    public HechoDTO crearHecho(HechoDTO hecho) {
+        HechoDTO response = webApiCallerService.post(dinamicApi + "/hechos/new", hecho, HechoDTO.class);
+        System.out.println(response);
+        if (response == null) {
+            throw new RuntimeException("Error al crear hecho en el servicio externo");
+        }
+        return response;
+    }
+
     public void register(SignInRequestDTO signinRequest) {
         // Construye la URL completa para el endpoint de registro.
         // Asegúrate que el endpoint en tu backend se llame "/register" o ajústalo.
@@ -73,6 +83,8 @@ public class MetaMapaApiService {
                 .toBodilessEntity() // Espera una respuesta sin cuerpo. Si tu API devuelve algo, esto se puede cambiar.
                 .block(); // Espera a que la operación termine.
     }
+
+
 
     /*
     public List<AlumnoDTO> obtenerTodosLosAlumnos() {
