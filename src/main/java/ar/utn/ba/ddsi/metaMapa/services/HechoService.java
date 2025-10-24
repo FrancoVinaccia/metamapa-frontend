@@ -8,6 +8,12 @@ import java.util.List;
 @Service
 public class HechoService {
 
+    private final MetaMapaApiService metaMapaApiService;
+
+    public HechoService(MetaMapaApiService metaMapaApiService) {
+        this.metaMapaApiService = metaMapaApiService;
+    }
+
     public List<HechoDTO> obtenerTodosLosHechos() {
         // Si querés, podés reutilizar el mock de destacados acá
         return hechosDestacados();
@@ -44,5 +50,9 @@ public class HechoService {
         h.setDescripcion("Descripción mock para el hecho " + h.getId());
         h.setImagen("https://picsum.photos/seed/hecho-" + h.getId() + "/1200/600");
         return h;
+    }
+
+    public HechoDTO crearHecho(HechoDTO hecho) {
+        return metaMapaApiService.crearHecho(hecho);
     }
 }
