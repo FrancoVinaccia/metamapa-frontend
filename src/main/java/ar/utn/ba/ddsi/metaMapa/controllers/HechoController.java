@@ -5,10 +5,8 @@ import ar.utn.ba.ddsi.metaMapa.services.HechoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -30,14 +28,7 @@ public class HechoController {
         return "hecho/hechos";
     }
 
-    @PreAuthorize("hasAnyRole('CONTRIBUYENTE')")
-    @GetMapping("/nuevo")
-    public String mostrarFormularioCrear(Model model) {
-        return "hecho/crearHecho";
-    }
-
     @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
-
     @GetMapping("/{id}")
     public String visualizarHecho(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
        HechoDTO hecho = hechoService.obtenerHecho(id);
@@ -50,9 +41,31 @@ public class HechoController {
     @GetMapping("hecho/formulario")
     public String formularioCrearHecho() { return "hecho/crearHecho";}
 
-    @PreAuthorize("hasAnyRole('CONTRIBUYENTE')")
-    @PostMapping("hecho/crear")
-    public String crearHecho() { return "hecho/creacion";}
+    @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
+    @GetMapping("/nuevo")
+    public String mostrarFormularioCrear(Model model) {
+        model.addAttribute("hecho", new HechoDTO());
+        return "hecho/crearHecho";
+    }
 
 
+    @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
+    @PostMapping("/crear")
+    public String crearHecho(@ModelAttribute("hecho")HechoDTO hecho,
+                             BindingResult bindingResult,
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
+        try{
+            HechoDTO hechoCreado = hechoService.crearHecho(hecho);
+            System.out.println( hechoCreado );
+            redirectAttributes.addFlashAttribute("success", "Hecho creado con éxito.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+            return "redirect:/hecho/crearHecho";
+        }
+        catch (Exception e){
+            model.addAttribute("error", "Error al crear el hecho: " + e.getMessage());
+            model.addAttribute("tipoMensaje", "danger");
+            return "hecho/crearHecho";
+        }
+    }
 }
