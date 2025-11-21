@@ -1,12 +1,9 @@
 // java
 package ar.utn.ba.ddsi.metaMapa.services;
 
-import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.SignInRequestDTO;
-import ar.utn.ba.ddsi.metaMapa.exceptions.NotFoundException;
-import ar.utn.ba.ddsi.metaMapa.dto.AuthResponseDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.*;
+import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.internal.WebApiCallerService;
-import ar.utn.ba.ddsi.metaMapa.dto.RolesPermisosDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +21,17 @@ public class MetaMapaApiService {
     private static final Logger log = LoggerFactory.getLogger(MetaMapaApiService.class);
     private final WebClient webClient;
     private final WebApiCallerService webApiCallerService;
+    private final String agregacionApi;
     private final String dinamicApi;
 
     @Autowired
     public MetaMapaApiService(
             WebApiCallerService webApiCallerService,
-            @Value("${metamapa.dinamica.url}") String dinamicApi) {
+            @Value("${metamapa.dinamica.url}") String dinamicApi,
+            @Value("${metamapa.agregacion.url}") String agregacionApi) {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
+        this.agregacionApi = agregacionApi;
         this.dinamicApi = dinamicApi;
     }
 
@@ -59,7 +59,13 @@ public class MetaMapaApiService {
         }
     }
 
-    public HechoDTO crearHecho(HechoDTO hecho) {
+    public List<HechoDTO> obtenerHechosDestacados() {
+        PageHechoDTO response = webApiCallerService.get(agregacionApi + "/hechos?limit=3", PageHechoDTO.class);
+        return response.getElementos();
+    }
+
+    public HechoDTO crearHecho(HechoInputDTO hecho) {
+        System.out.println("sssssss");
         HechoDTO response = webApiCallerService.post(dinamicApi + "/hechos/new", hecho, HechoDTO.class);
         System.out.println(response);
         if (response == null) {

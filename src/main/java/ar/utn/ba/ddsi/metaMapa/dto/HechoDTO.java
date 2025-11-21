@@ -8,21 +8,32 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class HechoDTO {
-    private Integer id;
+    private Long idHecho;
     private String titulo;
     private String descripcion;
-    private String imagen;
-
-    // Nuevos campos para la vista
     private String categoria;
-    private String ubicacion;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate  fecha;
+    private LugarDTO lugar;
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private Date fechaAcontecimiento;
+    private Date fechaCarga;
+    private List<String> etiquetas;
+    private List<MultimediaDTO> multimedia;
+    private String cargaOrigen;
+    private Long idUsuario;
+    private Boolean anonimo;
+
+    public String getImagen() {
+        if (multimedia != null && !multimedia.isEmpty()) {
+            return multimedia.get(0).getUrl();
+        }
+        return null;
+    }
 }

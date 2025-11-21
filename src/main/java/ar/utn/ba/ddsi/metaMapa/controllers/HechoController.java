@@ -1,6 +1,7 @@
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
 import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.HechoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -44,20 +46,23 @@ public class HechoController {
     @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
     @GetMapping("/nuevo")
     public String mostrarFormularioCrear(Model model) {
-        model.addAttribute("hecho", new HechoDTO());
+        model.addAttribute("hecho", new HechoInputDTO());
         return "hecho/crearHecho";
     }
 
 
     @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
     @PostMapping("/crear")
-    public String crearHecho(@ModelAttribute("hecho")HechoDTO hecho,
+    public String crearHecho(@ModelAttribute("hecho") HechoInputDTO hecho,
+                             @SessionAttribute(value = "id") Long usuarioId,
                              BindingResult bindingResult,
                              Model model,
                              RedirectAttributes redirectAttributes) {
         try{
+            hecho.setIdUsuario(usuarioId);
+            System.out.println(hecho);
             HechoDTO hechoCreado = hechoService.crearHecho(hecho);
-            System.out.println( hechoCreado );
+            System.out.println(hechoCreado);
             redirectAttributes.addFlashAttribute("success", "Hecho creado con éxito.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
             return "redirect:/hecho/crearHecho";

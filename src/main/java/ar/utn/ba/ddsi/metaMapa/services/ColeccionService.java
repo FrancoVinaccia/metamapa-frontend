@@ -71,24 +71,6 @@ public class ColeccionService {
 
     private List<HechoDTO> hechosPara(int coleccionId) {
         List<HechoDTO> hechos = new ArrayList<>();
-        if (coleccionId == 1) {
-            hechos.add(HechoDTO.builder()
-                    .id(101)
-                    .titulo("Acuerdo de alto el fuego")
-                    .descripcion("Partes firman cese de hostilidades supervisado por la ONU.")
-                    .imagen("https://picsum.photos/seed/h-101/600/300")
-                    .categoria("Política Internacional")
-                    .ubicacion("Ginebra, Suiza")
-                    .build());
-            hechos.add(HechoDTO.builder()
-                    .id(102)
-                    .titulo("Negociaciones multilaterales")
-                    .descripcion("Nuevas rondas de diálogo con mediadores internacionales.")
-                    .imagen("https://picsum.photos/seed/h-102/600/300")
-                    .categoria("Diplomacia")
-                    .ubicacion("Bruselas, Bélgica")
-                    .build());
-        }
         // … idem para coleccionId 2 y 3
         return hechos;
     }

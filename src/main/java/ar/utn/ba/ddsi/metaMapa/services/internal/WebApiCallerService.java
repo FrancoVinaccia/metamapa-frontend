@@ -69,6 +69,16 @@ public class WebApiCallerService {
      * Ejecuta una llamada HTTP GET
      */
     public <T> T get(String url, Class<T> responseType) {
+        return
+                webClient
+                        .get()
+                        .uri(url)
+                        .retrieve()
+                        .bodyToMono(responseType)
+                        .block();
+    }
+
+    public <T> T getLogin(String url, Class<T> responseType) {
         return executeWithTokenRetry(accessToken ->
                 webClient
                         .get()
@@ -84,6 +94,19 @@ public class WebApiCallerService {
      * Ejecuta una llamada HTTP GET que retorna una lista
      */
     public <T> java.util.List<T> getList(String url, Class<T> responseType) {
+        return executeWithTokenRetry(accessToken ->
+                webClient
+                        .get()
+                        .uri(url)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .retrieve()
+                        .bodyToFlux(responseType)
+                        .collectList()
+                        .block()
+        );
+    }
+
+    public <T> java.util.List<T> getListLogin(String url, Class<T> responseType) {
         return executeWithTokenRetry(accessToken ->
                 webClient
                         .get()
@@ -117,6 +140,16 @@ public class WebApiCallerService {
      * Ejecuta una llamada HTTP POST
      */
     public <T> T post(String url, Object body, Class<T> responseType) {
+        return webClient
+                    .post()
+                    .uri(url)
+                    .bodyValue(body)
+                    .retrieve()
+                    .bodyToMono(responseType)
+                    .block();
+    }
+
+    public <T> T postLog(String url, Object body, Class<T> responseType) {
         return executeWithTokenRetry(accessToken ->
                 webClient
                         .post()

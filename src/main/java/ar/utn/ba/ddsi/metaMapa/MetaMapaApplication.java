@@ -9,5 +9,4 @@ public class MetaMapaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MetaMapaApplication.class, args);
 	}
-
 }
