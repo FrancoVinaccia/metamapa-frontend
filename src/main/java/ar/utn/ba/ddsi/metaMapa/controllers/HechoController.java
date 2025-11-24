@@ -22,24 +22,22 @@ public class HechoController {
     private final HechoService hechoService;
 
     @GetMapping
-    public String listarHechos(Model model, RedirectAttributes redirectAttributes) {
+    public String listarHechos(@RequestParam(value = "page", defaultValue = "1") int page,
+                               Model model,
+                               RedirectAttributes redirectAttributes) {
         try {
-            List<HechoDTO> hechos = hechoService.obtenerTodosLosHechos();
+            int pageSize = 3; // mostrar 3 hechos por página
+            List<HechoDTO> hechos = hechoService.obtenerTodosLosHechos(page, pageSize);
             model.addAttribute("hechos", hechos);
             model.addAttribute("titulo", "Lista de Hechos");
             model.addAttribute("totalDeHechos", hechos.size());
-            return "hecho/hechos"; // Vista de éxito
+            model.addAttribute("currentPage", page);
+            model.addAttribute("pageSize", pageSize);
+            return "hecho/hechos";
         } catch (Exception e) {
-            // MUY IMPORTANTE: Imprime el stack trace para ver la causa real
             e.printStackTrace();
-
-            // Redirige al usuario a una página de error conocida (ej: tu /404 o /enDesarrollo si es temporal)
-            // O, simplemente devuelve un error interno (aunque no es ideal para el usuario final)
             model.addAttribute("errorMensaje", "Ocurrió un error al cargar los hechos: " + e.getMessage());
-            return "errorGenerico"; // Asume que tienes una vista de error genérica
-
-            // Alternativamente, puedes devolver una página en desarrollo (como ya tienes):
-            // return "redirect:/enDesarrollo";
+            return "errorGenerico";
         }
     }
 

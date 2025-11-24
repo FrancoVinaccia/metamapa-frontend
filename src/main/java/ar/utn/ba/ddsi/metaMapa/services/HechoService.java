@@ -19,9 +19,8 @@ public class HechoService {
         this.metaMapaApiService = metaMapaApiService;
     }
 
-    public List<HechoDTO> obtenerTodosLosHechos() {
-        // Si querés, podés reutilizar el mock de destacados acá
-        return hechosDestacados();
+    public List<HechoDTO> obtenerTodosLosHechos(int page, int limit) {
+        return metaMapaApiService.listarHechos(page, limit);
     }
 
     public HechoDTO obtenerHecho(long id) {

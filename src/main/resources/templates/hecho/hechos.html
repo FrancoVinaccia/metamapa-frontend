@@ -15,6 +15,9 @@
     <section class="bg-gray-50 border-b border-gray-200 py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <form th:action="@{/hechos}" method="get" class="space-y-4">
+                <!-- Reset la página cuando se aplican filtros -->
+                <input type="hidden" name="page" value="1" />
+
                 <!-- Filter Row 1 -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <!-- Tema -->
@@ -123,23 +126,7 @@
             <!-- Facts Grid -->
             <div class="grid md:grid-cols-3 gap-6" th:if="${hechos != null and #lists.size(hechos) > 0}">
                 <div th:each="hecho : ${hechos}">
-                    <!-- Opción A: usar fragmento -->
                     <div th:replace="~{hecho/cardHecho :: cardHecho(hecho=${hecho})}"></div>
-
-                    <!-- Opción B (comentada): inline sin fragmento
-                    <div class="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200" th:with="ph=@{/img/placeholder.jpg}">
-                      <img class="w-full h-48 object-cover"
-                           th:src="${hecho != null and hecho.imagen != null and !#strings.isEmpty(hecho.imagen)} ? ${hecho.imagen} : ${ph}"
-                           th:alt="${hecho != null and hecho.titulo != null ? hecho.titulo : 'Hecho'}" />
-                      <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2" th:text="${hecho.titulo != null ? hecho.titulo : 'Título'}">Título</h3>
-                        <p class="text-gray-600 mb-4" th:text="${hecho.descripcion != null ? hecho.descripcion : 'Descripción'}">Descripción</p>
-                        <a th:href="@{/hechos/{id}(id=${hecho.id})}" class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center">
-                          Ver hecho <i class="fas fa-arrow-right ml-2 text-sm"></i>
-                        </a>
-                      </div>
-                    </div>
-                    -->
                 </div>
             </div>
 
@@ -150,18 +137,27 @@
                 <p class="text-gray-600">Intenta ajustar los filtros o contribuye documentando un nuevo hecho</p>
             </div>
 
-            <!-- Pagination (estática de demo) -->
+            <!-- Pagination dinámico -->
             <div th:if="${hechos != null and #lists.size(hechos) > 0}" class="mt-8 flex justify-center">
                 <nav class="flex items-center gap-2">
-                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <!-- Anterior: deshabilitado si currentPage == 1 -->
+                    <a th:href="@{/hechos(page=${currentPage - 1})}"
+                       th:classappend="${currentPage == 1} ? 'opacity-50 pointer-events-none' : ''"
+                       class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                         <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">1</button>
-                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">2</button>
-                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">3</button>
-                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    </a>
+
+                    <!-- Indicador simple de página -->
+                    <span class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700">
+                        Página <strong th:text="${currentPage != null ? currentPage : 1}">1</strong>
+                    </span>
+
+                    <!-- Siguiente: sólo mostrar si la cantidad de hechos en la página es igual al pageSize (posible más páginas) -->
+                    <a th:if="${hechos != null and #lists.size(hechos) >= pageSize}"
+                       th:href="@{/hechos(page=${currentPage + 1})}"
+                       class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                         <i class="fas fa-chevron-right"></i>
-                    </button>
+                    </a>
                 </nav>
             </div>
         </div>
