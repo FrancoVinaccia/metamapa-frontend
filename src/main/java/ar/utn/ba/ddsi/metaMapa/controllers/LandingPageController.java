@@ -16,10 +16,10 @@ public class LandingPageController {
     private final ColeccionService servicioColecciones;
 
     @GetMapping
-    public String listarAlumnos(Model model) {
+    public String landingPage(Model model) {
         model.addAttribute("titulo", "Landing Page");
         model.addAttribute("hechosDestacados", servicioHechos.hechosDestacados()); // List<Hecho>
-        model.addAttribute("coleccionesDestacadas", servicioColecciones.coleccionesDestacadas());
+        model.addAttribute("coleccionesDestacadas", servicioColecciones.obtenerTodasLasColecciones(1,3));
         System.out.println("Entrando a la landing page");
         System.out.println("Hechos destacados: " + servicioHechos.hechosDestacados().size());
         System.out.println("Colecciones destacadas: " + servicioColecciones.coleccionesDestacadas().size());
