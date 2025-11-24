@@ -150,9 +150,9 @@ Content fragment that will be injected into base.html
                         </button>
 
                         Admin Actions (conditional)
-                        Using hecho.id for edit/delete actions
+                        Using hecho.idHecho for edit/delete actions
                         <div class="ml-auto flex gap-3" th:if="${puedeEditar}">
-                            <a th:href="@{/hecho/{id}/editar(id=${hecho.id})}"
+                            <a th:href="@{/hecho/{id}/editar(id=${hecho.idHecho})}"
                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center">
                                 <i class="fas fa-edit mr-2"></i>
                                 Editar
@@ -162,7 +162,7 @@ Content fragment that will be injected into base.html
                                 <i class="fas fa-trash mr-2"></i>
                                 Eliminar
                             </button>
-                            <form th:id="deleteForm" th:action="@{/hecho/{id}/eliminar(id=${hecho.id})}" method="post" style="display: none;">
+                            <form th:id="deleteForm" th:action="@{/hecho/{id}/eliminar(id=${hecho.idHecho})}" method="post" style="display: none;">
                                 <input type="hidden" name="_method" value="DELETE">
                             </form>
                         </div>
@@ -186,8 +186,8 @@ Content fragment that will be injected into base.html
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Comentarios de la comunidad</h2>
 
                 Comment Form
-                Using hecho.id for comment form action
-                <form th:action="@{/hecho/{id}/comentario(id=${hecho.id})}" method="post" class="mb-8">
+                Using hecho.idHecho for comment form action
+                <form th:action="@{/hecho/{id}/comentario(id=${hecho.idHecho})}" method="post" class="mb-8">
                     <textarea name="contenido" rows="4"
                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                               placeholder="Comparte tu opinión o información adicional..."></textarea>

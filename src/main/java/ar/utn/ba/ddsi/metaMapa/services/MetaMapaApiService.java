@@ -60,7 +60,8 @@ public class MetaMapaApiService {
     }
 
     public List<HechoDTO> obtenerHechosDestacados() {
-        PageHechoDTO response = webApiCallerService.get(agregacionApi + "/hechos?limit=3", PageHechoDTO.class);
+        // La URL correcta usa ? para el primer parámetro y & para el segundo.
+        PageHechoDTO response = webApiCallerService.get(agregacionApi + "/hechos/destacados?page=1&limit=3", PageHechoDTO.class);
         return response.getElementos();
     }
 

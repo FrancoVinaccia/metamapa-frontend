@@ -28,7 +28,6 @@ public class HechoService {
         // Mock simple para vista detalle
         List <HechoDTO> hechos = hechosDestacados();
         return hechos.stream().filter(h -> h.getIdHecho() == id).findFirst().orElse(null);
-
     }
 
     public List<HechoDTO> hechosDestacados() {
