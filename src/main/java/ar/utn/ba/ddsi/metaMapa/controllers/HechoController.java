@@ -78,7 +78,7 @@ public class HechoController {
             System.out.println(hechoCreado);
             redirectAttributes.addFlashAttribute("success", "Hecho creado con éxito.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
-            return "redirect:/hecho/crearHecho";
+            return "hecho/crearHecho";
         }
         catch (Exception e){
             model.addAttribute("error", "Error al crear el hecho: " + e.getMessage());
