@@ -26,7 +26,7 @@ public class HechoController {
                                Model model,
                                RedirectAttributes redirectAttributes) {
         try {
-            int pageSize = 3; // mostrar 3 hechos por página
+            int pageSize = 3;
             List<HechoDTO> hechos = hechoService.obtenerTodosLosHechos(page, pageSize);
             model.addAttribute("hechos", hechos);
             model.addAttribute("titulo", "Lista de Hechos");

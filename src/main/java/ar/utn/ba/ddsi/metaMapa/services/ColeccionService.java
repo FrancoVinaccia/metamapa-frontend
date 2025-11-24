@@ -2,7 +2,9 @@ package ar.utn.ba.ddsi.metaMapa.services;
 
 import ar.utn.ba.ddsi.metaMapa.dto.ColeccionDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.PageHechoDTO;
 import org.springframework.stereotype.Service;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +12,14 @@ import java.util.List;
 @Service
 public class ColeccionService {
 
-    public List<ColeccionDTO> obtenerTodasLasColecciones() {
-        return coleccionesMock();
+    private final MetaMapaApiService metaMapaApiService;
+
+    public ColeccionService(MetaMapaApiService metaMapaApiService) {
+        this.metaMapaApiService = metaMapaApiService;
+    }
+
+    public List<ColeccionDTO> obtenerTodasLasColecciones(int page, int limit) {
+        return metaMapaApiService.listarColecciones(page, limit);
     }
 
     public ColeccionDTO visualizarColeccion(Integer id) {
@@ -20,13 +28,13 @@ public class ColeccionService {
                 .filter(c -> c.getId().equals(id.longValue()))
                 .findFirst()
                 .orElseGet(() -> {
-                    // fallback vacío pero con lista inicializada
+                    // fallback vacío pero con wrapper de hechos inicializado
                     return ColeccionDTO.builder()
                             .id(id.longValue())
                             .titulo("Colección no encontrada")
                             .descripcion("No existen datos para el id " + id)
                             .imagen("https://picsum.photos/seed/notfound/800/400")
-                            .hechos(new ArrayList<>())
+                            .hechos(pageFromList(new ArrayList<>()))
                             .build();
                 });
     }
@@ -44,7 +52,7 @@ public class ColeccionService {
                 .titulo("Conflictos Globales")
                 .descripcion("Eventos y hitos de conflictos internacionales recientes.")
                 .imagen("https://picsum.photos/seed/col-1/800/400")
-                .hechos(hechosPara(1))
+                .hechos(pageFromList(hechosPara(1)))
                 .build();
 
         ColeccionDTO c2 = ColeccionDTO.builder()
@@ -52,7 +60,7 @@ public class ColeccionService {
                 .titulo("Innovación y Ciencia")
                 .descripcion("Avances científicos y tecnológicos destacados.")
                 .imagen("https://picsum.photos/seed/col-2/800/400")
-                .hechos(hechosPara(2))
+                .hechos(pageFromList(hechosPara(2)))
                 .build();
 
         ColeccionDTO c3 = ColeccionDTO.builder()
@@ -60,7 +68,7 @@ public class ColeccionService {
                 .titulo("Economía y Mercados")
                 .descripcion("Cambios macroeconómicos y movimientos de mercado.")
                 .imagen("https://picsum.photos/seed/col-3/800/400")
-                .hechos(hechosPara(3))
+                .hechos(pageFromList(hechosPara(3)))
                 .build();
 
         list.add(c1);
@@ -71,8 +79,13 @@ public class ColeccionService {
 
     private List<HechoDTO> hechosPara(int coleccionId) {
         List<HechoDTO> hechos = new ArrayList<>();
-        // … idem para coleccionId 2 y 3
+        // … llenar con objetos de prueba si se desea
         return hechos;
     }
 
+    private PageHechoDTO pageFromList(List<HechoDTO> list) {
+        PageHechoDTO page = new PageHechoDTO();
+        page.setElementos(list);
+        return page;
+    }
 }

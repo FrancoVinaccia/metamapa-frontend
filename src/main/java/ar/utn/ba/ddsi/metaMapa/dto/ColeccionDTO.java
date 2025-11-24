@@ -1,24 +1,26 @@
+// java
+// File: src/main/java/ar/utn/ba/ddsi/metaMapa/dto/ColeccionDTO.java
 package ar.utn.ba.ddsi.metaMapa.dto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import lombok.*;
 import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class ColeccionDTO {
-    //TODO: completar
     private Long id;
     private String titulo;
     private String descripcion;
     private String imagen;
-    private List<HechoDTO> hechos = new ArrayList<>();;
+    private PageHechoDTO hechos;
 
-    public ColeccionDTO() {
 
+    public List<HechoDTO> getHechosLista() {
+        if (this.hechos == null || this.hechos.getElementos() == null) {
+            return List.of();
+        }
+        return this.hechos.getElementos();
     }
 }

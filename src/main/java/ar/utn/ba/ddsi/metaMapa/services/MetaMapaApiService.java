@@ -59,9 +59,30 @@ public class MetaMapaApiService {
         }
     }
 
+    public List<ColeccionDTO> listarColecciones(int page, int limit) {
+        try {
+            PageColeccionDTO response = webApiCallerService.get(
+                    agregacionApi + "/colecciones/destacadas?page=" + page + "&limit=" + limit,
+                    PageColeccionDTO.class
+            );
+            return response != null && response.getElementos() != null ? response.getElementos() : List.of();
+        } catch (Exception e) {
+            log.error("Error listando colecciones desde agregacion: {}", e.getMessage(), e);
+            return List.of();
+        }
+    }
+
     public List<HechoDTO> listarHechos(int page, int limit) {
-        PageHechoDTO response = webApiCallerService.get(agregacionApi + "/hechos/destacados?page=" + page + "&limit=" + limit, PageHechoDTO.class);
-        return response != null ? response.getElementos() : List.of();
+        try {
+            PageHechoDTO response = webApiCallerService.get(
+                    agregacionApi + "/hechos/destacados?page=" + page + "&limit=" + limit,
+                    PageHechoDTO.class
+            );
+            return response != null && response.getElementos() != null ? response.getElementos() : List.of();
+        } catch (Exception e) {
+            log.error("Error listando hechos desde agregacion: {}", e.getMessage(), e);
+            return List.of();
+        }
     }
 
     public List<HechoDTO> obtenerHechosDestacados() {
@@ -79,6 +100,8 @@ public class MetaMapaApiService {
         }
         return response;
     }
+
+
 
     public void register(SignInRequestDTO signinRequest) {
         // Construye la URL completa para el endpoint de registro.
