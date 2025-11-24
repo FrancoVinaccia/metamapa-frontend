@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LugarDTO {
-    private Long id;
     private Double latitud;
     private Double longitud;
     private String localidad;

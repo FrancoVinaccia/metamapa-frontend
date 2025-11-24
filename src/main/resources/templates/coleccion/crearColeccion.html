@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(contenido=~{::contenido})}" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="contenido" class="container mx-auto px-4 py-8 max-w-3xl">
+    <!-- Card -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <!-- Header -->
+        <div class="mb-6">
+            <div class="flex items-center mb-2">
+                <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 4v16m8-8H4"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-900">Crear nueva Colección</h1>
+            <p class="text-sm text-gray-500">
+                Organizá hechos en un conjunto con criterios claros y fuentes definidas.
+            </p>
+        </div>
+
+        <!-- Form -->
+        <form th:action="@{/colecciones/crear}" th:object="${coleccion}" method="post" class="space-y-6">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <!-- Título -->
+            <div>
+                <label for="titulo" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Título <span class="text-red-500">*</span>
+                </label>
+                <input
+                        type="text"
+                        id="titulo"
+                        th:field="*{titulo}"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                               focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                               outline-none transition-all text-sm"
+                        placeholder="Ej: Incendios forestales en Argentina 2025"
+                        maxlength="140"
+                        required
+                />
+                <p class="text-xs text-gray-500 mt-1">Máximo 140 caracteres</p>
+            </div>
+
+            <!-- Descripción -->
+            <div>
+                <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Descripción <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                        id="descripcion"
+                        th:field="*{descripcion}"
+                        rows="4"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                               focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                               outline-none transition-all text-sm resize-none"
+                        placeholder="Describe el objetivo de la colección, qué hechos agrupa y por qué..."
+                        maxlength="1000"
+                        required
+                ></textarea>
+                <p class="text-xs text-gray-500 mt-1">Máximo 1000 caracteres</p>
+            </div>
+
+            <!-- Categoría (texto libre) -->
+            <div>
+                <label for="categoria" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Categoría (criterios.categoria) <span class="text-red-500">*</span>
+                </label>
+                <input
+                        type="text"
+                        id="categoria"
+                        th:field="*{criterios.categoria}"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                               focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                               outline-none transition-all text-sm"
+                        placeholder="Ej: mejora, bug, documentación..."
+                        required
+                />
+                <p class="text-xs text-gray-500 mt-1">
+                    Texto libre que se usará como criterio base de filtrado de hechos.
+                </p>
+            </div>
+
+            <!-- Criterios: Rango de fechas -->
+            <div>
+                <h2 class="text-sm font-semibold text-gray-800 mb-2">
+                    Criterios de fecha
+                </h2>
+                <p class="text-xs text-gray-500 mb-3">
+                    Ingresá las fechas manualmente con el formato <strong>dd/mm/aaaa</strong>.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <!-- Fecha Inicio -->
+                    <div>
+                        <label for="fechaInicio"
+                               class="block text-xs font-medium text-gray-700 mb-1">
+                            Fecha inicio (criterios.fecha.fechaInicio)
+                        </label>
+                        <input
+                                id="fechaInicio"
+                                th:field="*{criterios.fecha.fechaInicio}"
+                                name="criterios.fecha.fechaInicio"
+                                type="text"
+                                placeholder="dd/mm/aaaa"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                       outline-none transition-all text-sm"
+                        />
+                    </div>
+
+                    <!-- Fecha Fin -->
+                    <div>
+                        <label for="fechaFin"
+                               class="block text-xs font-medium text-gray-700 mb-1">
+                            Fecha fin (criterios.fecha.fechaFin)
+                        </label>
+                        <input
+                                id="fechaFin"
+                                th:field="*{criterios.fecha.fechaFin}"
+                                name="criterios.fecha.fechaFin"
+                                type="text"
+                                placeholder="dd/mm/aaaa"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                       outline-none transition-all text-sm"
+                        />
+                    </div>
+                </div>
+
+                <p class="text-xs text-gray-500 mt-2">
+                    Ejemplo válido: <strong>03/02/2025</strong>
+                </p>
+            </div>
+
+
+            <!-- Criterios: Lugar (latitud, longitud, localidad, ciudad, provincia) -->
+            <div>
+                <h2 class="text-sm font-semibold text-gray-800 mb-2">
+                    Criterios de ubicación
+                </h2>
+                <p class="text-xs text-gray-500 mb-3">
+                    Configurá opcionalmente un área geográfica para la colección.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <!-- Latitud -->
+                    <div>
+                        <label for="lugarLat" class="block text-xs font-medium text-gray-700 mb-1">
+                            Latitud (criterios.lugar.latitud)
+                        </label>
+                        <input
+                                type="number"
+                                step="any"
+                                id="lugarLat"
+                                th:field="*{criterios.lugar.latitud}"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                       outline-none transition-all text-sm"
+                                placeholder="-34.6037"
+                        />
+                    </div>
+
+                    <!-- Longitud -->
+                    <div>
+                        <label for="lugarLon" class="block text-xs font-medium text-gray-700 mb-1">
+                            Longitud (criterios.lugar.longitud)
+                        </label>
+                        <input
+                                type="number"
+                                step="any"
+                                id="lugarLon"
+                                th:field="*{criterios.lugar.longitud}"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                       outline-none transition-all text-sm"
+                                placeholder="-58.3816"
+                        />
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <!-- Localidad -->
+                    <div>
+                        <label for="localidad" class="block text-xs font-medium text-gray-700 mb-1">
+                            Localidad (criterios.lugar.localidad)
+                        </label>
+                        <input
+                                type="text"
+                                id="localidad"
+                                th:field="*{criterios.lugar.localidad}"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                       outline-none transition-all text-sm"
+                                placeholder="Ej: Palermo"
+                        />
+                    </div>
+
+                    <!-- Ciudad -->
+                    <div>
+                        <label for="ciudad" class="block text-xs font-medium text-gray-700 mb-1">
+                            Ciudad (criterios.lugar.ciudad)
+                        </label>
+                        <input
+                                type="text"
+                                id="ciudad"
+                                th:field="*{criterios.lugar.ciudad}"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                       outline-none transition-all text-sm"
+                                placeholder="Ej: CABA"
+                        />
+                    </div>
+
+                    <!-- Provincia -->
+                    <div>
+                        <label for="provincia" class="block text-xs font-medium text-gray-700 mb-1">
+                            Provincia (criterios.lugar.provincia)
+                        </label>
+                        <input
+                                type="text"
+                                id="provincia"
+                                th:field="*{criterios.lugar.provincia}"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                       outline-none transition-all text-sm"
+                                placeholder="Ej: Buenos Aires"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Método de consenso
+            <div>
+                <label for="metodoConsenso" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Método de consenso (metodoConsenso)
+                </label>
+                <select
+                        id="metodoConsenso"
+                        th:field="*{metodoConsenso}"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+                               focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                               outline-none transition-all text-sm bg-white"
+                >
+                    <option value="">Sin algoritmo (todos los hechos se consideran consensuados)</option>
+                    <option value="mayoria">Mayoría simple</option>
+                    <option value="consenso">Consenso</option>
+                    <option value="delegado">Delegado</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>-->
+
+            <!-- Fuentes: Dinámica, Proxy, Estática -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Fuentes de la colección
+                </label>
+                <p class="text-xs text-gray-500 mb-3">
+                    Podés seleccionar una o varias fuentes. (Se serializa como lista de strings).
+                </p>
+
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input
+                                type="checkbox"
+                                name="fuentes"
+                                value="Dinamica"
+                                class="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                th:checked="${coleccion.fuentes != null} ? ${coleccion.fuentes.contains('Dinamica')} : false"
+                        />
+                        Dinámica
+                    </label>
+
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input
+                                type="checkbox"
+                                name="fuentes"
+                                value="Proxy"
+                                class="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                th:checked="${coleccion.fuentes != null} ? ${coleccion.fuentes.contains('Proxy')} : false"
+                        />
+                        Proxy
+                    </label>
+
+                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                        <input
+                                type="checkbox"
+                                name="fuentes"
+                                value="Estatica"
+                                class="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                th:checked="${coleccion.fuentes != null} ? ${coleccion.fuentes.contains('Estatica')} : false"
+                        />
+                        Estática
+                    </label>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="pt-6 border-t border-gray-200 flex flex-wrap gap-3 justify-between items-center">
+                <div class="flex gap-3">
+                    <button
+                            type="button"
+                            onclick="window.history.back()"
+                            class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300
+                                   rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                            type="submit"
+                            class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg
+                                   hover:bg-blue-700 transition-colors flex items-center"
+                    >
+                        Crear Colección
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</html>

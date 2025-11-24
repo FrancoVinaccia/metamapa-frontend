@@ -149,6 +149,17 @@ public class WebApiCallerService {
                     .block();
     }
 
+    public <T> T postAdmin(String url, Object body, Class<T> responseType) {
+        return webClient
+                .post()
+                .uri(url)
+                .bodyValue(body)
+                .header("X-ADMIN-TOKEN", "GRUPO-28")
+                .retrieve()
+                .bodyToMono(responseType)
+                .block();
+    }
+
     public <T> T postLog(String url, Object body, Class<T> responseType) {
         return executeWithTokenRetry(accessToken ->
                 webClient
@@ -202,6 +213,8 @@ public class WebApiCallerService {
             RefreshTokenDTO refreshRequest = RefreshTokenDTO.builder()
                     .refreshToken(refreshToken)
                     .build();
+
+            System.out.println("este es el refresh token" + refreshToken);
 
             AuthResponseDTO response = webClient
                     .post()

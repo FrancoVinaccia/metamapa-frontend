@@ -2,6 +2,7 @@
 // File: src/main/java/ar/utn/ba/ddsi/metaMapa/dto/ColeccionDTO.java
 package ar.utn.ba.ddsi.metaMapa.dto;
 
+import ar.utn.ba.ddsi.metaMapa.dto.input.CriterioPertenenciaInputDTO;
 import lombok.*;
 import java.util.List;
 
@@ -10,11 +11,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ColeccionDTO {
-    private Long id;
+    private String idColeccion;
     private String titulo;
     private String descripcion;
-    private String imagen;
+    private List<String> fuentes;
+    private CriterioPertenenciaInputDTO criterios;
+    private String metodoConsenso;
     private PageHechoDTO hechos;
+    private String imagen;
 
 
     public List<HechoDTO> getHechosLista() {

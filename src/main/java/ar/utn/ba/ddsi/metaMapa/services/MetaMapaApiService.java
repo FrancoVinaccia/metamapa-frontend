@@ -2,6 +2,7 @@
 package ar.utn.ba.ddsi.metaMapa.services;
 
 import ar.utn.ba.ddsi.metaMapa.dto.*;
+import ar.utn.ba.ddsi.metaMapa.dto.input.ColeccionInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.internal.WebApiCallerService;
 import org.slf4j.Logger;
@@ -47,6 +48,9 @@ public class MetaMapaApiService {
                     .retrieve()
                     .bodyToMono(AuthResponseDTO.class)
                     .block();
+
+
+            System.out.println(username);
             return response;
         } catch (WebClientResponseException e) {
             log.error(e.getMessage());
@@ -97,6 +101,23 @@ public class MetaMapaApiService {
         System.out.println(response);
         if (response == null) {
             throw new RuntimeException("Error al crear hecho en el servicio externo");
+        }
+        return response;
+    }
+// Archivo: MetaMapaApiService.java
+
+    public ColeccionDTO crearColeccion(ColeccionInputDTO coleccion) {
+        System.out.println("2");
+
+        ColeccionDTO response = webApiCallerService.postAdmin(
+                agregacionApi + "/priv/colecciones/new",
+                coleccion,
+                ColeccionDTO.class
+        );
+        System.out.println("3");
+        if (response == null) {
+            System.out.println("ERROR");
+            throw new RuntimeException("Error al crear coleccion en el servicio externo");
         }
         return response;
     }

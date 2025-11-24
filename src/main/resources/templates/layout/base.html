@@ -141,6 +141,9 @@
                         <a th:href="@{/formularioSolicitud}" class="dropdown-item"  sec:authorize="hasRole('CONTRIBUYENTE')">
                             <i class="fas fa-chart-bar mr-2"></i> Crear solicitud
                         </a>
+                        <a th:href="@{/colecciones/nueva}" class="dropdown-item"  sec:authorize="hasRole('ADMINISTRADOR')">
+                            <i class="fas fa-chart-bar mr-2"></i> Crear coleccion
+                        </a>
                         <div class="dropdown-divider"></div>
                         <form th:action="@{/logout}" method="post" class="dropdown-item text-red-600">
                             <button type="submit" >
