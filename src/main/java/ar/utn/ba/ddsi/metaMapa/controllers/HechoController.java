@@ -23,16 +23,60 @@ public class HechoController {
 
     @GetMapping
     public String listarHechos(@RequestParam(value = "page", defaultValue = "1") int page,
+                               @RequestParam(required = false) String categoria,
+                               @RequestParam(required = false) String provincia,
+                               @RequestParam(required = false) String ciudad,
+                               @RequestParam(required = false) String localidad,
+                               @RequestParam(required = false) String fechaInicio,
+                               @RequestParam(required = false) String fechaFin,
+                               @RequestParam(required = false) String cargaOrigen,
+                               @RequestParam(required = false) String misHechos,
                                Model model,
                                RedirectAttributes redirectAttributes) {
         try {
             int pageSize = 3;
-            List<HechoDTO> hechos = hechoService.obtenerTodosLosHechos(page, pageSize);
+
+            // detectar si se aplicó al menos un filtro
+            boolean aplicarFiltros =
+                    (categoria != null && !categoria.isBlank()) ||
+                            (provincia != null && !provincia.isBlank()) ||
+                            (ciudad != null && !ciudad.isBlank()) ||
+                            (localidad != null && !localidad.isBlank()) ||
+                            (fechaInicio != null && !fechaInicio.isBlank()) ||
+                            (fechaFin != null && !fechaFin.isBlank()) ||
+                            (cargaOrigen != null && !cargaOrigen.isBlank()) ||
+                            (misHechos != null && misHechos.equalsIgnoreCase("true"));
+
+            List<HechoDTO> hechos = hechoService.obtenerTodosLosHechos(
+                    page,
+                    pageSize,
+                    aplicarFiltros,
+                    categoria,
+                    provincia,
+                    ciudad,
+                    localidad,
+                    fechaInicio,
+                    fechaFin,
+                    cargaOrigen,
+                    misHechos
+            );
+
             model.addAttribute("hechos", hechos);
             model.addAttribute("titulo", "Lista de Hechos");
             model.addAttribute("totalDeHechos", hechos.size());
             model.addAttribute("currentPage", page);
             model.addAttribute("pageSize", pageSize);
+
+            // opcional: para repintar filtros en la vista
+            model.addAttribute("categoria", categoria);
+            model.addAttribute("provincia", provincia);
+            model.addAttribute("ciudad", ciudad);
+            model.addAttribute("localidad", localidad);
+            model.addAttribute("fechaInicio", fechaInicio);
+            model.addAttribute("fechaFin", fechaFin);
+            model.addAttribute("cargaOrigen", cargaOrigen);
+            model.addAttribute("misHechos", misHechos);
+
             return "hecho/hechos";
         } catch (Exception e) {
             e.printStackTrace();

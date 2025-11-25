@@ -13,7 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
 
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +93,64 @@ public class MetaMapaApiService {
         }
     }
 
+    public List<HechoDTO> listarHechosFiltrados(
+            int page,
+            int limit,
+            String categoria,
+            String provincia,
+            String ciudad,
+            String localidad,
+            String fechaInicio,
+            String fechaFin,
+            String cargaOrigen,
+            String misHechos
+    ) {
+        try {
+            // base: http://localhost:8080/agre/hechos?page=...&limit=...
+            String url = agregacionApi
+                    + "/hechos?page="
+                    + page
+                    + "&limit="
+                    + limit;
+
+            if (categoria != null && !categoria.isBlank()) {
+                url += "&categoria=" + URLEncoder.encode(categoria, StandardCharsets.UTF_8);
+            }
+            if (provincia != null && !provincia.isBlank()) {
+                url += "&provincia=" + URLEncoder.encode(provincia, StandardCharsets.UTF_8);
+            }
+            if (ciudad != null && !ciudad.isBlank()) {
+                url += "&ciudad=" + URLEncoder.encode(ciudad, StandardCharsets.UTF_8);
+            }
+            if (localidad != null && !localidad.isBlank()) {
+                url += "&localidad=" + URLEncoder.encode(localidad, StandardCharsets.UTF_8);
+            }
+            if (fechaInicio != null && !fechaInicio.isBlank()) {
+                url += "&fechaInicio=" + URLEncoder.encode(fechaInicio, StandardCharsets.UTF_8);
+            }
+            if (fechaFin != null && !fechaFin.isBlank()) {
+                url += "&fechaFin=" + URLEncoder.encode(fechaFin, StandardCharsets.UTF_8);
+            }
+            if (cargaOrigen != null && !cargaOrigen.isBlank()) {
+                url += "&cargaOrigen=" + URLEncoder.encode(cargaOrigen, StandardCharsets.UTF_8);
+            }
+
+            // si querés mapear "misHechos" al parámetro del back `busquedaCurada`
+            if (misHechos != null && misHechos.equalsIgnoreCase("true")) {
+                url += "&busquedaCurada=true";
+            }
+
+            System.out.println(">>> URL agregación (filtrados): " + url);
+
+            PageHechoDTO response = webApiCallerService.get(url, PageHechoDTO.class);
+            return response != null && response.getElementos() != null ? response.getElementos() : List.of();
+
+        } catch (Exception e) {
+            log.error("Error listando hechos filtrados desde agregacion: {}", e.getMessage(), e);
+            return List.of();
+        }
+    }
+
     public List<HechoDTO> obtenerHechosDestacados() {
         // La URL correcta usa ? para el primer parámetro y & para el segundo.
         PageHechoDTO response = webApiCallerService.get(agregacionApi + "/hechos/destacados?page=1&limit=3", PageHechoDTO.class);
@@ -142,6 +204,52 @@ public class MetaMapaApiService {
 
 
 
+
+    public PageHechoDTO buscarHechos(int page, int limit,
+                                     String tema,       // etiquetas
+                                     String ubicacion,  // ciudad/localidad
+                                     String categoria,
+                                     String fuente,     // cargaOrigen
+                                     String fecha,      // fechaInicio
+                                     Boolean busquedaCurada,
+                                     Long idColeccion,  // Para filtrar por colección
+                                     Long idUsuario) {  // Para filtrar 'Mis Hechos'
+
+        try {
+            // Usamos UriComponentsBuilder para armar la URL con parámetros opcionales
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(agregacionApi + "/hechos")
+                    .queryParam("page", page)
+                    .queryParam("limit", limit);
+
+            // Agregamos filtros solo si no son nulos/vacíos
+            if (idColeccion != null) builder.queryParam("idColeccion", idColeccion);
+
+            // Mapeo de tus filtros del front a los del back (PublicHechoController)
+            if (categoria != null && !categoria.isEmpty()) builder.queryParam("categoria", categoria);
+            if (ubicacion != null && !ubicacion.isEmpty()) builder.queryParam("ciudad", ubicacion); // Asumiendo que ubicación es ciudad
+            if (fuente != null && !fuente.isEmpty()) builder.queryParam("cargaOrigen", fuente);
+
+            // La fecha del front suele ser un día específico. El back espera rango o inicio.
+            // Lo mandamos como fechaInicio
+            if (fecha != null && !fecha.isEmpty()) builder.queryParam("fechaInicio", fecha);
+
+            if (busquedaCurada != null) builder.queryParam("busquedaCurada", busquedaCurada);
+
+            // Nota: El backend NO parece tener filtro por 'idUsuario' o 'tema' (etiquetas) en PublicHechoController.
+            // Esos dos quizás tengamos que seguir filtrándolos en memoria o agregarlos al back después.
+            // Por ahora, pedimos los datos filtrados al back y refinamos lo que falte.
+
+            String url = builder.toUriString();
+            System.out.println("Llamando a API Externa: " + url);
+
+            return webApiCallerService.get(url, PageHechoDTO.class);
+
+        } catch (Exception e) {
+            System.err.println("Error buscando hechos en API: " + e.getMessage());
+            return new PageHechoDTO(); // Retorno vacío seguro
+        }
+    }
+
     /*
     public List<AlumnoDTO> obtenerTodosLosAlumnos() {
         List<AlumnoDTO> response = webApiCallerService.getList(alumnosServiceUrl + "/alumnos", AlumnoDTO.class);
@@ -187,4 +295,6 @@ public class MetaMapaApiService {
         }
     }
     */
+
+
 }

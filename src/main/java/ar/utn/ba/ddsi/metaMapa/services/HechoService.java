@@ -23,6 +23,39 @@ public class HechoService {
         return metaMapaApiService.listarHechos(page, limit);
     }
 
+    public List<HechoDTO> obtenerTodosLosHechos(
+            int page,
+            int limit,
+            boolean aplicarFiltros,
+            String categoria,
+            String provincia,
+            String ciudad,
+            String localidad,
+            String fechaInicio,
+            String fechaFin,
+            String cargaOrigen,
+            String misHechos
+    ) {
+        if (!aplicarFiltros) {
+            // ✅ mismo comportamiento de siempre: destacados
+            return metaMapaApiService.listarHechos(page, limit);
+        } else {
+            // ✅ llamada nueva con filtros
+            return metaMapaApiService.listarHechosFiltrados(
+                    page,
+                    limit,
+                    categoria,
+                    provincia,
+                    ciudad,
+                    localidad,
+                    fechaInicio,
+                    fechaFin,
+                    cargaOrigen,
+                    misHechos
+            );
+        }
+    }
+
     public HechoDTO obtenerHecho(long id) {
         // Mock simple para vista detalle
         List <HechoDTO> hechos = hechosDestacados();

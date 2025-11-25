@@ -20,95 +20,142 @@
 
                 <!-- Filter Row 1 -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <!-- Tema -->
-                    <div>
-                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-tag text-blue-500 mr-2"></i>
-                            Tema
-                        </label>
-                        <select name="tema" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Todos los temas</option>
-                            <option value="ambiente">Medio Ambiente</option>
-                            <option value="social">Social</option>
-                            <option value="politica">Política</option>
-                            <option value="economia">Economía</option>
-                            <option value="tecnologia">Tecnología</option>
-                        </select>
-                    </div>
-
-                    <!-- Ubicación -->
-                    <div>
-                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
-                            Ubicación
-                        </label>
-                        <select name="ubicacion" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Todas las ubicaciones</option>
-                            <option value="global">Global</option>
-                            <option value="america">América</option>
-                            <option value="europa">Europa</option>
-                            <option value="asia">Asia</option>
-                            <option value="africa">África</option>
-                            <option value="oceania">Oceanía</option>
-                        </select>
-                    </div>
-
                     <!-- Categoría -->
                     <div>
                         <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-folder text-blue-500 mr-2"></i>
                             Categoría
                         </label>
-                        <select name="categoria" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Todas las categorías</option>
-                            <option value="protesta">Protesta</option>
-                            <option value="evento">Evento</option>
-                            <option value="desastre">Desastre</option>
-                            <option value="celebracion">Celebración</option>
-                        </select>
+                        <input type="text"
+                               name="categoria"
+                               placeholder="Ej: protesta, evento"
+                               th:value="${categoria}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     </div>
 
-                    <!-- Fuente -->
+                    <!-- Provincia -->
                     <div>
                         <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-newspaper text-blue-500 mr-2"></i>
-                            Fuente
+                            <i class="fas fa-map text-blue-500 mr-2"></i>
+                            Provincia
                         </label>
-                        <select name="fuente" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Todas los hechos</option>
-                            <option value="oficial">Oficial</option>
-                            <option value="comunidad">Comunidad</option>
-                            <option value="verificado">Verificado</option>
-                            <option value="pendiente">Pendiente Verificación</option>
+                        <input type="text"
+                               name="provincia"
+                               placeholder="Ej: Buenos Aires"
+                               th:value="${provincia}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <!-- Ciudad -->
+                    <div>
+                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-city text-blue-500 mr-2"></i>
+                            Ciudad
+                        </label>
+                        <input type="text"
+                               name="ciudad"
+                               placeholder="Ej: Córdoba"
+                               th:value="${ciudad}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <!-- Localidad -->
+                    <div>
+                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                            Localidad
+                        </label>
+                        <input type="text"
+                               name="localidad"
+                               placeholder="Ej: Villa Carlos Paz"
+                               th:value="${localidad}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <!-- Filter Row 2 - Dates and Source -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Fecha Inicio -->
+                    <div>
+                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-calendar text-blue-500 mr-2"></i>
+                            Fecha Inicio
+                        </label>
+                        <input type="date"
+                               name="fechaInicio"
+                               th:value="${fechaInicio}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <!-- Fecha Fin -->
+                    <div>
+                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-calendar-check text-blue-500 mr-2"></i>
+                            Fecha Fin
+                        </label>
+                        <input type="date"
+                               name="fechaFin"
+                               th:value="${fechaFin}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <!-- Carga Origen -->
+                    <div>
+                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-database text-blue-500 mr-2"></i>
+                            Carga Origen
+                        </label>
+                        <select name="cargaOrigen"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value=""
+                                    th:selected="${cargaOrigen == null or cargaOrigen == ''}">
+                                Todas las cargas
+                            </option>
+                            <option value="oficial"
+                                    th:selected="${cargaOrigen == 'oficial'}">
+                                Oficial
+                            </option>
+                            <option value="comunidad"
+                                    th:selected="${cargaOrigen == 'comunidad'}">
+                                Comunidad
+                            </option>
+                            <option value="verificado"
+                                    th:selected="${cargaOrigen == 'verificado'}">
+                                Verificado
+                            </option>
+                            <option value="pendiente"
+                                    th:selected="${cargaOrigen == 'pendiente'}">
+                                Pendiente Verificación
+                            </option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Filter Row 2 - Date -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                        <label class="flex items-center text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-calendar text-blue-500 mr-2"></i>
-                            Fecha
-                        </label>
-                        <input type="date" name="fecha" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
+                <!-- Checkbox para Mis Hechos -->
+                <div class="flex items-center">
+                    <input type="checkbox"
+                           name="misHechos"
+                           value="true"
+                           id="misHechos"
+                           th:checked="${misHechos == 'true'}"
+                           class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+                    <label for="misHechos" class="ml-2 text-sm text-gray-700">
+                        Solo mostrar mis hechos
+                    </label>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="flex gap-3">
-                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center">
+                    <button type="submit"
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center">
                         <i class="fas fa-filter mr-2"></i>
                         Aplicar Filtros
                     </button>
-                    <button type="button" onclick="this.closest('form').reset();" class="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center">
+                    <button type="button"
+                            th:onclick="|window.location.href='@{/hechos}'|"
+                            class="px-6 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center">
                         <i class="fas fa-undo mr-2"></i>
                         Limpiar
-                    </button>
-                    <!-- TODO: Agregar logica para que solo sean visibles para los contribuyentes y admins -->
-                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center">
-                        <i class="fas fa-filter mr-2"></i>
-                        Mis Hechos
                     </button>
                 </div>
             </form>
@@ -124,7 +171,8 @@
             </div>
 
             <!-- Facts Grid -->
-            <div class="grid md:grid-cols-3 gap-6" th:if="${hechos != null and #lists.size(hechos) > 0}">
+            <div class="grid md:grid-cols-3 gap-6"
+                 th:if="${hechos != null and #lists.size(hechos) > 0}">
                 <div th:each="hecho : ${hechos}">
                     <div th:replace="~{hecho/cardHecho :: cardHecho(hecho=${hecho})}"></div>
                 </div>
@@ -141,7 +189,17 @@
             <div th:if="${hechos != null and #lists.size(hechos) > 0}" class="mt-8 flex justify-center">
                 <nav class="flex items-center gap-2">
                     <!-- Anterior: deshabilitado si currentPage == 1 -->
-                    <a th:href="@{/hechos(page=${currentPage - 1})}"
+                    <a th:href="@{/hechos(
+                            page=${currentPage - 1},
+                            categoria=${categoria},
+                            provincia=${provincia},
+                            ciudad=${ciudad},
+                            localidad=${localidad},
+                            fechaInicio=${fechaInicio},
+                            fechaFin=${fechaFin},
+                            cargaOrigen=${cargaOrigen},
+                            misHechos=${misHechos}
+                        )}"
                        th:classappend="${currentPage == 1} ? 'opacity-50 pointer-events-none' : ''"
                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                         <i class="fas fa-chevron-left"></i>
@@ -154,7 +212,17 @@
 
                     <!-- Siguiente: sólo mostrar si la cantidad de hechos en la página es igual al pageSize (posible más páginas) -->
                     <a th:if="${hechos != null and #lists.size(hechos) >= pageSize}"
-                       th:href="@{/hechos(page=${currentPage + 1})}"
+                       th:href="@{/hechos(
+                            page=${currentPage + 1},
+                            categoria=${categoria},
+                            provincia=${provincia},
+                            ciudad=${ciudad},
+                            localidad=${localidad},
+                            fechaInicio=${fechaInicio},
+                            fechaFin=${fechaFin},
+                            cargaOrigen=${cargaOrigen},
+                            misHechos=${misHechos}
+                        )}"
                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                         <i class="fas fa-chevron-right"></i>
                     </a>
