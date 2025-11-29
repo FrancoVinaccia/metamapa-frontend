@@ -4,6 +4,7 @@ package ar.utn.ba.ddsi.metaMapa.services;
 import ar.utn.ba.ddsi.metaMapa.dto.*;
 import ar.utn.ba.ddsi.metaMapa.dto.input.ColeccionInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.input.SolicitudEliminacionInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.internal.WebApiCallerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,6 +156,16 @@ public class MetaMapaApiService {
         // La URL correcta usa ? para el primer parámetro y & para el segundo.
         PageHechoDTO response = webApiCallerService.get(agregacionApi + "/hechos/destacados?page=1&limit=3", PageHechoDTO.class);
         return response.getElementos();
+    }
+
+    public SolicitudEliminacionDTO crearSolicitudEliminacion(SolicitudEliminacionInputDTO solicitud) {
+        System.out.println("sssssss");
+        SolicitudEliminacionDTO response = webApiCallerService.post(agregacionApi + "/solicitudes/new", solicitud, SolicitudEliminacionDTO.class);
+        System.out.println(response);
+        if (response == null) {
+            throw new RuntimeException("Error al crear solicitud de eliminacion en el servicio externo");
+        }
+        return response;
     }
 
     public HechoDTO crearHecho(HechoInputDTO hecho) {

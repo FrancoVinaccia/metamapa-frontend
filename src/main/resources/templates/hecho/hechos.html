@@ -11,6 +11,29 @@
         </div>
     </section>
 
+    <!-- ALERTAS de resultado solicitud eliminación -->
+    <section class="mt-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Mensaje de éxito -->
+            <div th:if="${success != null}"
+                 class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span th:text="${success}">Solicitud de eliminación creada con éxito.</span>
+                </div>
+            </div>
+
+            <!-- Mensaje de error -->
+            <div th:if="${error != null}"
+                 class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span th:text="${error}">Ocurrió un error al crear la solicitud.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Filters Section -->
     <section class="bg-gray-50 border-b border-gray-200 py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -230,5 +253,168 @@
             </div>
         </div>
     </section>
+
+    <!-- Modal de Eliminación -->
+    <div id="modalEliminar" class="fixed inset-0 z-50 hidden">
+        <!-- Overlay -->
+        <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onclick="cerrarModal()"></div>
+
+        <!-- Modal Content -->
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full transform transition-all">
+
+                <!-- FORM -->
+                <form th:action="@{/solicitudes/solicitudEliminacion}"
+                      method="post"
+                      id="formSolicitudEliminacion">
+
+                    <!-- CSRF (si usás Spring Security) -->
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}" />
+
+                    <!-- Header -->
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">Eliminar Hecho</h3>
+                            <button type="button"
+                                    onclick="cerrarModal()"
+                                    class="text-gray-400 hover:text-gray-600 transition-colors">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="px-6 py-4">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-exclamation-triangle text-red-600"></i>
+                            </div>
+                            <p class="text-gray-700">
+                                ¿Estás seguro de solicitar la eliminación del hecho:
+                                <strong id="tituloHechoModal" class="text-gray-900"></strong>?
+                            </p>
+                        </div>
+
+                        <!-- Este nombre debe coincidir con un campo de SolicitudEliminacionInpurDTO -->
+                        <input type="hidden" id="idHechoEliminar" name="idHecho" value="" />
+
+                        <div class="mb-4">
+                            <label for="motivoEliminacion" class="block text-sm font-medium text-gray-700 mb-2">
+                                Motivo de eliminación <span class="text-red-500">*</span>
+                            </label>
+                            <!-- name="motivo" debe matchear el DTO -->
+                            <textarea
+                                    id="motivoEliminacion"
+                                    name="justificacion"
+                                    rows="3"
+                                    placeholder="Ingresa el motivo por el cual deseas eliminar este hecho..."
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
+                                    required></textarea>
+                            <p id="errorMotivo" class="text-red-500 text-sm mt-1 hidden">El motivo es obligatorio</p>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end gap-3">
+                        <button
+                                type="button"
+                                onclick="cerrarModal()"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            Cancelar
+                        </button>
+                        <button
+                                type="button"
+                                onclick="confirmarEliminacion()"
+                                id="btnConfirmarEliminar"
+                                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors flex items-center">
+                            <i class="fas fa-trash mr-2"></i>
+                            Confirmar Eliminación
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Resultado (Éxito/Error) -->
+    <div id="modalResultado" class="fixed inset-0 z-50 hidden">
+        <!-- Overlay -->
+        <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onclick="cerrarModalResultado()"></div>
+
+        <!-- Modal Content -->
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full transform transition-all">
+                <div class="p-6 text-center">
+                    <!-- Icono dinámico -->
+                    <div id="iconoResultado" class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    <h3 id="tituloResultado" class="text-xl font-semibold mb-2"></h3>
+                    <p id="mensajeResultado" class="text-gray-600 mb-6"></p>
+                    <button
+                            onclick="cerrarModalResultado()"
+                            class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript para el Modal -->
+    <script th:inline="javascript">
+        // Variables para almacenar datos del hecho a eliminar
+        let hechoIdActual = null;
+
+        // Handler del botón en el card
+        function handleEliminarClick(element) {
+            const id = element.getAttribute('data-id');
+            const titulo = element.getAttribute('data-titulo') || '';
+            abrirModalEliminar(id, titulo);
+        }
+
+        // Abrir modal de eliminación
+        function abrirModalEliminar(id, titulo) {
+            hechoIdActual = id;
+            document.getElementById('idHechoEliminar').value = id;
+            document.getElementById('tituloHechoModal').textContent = titulo;
+            document.getElementById('motivoEliminacion').value = '';
+            document.getElementById('errorMotivo').classList.add('hidden');
+            document.getElementById('modalEliminar').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Cerrar modal de eliminación
+        function cerrarModal() {
+            document.getElementById('modalEliminar').classList.add('hidden');
+            document.body.style.overflow = '';
+            hechoIdActual = null;
+        }
+
+        // Confirmar eliminación -> validar y enviar formulario al controller
+        function confirmarEliminacion() {
+            const motivoInput = document.getElementById('motivoEliminacion');
+            const motivo = motivoInput.value.trim();
+            const errorMotivo = document.getElementById('errorMotivo');
+
+            if (!motivo) {
+                errorMotivo.classList.remove('hidden');
+                motivoInput.focus();
+                return;
+            }
+
+            errorMotivo.classList.add('hidden');
+
+            // Deshabilitar botón mientras se envía
+            const btnConfirmar = document.getElementById('btnConfirmarEliminar');
+            btnConfirmar.disabled = true;
+            btnConfirmar.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Enviando...';
+
+            // Enviar el formulario al controller
+            document.getElementById('formSolicitudEliminacion').submit();
+        }
+    </script>
 </div>
 </html>
