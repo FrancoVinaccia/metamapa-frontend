@@ -134,21 +134,17 @@
                                     th:selected="${cargaOrigen == null or cargaOrigen == ''}">
                                 Todas las cargas
                             </option>
-                            <option value="oficial"
-                                    th:selected="${cargaOrigen == 'oficial'}">
-                                Oficial
+                            <option value="PROXY"
+                                    th:selected="${cargaOrigen == 'PROXY'}">
+                                Proxy
                             </option>
-                            <option value="comunidad"
-                                    th:selected="${cargaOrigen == 'comunidad'}">
-                                Comunidad
+                            <option value="DINAMICA"
+                                    th:selected="${cargaOrigen == 'DINAMICA'}">
+                                Dinamica
                             </option>
-                            <option value="verificado"
-                                    th:selected="${cargaOrigen == 'verificado'}">
-                                Verificado
-                            </option>
-                            <option value="pendiente"
-                                    th:selected="${cargaOrigen == 'pendiente'}">
-                                Pendiente Verificación
+                            <option value="ESTATICA"
+                                    th:selected="${cargaOrigen == 'ESTATICA'}">
+                                Estatica
                             </option>
                         </select>
                     </div>
