@@ -26,6 +26,26 @@ public class SolicitudController {
         return "solicitudes/solicitudCambio";
     }
 
+    @PostMapping("/{id}/crearSolicitudCambio")
+    public String crearSolicitudCambio(
+            @RequestParam("id") Long id,
+            @ModelAttribute("solicitudCambio") SolicitudCambioInputDTO solicitud,
+            @SessionAttribute(value = "id") Long hechoId,
+            BindingResult bindingResult,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+            solicitudService.crearSolicitudCambio(id, solicitud);
+            redirectAttributes.addFlashAttribute("success", "Solicitud de cambio creada con éxito.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+            return "redirect:/hechos";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al crear la solicitud de cambio: " + e.getMessage());
+            model.addAttribute("tipoMensaje", "danger");
+            return "solicitudes/solicitudCambio";
+        }
+    }
+
 
     @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
     @PostMapping("/solicitudEliminacion")
