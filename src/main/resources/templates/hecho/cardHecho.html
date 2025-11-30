@@ -15,7 +15,7 @@
            th:text="${hecho != null and hecho.descripcion != null ? hecho.descripcion : 'Descripción del hecho'}">Descripción del hecho</p>
 
         <div class="flex gap-3 mb-4">
-            <a th:href="@{/solicitudes/solicitudCambio}"
+            <a th:if="${session.id == hecho.idUsuario}"  th:href="@{/solicitudes/solicitudCambio/{idHecho}(idHecho=${hecho.idHecho})}"
                class="btn-editar px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
                 <i class="fas fa-edit mr-2"></i>
                 Editar

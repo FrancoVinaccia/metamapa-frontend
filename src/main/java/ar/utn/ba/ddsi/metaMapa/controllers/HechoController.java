@@ -61,8 +61,6 @@ public class HechoController {
                     misHechos
             );
 
-
-
             model.addAttribute("hechos", hechos);
             model.addAttribute("titulo", "Lista de Hechos");
             model.addAttribute("totalDeHechos", hechos.size());
@@ -78,9 +76,6 @@ public class HechoController {
             model.addAttribute("fechaFin", fechaFin);
             model.addAttribute("cargaOrigen", cargaOrigen);
             model.addAttribute("misHechos", misHechos);
-
-
-
 
             return "hecho/hechos";
         } catch (Exception e) {

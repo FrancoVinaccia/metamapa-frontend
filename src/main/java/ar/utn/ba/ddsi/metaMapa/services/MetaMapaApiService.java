@@ -4,6 +4,7 @@ package ar.utn.ba.ddsi.metaMapa.services;
 import ar.utn.ba.ddsi.metaMapa.dto.*;
 import ar.utn.ba.ddsi.metaMapa.dto.input.ColeccionInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.input.SolicitudCambioInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.SolicitudEliminacionInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.internal.WebApiCallerService;
 import org.slf4j.Logger;
@@ -164,6 +165,16 @@ public class MetaMapaApiService {
         System.out.println(response);
         if (response == null) {
             throw new RuntimeException("Error al crear solicitud de eliminacion en el servicio externo");
+        }
+        return response;
+    }
+
+    public SolicitudCambioInputDTO crearSolicitudCambio(Long idHecho,Long idUsuario, SolicitudCambioInputDTO solicitud) {
+        String url = dinamicApi + "/hechos/" + idHecho + "?idUsuario=" + idUsuario;
+        System.out.println("url:" + url);
+        SolicitudCambioInputDTO response = webApiCallerService.post(url, solicitud, SolicitudCambioInputDTO.class);
+        if (response == null) {
+            throw new RuntimeException("Error al crear solicitud de cambio en el servicio externo");
         }
         return response;
     }
