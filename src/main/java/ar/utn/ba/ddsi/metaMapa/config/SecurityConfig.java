@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 "/estadisticas",
                                 "mapa",
                                 "/legal",
-                                "solicitudes",
+                                "solicitudes/**",
                                 "formularioSolicitudEliminacion",
                                 "formularioSolicitudCambio",
                                 "/importarCsv",
