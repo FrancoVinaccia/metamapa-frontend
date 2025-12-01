@@ -14,7 +14,11 @@
         <p class="text-gray-600 mb-4"
            th:text="${coleccion != null and coleccion.descripcion != null ? coleccion.descripcion : 'Descripción'}">Descripción</p>
 
-        <a th:href="@{/colecciones/{id}(id=${coleccion != null and coleccion.idColeccion != null ? coleccion.idColeccion : 0})}"
+        <p class="text-gray-600 mb-4"
+           th:text="${coleccion != null and coleccion.idColeccion != null ? coleccion.idColeccion : 'Id'}"> coso temporal para ver Id</p>
+
+
+        <a th:href="@{/colecciones/{id}(id=${coleccion.idColeccion})}"
            class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center">
             Ver colección
             <i class="fas fa-arrow-right ml-2 text-sm"></i>

@@ -50,6 +50,28 @@ public class ColeccionController {
         }
     }
 
+    @GetMapping("/{id}")
+    public String verColeccion(@PathVariable("id") String id,
+                               @RequestParam(value = "page", defaultValue = "1") int page,
+                               @RequestParam(value = "busquedaCurada", required = false) String busquedaCurada,
+                               Model model) {
+        try {
+            int pageSize = 9;
+            ColeccionDTO coleccion = coleccionService.obtenerColeccionPorId(id, page, pageSize, busquedaCurada);
+            if (coleccion == null) {
+                model.addAttribute("errorMensaje", "Colección no encontrada");
+                return "errorGenerico";
+            }
+            model.addAttribute("coleccion", coleccion);
+            model.addAttribute("currentPage", page);
+            return "coleccion/coleccion";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMensaje", "Ocurrió un error al cargar la colección: " + e.getMessage());
+            return "errorGenerico";
+        }
+    }
+
     @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/nueva")
     public String mostrarFormularioCrear(Model model) {

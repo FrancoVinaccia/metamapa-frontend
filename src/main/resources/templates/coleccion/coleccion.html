@@ -1,63 +1,112 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: html(contenido=~{::contenido})}">
 
-<div th:fragment="contenido"
-     class="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-8">
+<div th:fragment="contenido" class="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-8">
 
-    <!-- Título -->
+    <!-- Encabezado de la colección -->
     <div class="max-w-5xl mx-auto text-center mb-10">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2"
-            th:text="${titulo}">Título de la colección</h1>
-        <p class="text-gray-600 italic"
-           th:text="${coleccion.descripcion}">Descripción breve de la colección</p>
+        <h1 class="text-4xl font-bold text-gray-800 mb-2" th:text="${coleccion.titulo}">Título de la colección</h1>
+        <p class="text-gray-600 italic" th:text="${coleccion.descripcion}">Descripción breve de la colección</p>
+
+        <div class="mt-4 text-sm text-gray-700 space-y-1">
+            <p th:if="${coleccion.imagen}">
+                <img th:src="${coleccion.imagen}" alt="Imagen colección" class="mx-auto rounded-lg w-64 h-40 object-cover mb-2"/>
+            </p>
+            <p th:if="${coleccion.fuentes != null}">
+                <strong>Fuentes:</strong>
+                <span th:each="f : ${coleccion.fuentes}" th:text="${f}" class="inline-block mr-2">Fuente</span>
+            </p>
+            <p th:if="${coleccion.metodoConsenso}">
+                <strong>Método:</strong> <span th:text="${coleccion.metodoConsenso}">Consenso</span>
+            </p>
+
+            <div th:if="${coleccion.criterios != null}" class="pt-2">
+                <strong>Criterios:</strong>
+                <div class="text-sm text-gray-600">
+                    <p th:if="${coleccion.criterios.categoria}">
+                        <span>Categoría: </span><span th:text="${coleccion.criterios.categoria}">Categoria</span>
+                    </p>
+                    <p th:if="${coleccion.criterios.lugar != null}">
+                        <span>Ubicación: </span>
+                        <span th:text="${coleccion.criterios.lugar.localidad}">Localidad</span>
+                        <span th:if="${coleccion.criterios.lugar.ciudad}"> - <span th:text="${coleccion.criterios.lugar.ciudad}">Ciudad</span></span>
+                        <span th:if="${coleccion.criterios.lugar.provincia}"> - <span th:text="${coleccion.criterios.lugar.provincia}">Provincia</span></span>
+                    </p>
+                    <p th:if="${coleccion.criterios.fecha != null}">
+                        <span>Rango fecha: </span>
+                        <span th:text="${coleccion.criterios.fecha.fechaInicio}">desde</span>
+                        <span th:if="${coleccion.criterios.fecha.fechaFin}"> - <span th:text="${coleccion.criterios.fecha.fechaFin}">hasta</span></span>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Hechos dentro de la colección -->
+    <!-- Filtros para los hechos de la colección -->
+    <section class="max-w-6xl mx-auto mb-6">
+        <form th:action="@{/colecciones/{id}(id=${coleccion.idColeccion})}" method="get" class="flex items-center gap-4">
+            <input type="hidden" name="page" th:value="${param.page != null ? param.page : 1}" />
+
+            <label class="text-sm font-medium text-gray-700">Mostrar hechos:</label>
+            <select name="busquedaCurada" class="px-3 py-2 border border-gray-300 rounded-lg">
+                <option th:value="" th:selected="${param.busquedaCurada == null or param.busquedaCurada == ''}">Todos</option>
+                <option th:value="true" th:selected="${param.busquedaCurada == 'true'}">Curados</option>
+                <option th:value="false" th:selected="${param.busquedaCurada == 'false'}">Irrestricto</option>
+            </select>
+
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Aplicar</button>
+            <a th:href="@{/colecciones/{id}(id=${coleccion.idColeccion})}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700">Limpiar</a>
+
+            <div class="ml-auto text-sm text-gray-600">
+                <span th:text="${#lists.size(coleccion.hechosLista)} + ' hechos'">0 hechos</span>
+            </div>
+        </form>
+    </section>
+
+    <!-- Lista de hechos -->
     <div class="max-w-6xl mx-auto grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <div th:each="hecho : ${coleccion.hechos}"
+        <div th:each="hecho : ${coleccion.hechosLista}"
              class="bg-white/90 backdrop-blur-sm border border-gray-200 rounded-2xl shadow hover:shadow-lg transition-all p-6">
 
-            <!-- Imagen -->
             <img th:if="${hecho.imagen}" th:src="${hecho.imagen}" alt=""
                  class="rounded-lg mb-4 w-full h-40 object-cover">
 
-            <!-- Título y descripción -->
-            <h2 class="text-xl font-semibold text-indigo-600 mb-2"
-                th:text="${hecho.titulo}">Título del hecho</h2>
-            <p class="text-gray-700 line-clamp-3 mb-4"
-               th:text="${hecho.descripcion}">
-                Descripción del hecho...
-            </p>
+            <h2 class="text-xl font-semibold text-indigo-600 mb-2" th:text="${hecho.titulo}">Título del hecho</h2>
 
-            <!-- Información adicional (si tenés esos campos) -->
+            <p class="text-gray-700 line-clamp-3 mb-4" th:text="${hecho.descripcion}">Descripción del hecho...</p>
+
             <div class="text-sm text-gray-500 space-y-1">
-                <p><strong>Categoría:</strong> <span th:text="${hecho.categoria}">Incendio</span></p>
-                <p><strong>Ubicación:</strong> <span th:text="${hecho.ubicacion}">Buenos Aires</span></p>
-                <p><strong>Fecha:</strong>
-                    <span th:text="${#temporals.format(hecho.fecha, 'dd/MM/yyyy')}">10/05/2025</span>
+                <p th:if="${hecho.categoria}"><strong>Categoría:</strong> <span th:text="${hecho.categoria}">Incendio</span></p>
+                <p th:if="${hecho.localidad or hecho.ciudad or hecho.provincia}">
+                    <strong>Ubicación:</strong>
+                    <span th:text="${hecho.localidad != null ? hecho.localidad : (hecho.ciudad != null ? hecho.ciudad : hecho.provincia)}">Ubicación</span>
                 </p>
+                <p th:if="${hecho.fecha}">
+                    <strong>Fecha:</strong>
+                    <span th:text="${#temporals.format(hecho.fecha, 'dd/MM/yyyy')}" th:unless="${hecho.fecha instanceof T(java.lang.String)}">10/05/2025</span>
+                    <span th:text="${hecho.fecha}" th:if="${hecho.fecha instanceof T(java.lang.String)}">10/05/2025</span>
+                </p>
+                <p th:if="${hecho.cargaOrigen}"><strong>Fuente:</strong> <span th:text="${hecho.cargaOrigen}">Fuente</span></p>
             </div>
 
-            <!-- Botón para ver detalle -->
             <div class="mt-4 text-right">
-                <a th:href="@{'/hechos/' + ${hecho.id}}"
-                   class="inline-block px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
+                <a th:href="@{'/hechos/' + ${hecho.id}}" class="inline-block px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
                     Ver detalle
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Sin hechos -->
-    <div th:if="${#lists.isEmpty(coleccion.hechos)}"
-         class="max-w-3xl mx-auto mt-16 text-center text-gray-600">
-        <p>No hay hechos disponibles en esta colección.</p>
+    <!-- Mensaje si no hay hechos -->
+    <div th:if="${#lists.isEmpty(coleccion.hechosLista)}" class="max-w-3xl mx-auto mt-16 text-center text-gray-600">
+        <i class="fas fa-folder-open text-6xl text-gray-300 mb-4"></i>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No hay hechos disponibles en esta colección</h3>
+        <p class="text-gray-600">Intenta cambiar el filtro o vuelve al listado de colecciones</p>
     </div>
 
     <!-- Volver -->
     <div class="max-w-5xl mx-auto mt-12 text-center">
-        <a href="/colecciones"
-           class="inline-block px-5 py-2.5 text-sm font-medium text-indigo-600 border border-indigo-400 rounded-lg hover:bg-indigo-50 transition">
+        <a href="/colecciones" class="inline-block px-5 py-2.5 text-sm font-medium text-indigo-600 border border-indigo-400 rounded-lg hover:bg-indigo-50 transition">
             ← Volver al listado de colecciones
         </a>
     </div>

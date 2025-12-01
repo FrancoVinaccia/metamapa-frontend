@@ -82,6 +82,16 @@ public class MetaMapaApiService {
         }
     }
 
+    public ColeccionDTO getColeccionById(String idColeccion) {
+        try {
+            String url = agregacionApi + "/colecciones/" + idColeccion;
+            return webApiCallerService.get(url, ColeccionDTO.class);
+        } catch (Exception e) {
+            log.error("Error obteniendo coleccion {} desde agregacion: {}", idColeccion, e.getMessage(), e);
+            return null;
+        }
+    }
+
     public List<HechoDTO> listarHechos(int page, int limit) {
         try {
             PageHechoDTO response = webApiCallerService.get(
@@ -94,6 +104,8 @@ public class MetaMapaApiService {
             return List.of();
         }
     }
+
+
 
     public List<HechoDTO> listarHechosFiltrados(
             int page,
