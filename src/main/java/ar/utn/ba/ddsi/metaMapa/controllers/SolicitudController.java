@@ -143,7 +143,7 @@ public class SolicitudController {
 
 
    @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @PostMapping("/{id}/aceptar")
+    @PutMapping ("/{id}/aceptar")
     public String aceptarSolicitud(@PathVariable("id") Long idSolicitud,
                                    RedirectAttributes redirectAttributes) {
         try {
@@ -158,7 +158,7 @@ public class SolicitudController {
 
 
    @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @PostMapping("/{id}/rechazar")
+    @PutMapping ("/{id}/rechazar")
     public String rechazarSolicitud(@PathVariable("id") Long idSolicitud,
                                     RedirectAttributes redirectAttributes) {
         try {
@@ -172,7 +172,7 @@ public class SolicitudController {
 
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @PostMapping("/{id}/spam")
+    @PutMapping ("/{id}/spam")
     public String marcarComoSpam(@PathVariable("id") Long idSolicitud,
                                  RedirectAttributes redirectAttributes) {
         try {
