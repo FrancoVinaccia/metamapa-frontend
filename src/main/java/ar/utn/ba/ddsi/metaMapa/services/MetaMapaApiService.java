@@ -173,15 +173,12 @@ public class MetaMapaApiService {
     }
 
     public List<HechoDTO> obtenerHechosDestacados() {
-        // La URL correcta usa ? para el primer parámetro y & para el segundo.
         PageHechoDTO response = webApiCallerService.get(agregacionApi + "/hechos/destacados?page=1&limit=3", PageHechoDTO.class);
         return response.getElementos();
     }
 
     public SolicitudEliminacionDTO crearSolicitudEliminacion(SolicitudEliminacionInputDTO solicitud) {
-        System.out.println("sssssss");
         SolicitudEliminacionDTO response = webApiCallerService.post(agregacionApi + "/solicitudes/new", solicitud, SolicitudEliminacionDTO.class);
-        System.out.println(response);
         if (response == null) {
             throw new RuntimeException("Error al crear solicitud de eliminacion en el servicio externo");
         }
@@ -190,7 +187,6 @@ public class MetaMapaApiService {
 
     public SolicitudCambioInputDTO crearSolicitudCambio(Long idHecho,Long idUsuario, SolicitudCambioInputDTO solicitud) {
         String url = dinamicApi + "/hechos/" + idHecho + "?idUsuario=" + idUsuario;
-        System.out.println("url:" + url);
         SolicitudCambioInputDTO response = webApiCallerService.post(url, solicitud, SolicitudCambioInputDTO.class);
         if (response == null) {
             throw new RuntimeException("Error al crear solicitud de cambio en el servicio externo");
@@ -200,7 +196,6 @@ public class MetaMapaApiService {
 
     public PageSolicitudEliminacionDTO obetnerTodasLasSolicitudesEliminacion(int page, int limit, EstadoSolicitud estado) {
 
-        // Si tu API usa page 0-based y tu UI 1-based, corregí:
         int pageBackend = page - 1;
         if (pageBackend < 0) pageBackend = 0;
 
@@ -217,6 +212,28 @@ public class MetaMapaApiService {
 
         if (response == null) {
             throw new RuntimeException("Error al obtener las solicitudes de eliminacion en el servicio externo");
+        }
+
+        return response;
+    }
+
+    public PageSolicitudCambioDTO obetnerTodasLasSolicitudesCambio(int page, int limit, EstadoSolicitud estado) {
+
+        int pageBackend = page - 1;
+        if (pageBackend < 0) pageBackend = 0;
+
+        String url;
+        if (estado != null) {
+            String estadoParam = estado.name();
+            url = dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit + "&estado=" + estadoParam;
+        } else {
+            url = dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit;
+        }
+
+        PageSolicitudCambioDTO response = webApiCallerService.getAdmin(url, PageSolicitudCambioDTO.class);
+
+        if (response == null) {
+            throw new RuntimeException("Error al obtener las solicitudes de cambio en el servicio externo");
         }
 
         return response;
@@ -347,54 +364,4 @@ public class MetaMapaApiService {
             throw new RuntimeException("Error en backend: " + e.getMessage());
         }
     }
-
-
-
-    /*
-    public List<AlumnoDTO> obtenerTodosLosAlumnos() {
-        List<AlumnoDTO> response = webApiCallerService.getList(alumnosServiceUrl + "/alumnos", AlumnoDTO.class);
-        return response != null ? response : List.of();
-    }
-
-    public AlumnoDTO obtenerAlumnoPorLegajo(String legajo) {
-        AlumnoDTO response = webApiCallerService.get(alumnosServiceUrl + "/alumnos/" + legajo, AlumnoDTO.class);
-        if (response == null) {
-            throw new NotFoundException("Alumno", legajo);
-        }
-        return response;
-    }
-
-    public AlumnoDTO crearAlumno(AlumnoDTO alumnoDTO) {
-        AlumnoDTO response = webApiCallerService.post(alumnosServiceUrl + "/alumnos", alumnoDTO, AlumnoDTO.class);
-        if (response == null) {
-            throw new RuntimeException("Error al crear alumno en el servicio externo");
-        }
-        return response;
-    }
-
-    public AlumnoDTO actualizarAlumno(String legajo, AlumnoDTO alumnoDTO) {
-        AlumnoDTO response = webApiCallerService.put(alumnosServiceUrl + "/alumnos/" + legajo, alumnoDTO, AlumnoDTO.class);
-        if (response == null) {
-            throw new RuntimeException("Error al actualizar alumno en el servicio externo");
-        }
-        return response;
-    }
-
-    public void eliminarAlumno(String legajo) {
-        webApiCallerService.delete(alumnosServiceUrl + "/alumnos/" + legajo);
-    }
-
-    public boolean existeAlumno(String legajo) {
-        try {
-            obtenerAlumnoPorLegajo(legajo);
-            return true;
-        } catch (NotFoundException e) {
-            return false;
-        } catch (Exception e) {
-            throw new RuntimeException("Error al verificar existencia del alumno: " + e.getMessage(), e);
-        }
-    }
-    */
-
-
 }

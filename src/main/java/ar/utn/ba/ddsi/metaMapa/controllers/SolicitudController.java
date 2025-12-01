@@ -70,6 +70,37 @@ public class SolicitudController {
         }
     }
 
+    @GetMapping("/cambio")
+    public String listarSolicitudesCambio(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(required = false) EstadoSolicitud estadoSolicitud,
+            Model model) {
+
+        try {
+            int pageSize = 5;
+
+            PageSolicitudCambioDTO pagina = solicitudService.listarSolicitudesCambio(page, pageSize, estadoSolicitud);
+
+            model.addAttribute("activeTab", "CAMBIO");
+
+            model.addAttribute("solicitudesCambio", pagina.getElementos());
+
+            model.addAttribute("currentPage", page);                    // UI: 1-based
+            model.addAttribute("totalPages", pagina.getTotalPages());
+            model.addAttribute("totalElements", pagina.getTotalElements());
+
+            model.addAttribute("titulo", "Lista de Solicitudes de Cambio");
+            model.addAttribute("estadoSolicitud", estadoSolicitud);
+
+            return "solicitudes/solicitudes";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMensaje", "Ocurrió un error al cargar las solicitudes de cambio: " + e.getMessage());
+            return "errorGenerico";
+        }
+    }
+
     @GetMapping("/solicitudCambio/{idHecho}")
     public String solicitudCambio(
             @PathVariable("idHecho") Long idHecho, Model model)
@@ -93,22 +124,15 @@ public class SolicitudController {
             Model model,
             RedirectAttributes redirectAttributes) {
 
-        System.out.println(">>> ENTRE AL POST /crearSolicitudCambio/" + idHecho);
-        System.out.println(">>> DTO RECIBIDO: " + solicitud);
-
         try {
-            System.out.println(">>> ANTES DE LLAMAR AL SERVICE");
             solicitudService.crearSolicitudCambio(idHecho,idUsuario, solicitud);
-            System.out.println(">>> DESPUÉS DE LLAMAR AL SERVICE (TODO OK)");
 
             redirectAttributes.addFlashAttribute("success", "Solicitud de cambio creada con éxito.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
 
-            System.out.println(">>> HAGO REDIRECT A /hechos");
             return "redirect:/hechos";
 
         } catch (Exception e) {
-            System.out.println(">>> ENTRE AL CATCH EN crearSolicitudCambio");
             e.printStackTrace(); // MUY IMPORTANTE
 
             model.addAttribute("idHecho", idHecho);

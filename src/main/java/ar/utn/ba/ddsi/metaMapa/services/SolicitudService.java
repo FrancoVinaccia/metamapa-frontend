@@ -1,9 +1,6 @@
 package ar.utn.ba.ddsi.metaMapa.services;
 
-import ar.utn.ba.ddsi.metaMapa.dto.EstadoSolicitud;
-import ar.utn.ba.ddsi.metaMapa.dto.PageSolicitudEliminacionDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.SolicitudEliminacionDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.SolicitudesEliminacionDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.*;
 import ar.utn.ba.ddsi.metaMapa.dto.input.SolicitudCambioInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.SolicitudEliminacionInputDTO;
 import org.springframework.stereotype.Service;
@@ -28,8 +25,11 @@ public class SolicitudService {
     }
 
     public PageSolicitudEliminacionDTO listarSolicitudesEliminacion (int page, int size, EstadoSolicitud estado) {
-
         return metaMapaApiService.obetnerTodasLasSolicitudesEliminacion( page,  size,  estado);
+    }
+
+    public PageSolicitudCambioDTO listarSolicitudesCambio(int page, int size, EstadoSolicitud estado) {
+        return metaMapaApiService.obetnerTodasLasSolicitudesCambio(page, size, estado);
     }
 
     public void aceptarSolicitud(Long id) {
