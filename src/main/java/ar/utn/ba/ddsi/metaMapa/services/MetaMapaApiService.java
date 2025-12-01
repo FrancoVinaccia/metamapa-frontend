@@ -178,6 +178,8 @@ public class MetaMapaApiService {
     }
 
     public SolicitudEliminacionDTO crearSolicitudEliminacion(SolicitudEliminacionInputDTO solicitud) {
+        System.out.println("Solicitud eliminacion: " + solicitud);
+
         SolicitudEliminacionDTO response = webApiCallerService.post(agregacionApi + "/solicitudes/new", solicitud, SolicitudEliminacionDTO.class);
         if (response == null) {
             throw new RuntimeException("Error al crear solicitud de eliminacion en el servicio externo");
@@ -186,8 +188,16 @@ public class MetaMapaApiService {
     }
 
     public SolicitudCambioInputDTO crearSolicitudCambio(Long idHecho,Long idUsuario, SolicitudCambioInputDTO solicitud) {
+        System.out.println("Solicitud: " + solicitud);
+        System.out.println("id usuario: " + idUsuario);
+        System.out.println("id hecho: " + idHecho);
+
+
+
         String url = dinamicApi + "/hechos/" + idHecho + "?idUsuario=" + idUsuario;
         SolicitudCambioInputDTO response = webApiCallerService.post(url, solicitud, SolicitudCambioInputDTO.class);
+        System.out.println("RT: " + response);
+
         if (response == null) {
             throw new RuntimeException("Error al crear solicitud de cambio en el servicio externo");
         }
@@ -250,6 +260,7 @@ public class MetaMapaApiService {
         }
 
 
+
         PageSolicitudCambioDTO response =  webApiCallerService.getAdmin(url.toString(), PageSolicitudCambioDTO.class);
 
         if (response == null) {
@@ -260,7 +271,8 @@ public class MetaMapaApiService {
     }
 
     public HechoDTO crearHecho(HechoInputDTO hecho) {
-        System.out.println("sssssss");
+        System.out.println(hecho);
+
         HechoDTO response = webApiCallerService.post(dinamicApi + "/hechos/new", hecho, HechoDTO.class);
         System.out.println(response);
         if (response == null) {

@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class HechoDTO {
     private Long idHecho;
+    private Long idFuente;
     private String titulo;
     private String descripcion;
     private String categoria;

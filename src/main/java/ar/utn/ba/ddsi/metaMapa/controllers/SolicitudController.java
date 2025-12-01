@@ -126,7 +126,9 @@ public class SolicitudController {
             RedirectAttributes redirectAttributes) {
 
         try {
+
             solicitudService.crearSolicitudCambio(idHecho,idUsuario, solicitud);
+
 
             redirectAttributes.addFlashAttribute("success", "Solicitud de cambio creada con éxito.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
