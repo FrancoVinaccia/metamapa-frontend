@@ -179,6 +179,30 @@ public class MetaMapaApiService {
         return response;
     }
 
+    public PageSolicitudEliminacionDTO obetnerTodasLasSolicitudesEliminacion(int page, int limit, EstadoSolicitud estado) {
+
+        // Si tu API usa page 0-based y tu UI 1-based, corregí:
+        int pageBackend = page - 1;
+        if (pageBackend < 0) pageBackend = 0;
+
+        String url;
+        if (estado != null) {
+            String estadoParam = estado.name();
+            url = agregacionApi + "/priv/solicitudes?page=" + pageBackend + "&limit=" + limit + "&estado=" + estadoParam;
+        } else {
+            url = agregacionApi + "/priv/solicitudes?page=" + pageBackend + "&limit=" + limit;
+        }
+
+        PageSolicitudEliminacionDTO response =
+                webApiCallerService.getAdmin(url, PageSolicitudEliminacionDTO.class);
+
+        if (response == null) {
+            throw new RuntimeException("Error al obtener las solicitudes de eliminacion en el servicio externo");
+        }
+
+        return response;
+    }
+
     public HechoDTO crearHecho(HechoInputDTO hecho) {
         System.out.println("sssssss");
         HechoDTO response = webApiCallerService.post(dinamicApi + "/hechos/new", hecho, HechoDTO.class);

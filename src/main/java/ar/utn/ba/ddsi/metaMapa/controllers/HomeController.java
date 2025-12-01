@@ -19,7 +19,8 @@ public class HomeController {
     @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/solicitudes")
     public String solicitudes() {
-        return "Fragments/solicitudes";
+        // Default: siempre mostrar primero las de eliminación
+        return "redirect:/solicitudes/eliminacion";
     }
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR')")

@@ -1,8 +1,7 @@
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
 
-import ar.utn.ba.ddsi.metaMapa.dto.LugarDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.SolicitudEliminacionDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.*;
 import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.SolicitudCambioInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.SolicitudEliminacionInputDTO;
@@ -17,6 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/solicitudes")
@@ -104,7 +105,6 @@ public class SolicitudController {
         return s == null || s.isBlank();
     }
 
-    @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
     @PostMapping("/solicitudEliminacion")
     public String crearSolicitudEliminar(
             @ModelAttribute("solicitudEliminacion") SolicitudEliminacionInputDTO solicitud,
@@ -127,4 +127,48 @@ public class SolicitudController {
 
 
     }
+
+   /* @GetMapping
+    public String redirectSolicitudesDefault() {
+        return "redirect:/solicitudes/eliminacion";
+    }*/
+
+    @GetMapping("/eliminacion")
+    public String listarSolicitudesEliminacion(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(required = false) EstadoSolicitud estadoSolicitud,
+            Model model) {
+
+        try {
+            int pageSize = 5;
+
+            System.out.println("entroo");
+
+            PageSolicitudEliminacionDTO pagina =  solicitudService.listarSolicitudesEliminacion(page, pageSize, estadoSolicitud);
+
+            System.out.println(pagina.getElementos());
+
+            // pestaña activa
+            model.addAttribute("activeTab", "ELIMINACION");
+
+            // lista de solicitudes para iterar en el HTML
+            model.addAttribute("solicitudesEliminacion", pagina.getElementos());
+
+            // datos de paginación para la vista
+            model.addAttribute("currentPage", page);                    // UI: 1-based
+            model.addAttribute("totalPages", pagina.getTotalPages());
+            model.addAttribute("totalElements", pagina.getTotalElements());
+
+            model.addAttribute("titulo", "Lista de Solicitudes de Eliminación");
+            model.addAttribute("estadoSolicitud", estadoSolicitud);
+
+            return "Fragments/solicitudes";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMensaje", "Ocurrió un error al cargar las solicitudes: " + e.getMessage());
+            return "errorGenerico";
+        }
+    }
+
 }

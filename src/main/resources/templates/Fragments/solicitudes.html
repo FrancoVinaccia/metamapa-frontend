@@ -17,349 +17,350 @@
                         <h1 class="text-4xl font-bold text-gray-900 mb-2">Solicitudes Pendientes</h1>
                         <p class="text-gray-600">Revisa y gestiona las solicitudes de la comunidad</p>
                     </div>
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 px-6 py-4">
-                        <div class="text-center">
-                            <p class="text-3xl font-bold text-indigo-600">12</p>
-                            <p class="text-sm text-gray-600">Pendientes</p>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Filtros -->
+            <!-- Solapas -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
                 <div class="flex flex-wrap gap-3">
-                    <button class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-indigo-700 hover:to-purple-700 transition-all shadow-sm">
-                        <i class="fas fa-list mr-2"></i>Todas (12)
-                    </button>
-                    <button class="px-5 py-2.5 bg-white text-gray-700 border-2 border-gray-200 rounded-lg text-sm font-medium hover:border-indigo-300 hover:bg-indigo-50 transition-all">
-                        <i class="fas fa-trash-alt mr-2"></i>Eliminación (7)
-                    </button>
-                    <button class="px-5 py-2.5 bg-white text-gray-700 border-2 border-gray-200 rounded-lg text-sm font-medium hover:border-indigo-300 hover:bg-indigo-50 transition-all">
-                        <i class="fas fa-edit mr-2"></i>Cambios (5)
-                    </button>
+
+                    <!-- Eliminación -->
+                    <a th:href="@{/solicitudes/eliminacion}"
+                       class="px-5 py-2.5 rounded-lg text-sm font-medium transition-all"
+                       th:classappend="${activeTab} == 'ELIMINACION' ?
+                           ' bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-sm hover:from-indigo-700 hover:to-purple-700'
+                           : ' bg-white text-gray-700 border-2 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50'">
+                        <i class="fas fa-trash-alt mr-2"></i>Eliminación
+                    </a>
+
+                    <!-- Cambios -->
+                    <a th:href="@{/solicitudes/cambio}"
+                       class="px-5 py-2.5 rounded-lg text-sm font-medium transition-all"
+                       th:classappend="${activeTab} == 'CAMBIO' ?
+                           ' bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-sm hover:from-indigo-700 hover:to-purple-700'
+                           : ' bg-white text-gray-700 border-2 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50'">
+                        <i class="fas fa-edit mr-2"></i>Cambios
+                    </a>
+
                 </div>
             </div>
 
-            <!-- Lista de Solicitudes -->
+            <!-- Contenido según solapa -->
             <div class="space-y-5">
 
-                <!-- Solicitud de Eliminación 1 -->
-                <div class="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-start justify-between mb-5">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <i class="fas fa-trash-alt text-white text-xl"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-900">Solicitud de Eliminación</h3>
-                                    <p class="text-sm text-gray-500 flex items-center mt-1">
-                                        <i class="far fa-clock mr-1.5"></i>Hace 2 horas
-                                    </p>
-                                </div>
-                            </div>
-                            <span class="px-4 py-1.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full border border-yellow-200">
-                                PENDIENTE
-                            </span>
-                        </div>
+                <!-- ⭐ LISTA: ELIMINACIONES -->
+                <div th:if="${activeTab == 'ELIMINACION'}">
 
-                        <div class="bg-gray-50 rounded-lg p-5 mb-5 border border-gray-100">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Usuario</p>
-                                    <p class="text-sm font-medium text-gray-900 flex items-center">
-                                        <i class="fas fa-user-circle mr-2 text-indigo-600"></i>María González
-                                    </p>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Ubicación</p>
-                                    <p class="text-sm font-medium text-gray-900 flex items-center">
-                                        <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>Buenos Aires
-                                    </p>
-                                </div>
-                            </div>
+                    <!-- Filtro por estado -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
+                        <form th:action="@{/solicitudes/eliminacion}" method="get" class="flex flex-wrap items-center gap-3">
 
-                            <div class="mb-4">
-                                <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Hecho a eliminar</p>
-                                <div class="bg-white rounded-lg p-3 border border-gray-200">
-                                    <p class="text-sm font-semibold text-gray-900 mb-1">"Manifestación en Plaza de Mayo - 15/03/2024"</p>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                                        <i class="fas fa-tag mr-1"></i>Manifestaciones
-                                    </span>
-                                </div>
+                            <!-- Página siempre vuelve a 1 cuando se filtra -->
+                            <input type="hidden" name="page" value="1"/>
+
+                            <div class="flex items-center gap-2">
+                                <label for="estadoSolicitud" class="text-sm font-medium text-gray-700 flex items-center">
+                                    <i class="fas fa-filter mr-2 text-indigo-500"></i>
+                                    Estado
+                                </label>
+                                <select id="estadoSolicitud"
+                                        name="estadoSolicitud"
+                                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <!-- Todos -->
+                                    <option value=""
+                                            th:selected="${estadoSolicitud == null}">
+                                        Todos
+                                    </option>
+                                    <!-- Pendiente -->
+                                    <option value="PENDIENTE"
+                                            th:selected="${estadoSolicitud == 'PENDIENTE'}">
+                                        Pendientes
+                                    </option>
+                                    <!-- Aprobada -->
+                                    <option value="APROBADA"
+                                            th:selected="${estadoSolicitud == 'APROBADA'}">
+                                        Aprobadas
+                                    </option>
+                                    <!-- Rechazada -->
+                                    <option value="RECHAZADA"
+                                            th:selected="${estadoSolicitud == 'RECHAZADA'}">
+                                        Rechazadas
+                                    </option>
+                                </select>
                             </div>
 
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Razón</p>
-                                <p class="text-sm text-gray-700 leading-relaxed">
-                                    Información duplicada con otro hecho existente. El evento ya está documentado en el hecho #1234.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Botones actualizados: Aprobar, Rechazar, Marcar como Spam -->
-                        <div class="flex items-center gap-3">
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg text-sm font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-check-circle mr-2"></i>Aprobar
+                            <button type="submit"
+                                    class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors flex items-center">
+                                <i class="fas fa-search mr-2"></i>
+                                Aplicar
                             </button>
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-sm font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-times-circle mr-2"></i>Rechazar
-                            </button>
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-lg text-sm font-semibold hover:from-orange-700 hover:to-orange-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-flag mr-2"></i>Marcar como Spam
-                            </button>
-                        </div>
+
+                            <a th:href="@{/solicitudes/eliminacion}"
+                               class="px-4 py-2 bg-white text-gray-700 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center">
+                                <i class="fas fa-undo mr-2"></i>
+                                Limpiar
+                            </a>
+                        </form>
                     </div>
-                </div>
 
-                <!-- Solicitud de Cambio 1 -->
-                <div class="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-start justify-between mb-5">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <i class="fas fa-edit text-white text-xl"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-900">Solicitud de Cambio</h3>
-                                    <p class="text-sm text-gray-500 flex items-center mt-1">
-                                        <i class="far fa-clock mr-1.5"></i>Hace 5 horas
-                                    </p>
-                                </div>
-                            </div>
-                            <span class="px-4 py-1.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full border border-yellow-200">
-                                PENDIENTE
-                            </span>
-                        </div>
+                    <!-- Si hay elementos -->
+                    <div th:if="${solicitudesEliminacion != null and !#lists.isEmpty(solicitudesEliminacion)}">
+                        <div th:each="solicitud : ${solicitudesEliminacion}"
+                             class="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
 
-                        <div class="bg-gray-50 rounded-lg p-5 mb-5 border border-gray-100">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Usuario</p>
-                                    <p class="text-sm font-medium text-gray-900 flex items-center">
-                                        <i class="fas fa-user-circle mr-2 text-indigo-600"></i>Carlos Rodríguez
-                                    </p>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Ubicación</p>
-                                    <p class="text-sm font-medium text-gray-900 flex items-center">
-                                        <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>Córdoba
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Hecho a modificar</p>
-                                <div class="bg-white rounded-lg p-3 border border-gray-200">
-                                    <p class="text-sm font-semibold text-gray-900 mb-1">"Inundaciones en Córdoba - 20/02/2024"</p>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                        <i class="fas fa-tag mr-1"></i>Desastres Naturales
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Cambio propuesto</p>
-                                <p class="text-sm text-gray-700 leading-relaxed mb-3">
-                                    Actualizar la fecha del evento. La fecha original es incorrecta según fuentes oficiales.
-                                </p>
-                                <div class="bg-white rounded-lg p-4 border-2 border-blue-200">
-                                    <div class="flex items-center justify-center space-x-4">
-                                        <div class="text-center">
-                                            <p class="text-xs text-gray-500 mb-1">Fecha actual</p>
-                                            <span class="inline-block px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-bold line-through">
-                                                20/02/2024
-                                            </span>
+                            <div class="p-6">
+                                <!-- Header tarjeta -->
+                                <div class="flex items-start justify-between mb-5">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+                                            <i class="fas fa-trash-alt text-white text-xl"></i>
                                         </div>
-                                        <i class="fas fa-arrow-right text-blue-600 text-xl"></i>
-                                        <div class="text-center">
-                                            <p class="text-xs text-gray-500 mb-1">Fecha propuesta</p>
-                                            <span class="inline-block px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-bold">
-                                                21/02/2024
-                                            </span>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">
+                                                Solicitud de Eliminación
+                                                #<span th:text="${solicitud.id}">1</span>
+                                            </h3>
+
+                                            <!-- Texto secundario simple -->
+                                            <p class="text-sm text-gray-500 flex items-center mt-1">
+                                                <i class="far fa-clock mr-1.5"></i>
+                                                <span>Solicitud registrada</span>
+                                            </p>
                                         </div>
                                     </div>
+
+                                    <!-- Estado (string de la API) -->
+                                    <span class="px-4 py-1.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full border border-yellow-200"
+                                          th:text="${solicitud.estado != null ? solicitud.estado : 'SIN_ESTADO'}">
+                        PENDIENTE
+                    </span>
+                                </div>
+
+                                <!-- Cuerpo tarjeta -->
+                                <div class="bg-gray-50 rounded-lg p-5 mb-5 border border-gray-100">
+
+                                    <!-- Hecho relacionado -->
+                                    <div class="mb-4">
+                                        <p class="text-xs text-gray-500 uppercase font-semibold mb-2">
+                                            Hecho a eliminar
+                                        </p>
+                                        <div class="bg-white rounded-lg p-3 border border-gray-200">
+                                            <p class="text-sm font-semibold text-gray-900 mb-1"
+                                               th:text="${solicitud.hecho.titulo}">
+                                                Título del hecho
+                                            </p>
+                                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                    <i class="fas fa-tag mr-1"></i>
+                                    <span th:text="${solicitud.hecho.categoria}">Categoría</span>
+                                </span>
+
+                                                <!-- Fecha acontecimiento del hecho -->
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700"
+                                                      th:if="${solicitud.hecho.fechaAcontecimiento != null}">
+                                    <i class="far fa-calendar-alt mr-1"></i>
+                                    <span th:text="${#dates.format(solicitud.hecho.fechaAcontecimiento, 'dd/MM/yyyy')}">
+                                        30/06/2020
+                                    </span>
+                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Usuario + estado -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Usuario</p>
+
+                                            <!-- Si es anónimo -->
+                                            <p class="text-sm font-medium text-gray-900 flex items-center"
+                                               th:if="${solicitud.hecho.anonimo}">
+                                                <i class="fas fa-user-secret mr-2 text-gray-500"></i>
+                                                Usuario anónimo
+                                            </p>
+
+                                            <!-- Si NO es anónimo -->
+                                            <p class="text-sm font-medium text-gray-900 flex items-center"
+                                               th:if="${!solicitud.hecho.anonimo}">
+                                                <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
+                                                ID Usuario:
+                                                <span class="ml-1" th:text="${solicitud.hecho.idUsuario}">4</span>
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold mb-1">
+                                                Estado de la solicitud
+                                            </p>
+                                            <p class="text-sm font-medium text-gray-900 flex items-center">
+                                                <i class="fas fa-info-circle mr-2 text-blue-600"></i>
+                                                <span th:text="${solicitud.estado != null ? solicitud.estado : 'SIN_ESTADO'}">
+                                    PENDIENTE
+                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Justificación -->
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Justificación</p>
+                                        <p class="text-sm text-gray-700 leading-relaxed"
+                                           th:text="${solicitud.justificacion}">
+                                            Texto de justificación...
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Botones acciones -->
+                                <div class="flex items-center gap-3">
+                                    <button class="flex-1 px-5 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg text-sm font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg">
+                                        <i class="fas fa-check-circle mr-2"></i>Aprobar
+                                    </button>
+                                    <button class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-sm font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg">
+                                        <i class="fas fa-times-circle mr-2"></i>Rechazar
+                                    </button>
+                                    <button class="flex-1 px-5 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-lg text-sm font-semibold hover:from-orange-600 hover:to-orange-700 transition-all shadow-md hover:shadow-lg">
+                                        <i class="fas fa-flag mr-2"></i>Marcar como Spam
+                                    </button>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Botones actualizados: Aprobar, Rechazar, Marcar como Spam -->
-                        <div class="flex items-center gap-3">
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg text-sm font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-check-circle mr-2"></i>Aprobar
-                            </button>
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-sm font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-times-circle mr-2"></i>Rechazar
-                            </button>
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-lg text-sm font-semibold hover:from-orange-700 hover:to-orange-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-flag mr-2"></i>Marcar como Spam
-                            </button>
-                        </div>
+                    <!-- Si NO hay elementos -->
+                    <div th:if="${solicitudesEliminacion == null or #lists.isEmpty(solicitudesEliminacion)}"
+                         class="text-center py-16">
+                        <i class="fas fa-inbox text-5xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">No hay solicitudes de eliminación</h3>
+                        <p class="text-gray-600">Cuando la comunidad solicite eliminar hechos, aparecerán aquí.</p>
+                    </div>
+
+                    <!-- 🔢 Paginación -->
+                    <div th:if="${totalPages != null && totalPages > 1}"
+                         class="mt-6 flex justify-center">
+                        <nav class="flex items-center gap-2">
+
+                            <!-- Anterior -->
+                            <a th:href="@{/solicitudes/eliminacion(
+                    page=${currentPage - 1},
+                    estadoSolicitud=${estadoSolicitud}
+                 )}"
+                               class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                               th:classappend="${currentPage <= 1} ? ' opacity-50 pointer-events-none' : ''">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+
+                            <!-- Indicador -->
+                            <span class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm">
+                Página
+                <strong th:text="${currentPage}">1</strong>
+                de
+                <strong th:text="${totalPages}">1</strong>
+            </span>
+
+                            <!-- Siguiente -->
+                            <a th:href="@{/solicitudes/eliminacion(
+                    page=${currentPage + 1},
+                    estadoSolicitud=${estadoSolicitud}
+                 )}"
+                               class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                               th:classappend="${currentPage >= totalPages} ? ' opacity-50 pointer-events-none' : ''">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+
+                        </nav>
                     </div>
                 </div>
 
-                <!-- Solicitud de Eliminación 2 (Detectada como Spam) -->
-                <div class="bg-white rounded-xl shadow-md border-2 border-orange-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-start justify-between mb-5">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <i class="fas fa-trash-alt text-white text-xl"></i>
+
+
+                <!-- ⭐ LISTA: CAMBIOS -->
+                <div th:if="${activeTab} == 'CAMBIO'">
+                    <div th:each="solicitud : ${solicitudesCambio}"
+                         class="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
+
+                        <div class="p-6">
+
+                            <div class="flex items-start justify-between mb-5">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                                        <i class="fas fa-edit text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-gray-900">Solicitud de Cambio</h3>
+                                        <p class="text-sm text-gray-500 flex items-center mt-1">
+                                            <i class="far fa-clock mr-1.5"></i>
+                                            <span th:text="${solicitud.tiempo}">Hace X tiempo</span>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-900">Solicitud de Eliminación</h3>
-                                    <p class="text-sm text-gray-500 flex items-center mt-1">
-                                        <i class="far fa-clock mr-1.5"></i>Hace 1 día
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="px-4 py-1.5 bg-orange-100 text-orange-800 text-xs font-semibold rounded-full border border-orange-300 flex items-center">
-                                    <i class="fas fa-exclamation-triangle mr-1.5"></i>SPAM DETECTADO
-                                </span>
+
                                 <span class="px-4 py-1.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full border border-yellow-200">
                                     PENDIENTE
                                 </span>
                             </div>
-                        </div>
 
-                        <div class="bg-orange-50 rounded-lg p-5 mb-5 border-2 border-orange-200">
-                            <div class="bg-orange-100 border border-orange-300 rounded-lg p-4 mb-4">
-                                <p class="text-sm text-orange-900 flex items-start">
-                                    <i class="fas fa-robot text-orange-600 text-lg mr-3 mt-0.5"></i>
-                                    <span>
-                                        <span class="font-bold">Detección automática:</span> Este contenido ha sido marcado como spam por el sistema de moderación automática debido a patrones sospechosos.
-                                    </span>
-                                </p>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Usuario</p>
-                                    <p class="text-sm font-medium text-gray-900 flex items-center">
-                                        <i class="fas fa-user-circle mr-2 text-gray-400"></i>Usuario Anónimo
-                                    </p>
+                            <!-- Usuario + Ubicación -->
+                            <div class="bg-gray-50 rounded-lg p-5 mb-5 border border-gray-100">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Usuario</p>
+                                        <p class="text-sm font-medium text-gray-900 flex items-center">
+                                            <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
+                                            <span th:text="${solicitud.usuario}"></span>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Ubicación</p>
+                                        <p class="text-sm font-medium text-gray-900 flex items-center">
+                                            <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>
+                                            <span th:text="${solicitud.ubicacion}"></span>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Ubicación</p>
-                                    <p class="text-sm font-medium text-gray-900 flex items-center">
-                                        <i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>Sin ubicación
-                                    </p>
+
+                                <!-- Hecho -->
+                                <div class="mb-4">
+                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Hecho a modificar</p>
+                                    <div class="bg-white rounded-lg p-3 border border-gray-200">
+                                        <p class="text-sm font-semibold text-gray-900 mb-1" th:text="${solicitud.hechoTitulo}"></p>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            <i class="fas fa-tag mr-1"></i> <span th:text="${solicitud.categoria}"></span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Cambio propuesto -->
+                                <div class="mb-4">
+                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Cambio propuesto</p>
+                                    <p class="text-sm text-gray-700 leading-relaxed mb-3" th:text="${solicitud.descripcion}"></p>
+
+                                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                                        <p class="text-xs text-blue-700 font-semibold mb-2 flex items-center">
+                                            <i class="fas fa-plus-circle mr-2"></i>Información adicional
+                                        </p>
+                                        <p class="text-sm text-gray-800 leading-relaxed" th:text="${solicitud.informacionAdicional}"></p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="mb-4">
-                                <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Hecho reportado</p>
-                                <div class="bg-white rounded-lg p-3 border border-orange-200">
-                                    <p class="text-sm font-semibold text-gray-900 mb-1">"Compra productos aquí - Oferta especial"</p>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                                        <i class="fas fa-tag mr-1"></i>Sin categoría
-                                    </span>
-                                </div>
+                            <!-- Botones -->
+                            <div class="flex items-center gap-3">
+                                <button class="flex-1 px-5 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg text-sm font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg">
+                                    <i class="fas fa-check-circle mr-2"></i>Aprobar
+                                </button>
+                                <button class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-sm font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg">
+                                    <i class="fas fa-times-circle mr-2"></i>Rechazar
+                                </button>
+                                <button class="flex-1 px-5 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-lg text-sm font-semibold hover:from-orange-600 hover:to-orange-700 transition-all shadow-md hover:shadow-lg">
+                                    <i class="fas fa-flag mr-2"></i>Marcar como Spam
+                                </button>
                             </div>
-
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Razón</p>
-                                <p class="text-sm text-gray-700 leading-relaxed">
-                                    Contenido publicitario no relacionado con hechos documentables. Posible spam comercial.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Botones actualizados: Aprobar, Rechazar, Marcar como Spam -->
-                        <div class="flex items-center gap-3">
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg text-sm font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-check-circle mr-2"></i>Aprobar
-                            </button>
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-sm font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-times-circle mr-2"></i>Rechazar
-                            </button>
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-lg text-sm font-semibold hover:from-orange-700 hover:to-orange-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-flag mr-2"></i>Marcar como Spam
-                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Solicitud de Cambio 2 -->
-                <div class="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-start justify-between mb-5">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <i class="fas fa-edit text-white text-xl"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-900">Solicitud de Cambio</h3>
-                                    <p class="text-sm text-gray-500 flex items-center mt-1">
-                                        <i class="far fa-clock mr-1.5"></i>Hace 1 día
-                                    </p>
-                                </div>
-                            </div>
-                            <span class="px-4 py-1.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full border border-yellow-200">
-                                PENDIENTE
-                            </span>
-                        </div>
-
-                        <div class="bg-gray-50 rounded-lg p-5 mb-5 border border-gray-100">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Usuario</p>
-                                    <p class="text-sm font-medium text-gray-900 flex items-center">
-                                        <i class="fas fa-user-circle mr-2 text-indigo-600"></i>Ana Martínez
-                                    </p>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Ubicación</p>
-                                    <p class="text-sm font-medium text-gray-900 flex items-center">
-                                        <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>Mendoza
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Hecho a modificar</p>
-                                <div class="bg-white rounded-lg p-3 border border-gray-200">
-                                    <p class="text-sm font-semibold text-gray-900 mb-1">"Inauguración de hospital en Mendoza"</p>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        <i class="fas fa-tag mr-1"></i>Salud
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Cambio propuesto</p>
-                                <p class="text-sm text-gray-700 leading-relaxed mb-3">
-                                    Agregar información sobre la capacidad del hospital y especialidades médicas disponibles.
-                                </p>
-                                <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                                    <p class="text-xs text-blue-700 font-semibold mb-2 flex items-center">
-                                        <i class="fas fa-plus-circle mr-2"></i>Información adicional
-                                    </p>
-                                    <p class="text-sm text-gray-800 leading-relaxed">
-                                        "El nuevo hospital cuenta con 150 camas y ofrece servicios de cardiología, pediatría, traumatología y emergencias 24/7."
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Botones actualizados: Aprobar, Rechazar, Marcar como Spam -->
-                        <div class="flex items-center gap-3">
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg text-sm font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-check-circle mr-2"></i>Aprobar
-                            </button>
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-sm font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-times-circle mr-2"></i>Rechazar
-                            </button>
-                            <button class="flex-1 px-5 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-lg text-sm font-semibold hover:from-orange-700 hover:to-orange-800 transition-all shadow-md hover:shadow-lg">
-                                <i class="fas fa-flag mr-2"></i>Marcar como Spam
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            </div> <!-- end space-y -->
 
         </div>
     </div>
