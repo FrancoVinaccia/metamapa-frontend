@@ -296,6 +296,41 @@ public class MetaMapaApiService {
         }
     }
 
+
+    public void actualizarEstadoSolicitud(Long idSolicitud, String nuevoEstado) {
+
+        // 1. Traducir el Estado (String) al Char que pide tu Backend ('A', 'R', 'S')
+        char codigoEstado;
+
+        if ("APROBADA".equalsIgnoreCase(nuevoEstado)) {
+            codigoEstado = 'A';
+        } else if ("RECHAZADA".equalsIgnoreCase(nuevoEstado)) {
+            codigoEstado = 'R';
+        } else if ("SPAM".equalsIgnoreCase(nuevoEstado)) {
+            codigoEstado = 'S';
+        } else {
+            // Default por seguridad
+            codigoEstado = 'R';
+        }
+
+
+        //  Usamos 'agregacionApi' + la ruta base.
+
+        String url = agregacionApi + "/priv/solicitudes/" + idSolicitud + "/" + codigoEstado;
+
+        System.out.println(">>> Llamando a Backend (PUT): " + url);
+
+        // 3. Ejecutar llamada SIN BODY (null), porque el dato ya va en la URL
+        try {
+            webApiCallerService.putAdmin(url, Map.of(), Void.class);
+        } catch (Exception e) {
+            log.error("Error al actualizar solicitud {}: {}", idSolicitud, e.getMessage());
+            throw new RuntimeException("Error en backend: " + e.getMessage());
+        }
+    }
+
+
+
     /*
     public List<AlumnoDTO> obtenerTodosLosAlumnos() {
         List<AlumnoDTO> response = webApiCallerService.getList(alumnosServiceUrl + "/alumnos", AlumnoDTO.class);

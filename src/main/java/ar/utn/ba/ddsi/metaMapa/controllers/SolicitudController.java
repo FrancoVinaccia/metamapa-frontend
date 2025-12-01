@@ -140,4 +140,49 @@ public class SolicitudController {
 
 
     }
+
+
+   @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PostMapping("/{id}/aceptar")
+    public String aceptarSolicitud(@PathVariable("id") Long idSolicitud,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            solicitudService.aceptarSolicitud(idSolicitud);
+            redirectAttributes.addFlashAttribute("success", "Solicitud ACEPTADA. El hecho ha sido eliminado del mapa.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al aprobar: " + e.getMessage());
+        }
+        return "redirect:/solicitudes/eliminacion";
+    }
+
+
+   @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PostMapping("/{id}/rechazar")
+    public String rechazarSolicitud(@PathVariable("id") Long idSolicitud,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            solicitudService.rechazarSolicitud(idSolicitud);
+            redirectAttributes.addFlashAttribute("success", "Solicitud RECHAZADA. El hecho permanece visible.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al rechazar: " + e.getMessage());
+        }
+        return "redirect:/solicitudes/eliminacion";
+    }
+
+
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PostMapping("/{id}/spam")
+    public String marcarComoSpam(@PathVariable("id") Long idSolicitud,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            solicitudService.marcarComoSpam(idSolicitud);
+            redirectAttributes.addFlashAttribute("warning", "Solicitud marcada como SPAM y rechazada.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al marcar spam: " + e.getMessage());
+        }
+        return "redirect:/solicitudes/eliminacion";
+    }
 }
+
+

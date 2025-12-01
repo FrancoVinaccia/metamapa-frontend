@@ -160,6 +160,18 @@ public class WebApiCallerService {
                 .block();
     }
 
+    public <T> T putAdmin(String url, Object body, Class<T> responseType) {
+        return webClient
+                .put()  // <--- Aquí está la clave: Verbo PUT
+                .uri(url)
+                .bodyValue(body)
+                .header("X-ADMIN-TOKEN", "GRUPO-28") // Mismo header que postAdmin
+                .retrieve()
+                .bodyToMono(responseType)
+                .block();
+    }
+
+
     public <T> T getAdmin(String url, Class<T> responseType) {
         return webClient
                 .get()

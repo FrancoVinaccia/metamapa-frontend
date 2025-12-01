@@ -32,4 +32,20 @@ public class SolicitudService {
         return metaMapaApiService.obetnerTodasLasSolicitudesEliminacion( page,  size,  estado);
     }
 
-}
+    public void aceptarSolicitud(Long id) {
+        metaMapaApiService.actualizarEstadoSolicitud(id, "APROBADA");
+    }
+
+    public void rechazarSolicitud(Long id) {
+        metaMapaApiService.actualizarEstadoSolicitud(id, "RECHAZADA");
+    }
+
+    public void marcarComoSpam(Long id) {
+        // Antes enviábamos "RECHAZADA", ahora enviamos "SPAM" para usar la 'S' del backend
+        metaMapaApiService.actualizarEstadoSolicitud(id, "SPAM");
+    }
+
+    }
+
+
+
