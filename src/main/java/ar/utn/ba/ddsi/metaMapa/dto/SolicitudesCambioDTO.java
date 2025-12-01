@@ -15,7 +15,7 @@ import java.util.List;
 public class SolicitudesCambioDTO {
 
     private Long id;
-    private Long idHecho;
+    private HechoDinamicaOutputDTO hecho;
     private String titulo;                // nuevo_titulo o título recibido
     private String descripcion;           // nueva_descripcion
     private String categoria;

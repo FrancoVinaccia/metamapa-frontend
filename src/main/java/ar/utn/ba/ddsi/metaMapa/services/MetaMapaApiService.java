@@ -217,20 +217,40 @@ public class MetaMapaApiService {
         return response;
     }
 
-    public PageSolicitudCambioDTO obetnerTodasLasSolicitudesCambio(int page, int limit, EstadoSolicitud estado) {
+    public PageSolicitudCambioDTO obtenerTodasLasSolicitudesCambio(int page, int limit, String estado) {
 
-        int pageBackend = page - 1;
-        if (pageBackend < 0) pageBackend = 0;
+        int pageBackend = Math.max(0, page - 1);
 
-        String url;
-        if (estado != null) {
-            String estadoParam = estado.name();
-            url = dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit + "&estado=" + estadoParam;
-        } else {
-            url = dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit;
+        StringBuilder url = new StringBuilder(
+                dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit
+        );
+
+        // Convertimos STRING → Boolean para mandar al back externo
+        if (estado != null && !estado.trim().isEmpty()) {
+
+            Boolean estadoBoolean;
+
+            switch (estado.toUpperCase()) {
+                case "RESUELTA":
+                    estadoBoolean = true;
+                    break;
+
+                case "PENDIENTE":
+                    estadoBoolean = false;
+                    break;
+
+                default:
+                    estadoBoolean = null;  // cualquier otro valor no filtra nada
+            }
+
+            // Si el estado es válido, lo enviamos al backend
+            if (estadoBoolean != null) {
+                url.append("&resuelta=").append(estadoBoolean);
+            }
         }
 
-        PageSolicitudCambioDTO response = webApiCallerService.getAdmin(url, PageSolicitudCambioDTO.class);
+
+        PageSolicitudCambioDTO response =  webApiCallerService.getAdmin(url.toString(), PageSolicitudCambioDTO.class);
 
         if (response == null) {
             throw new RuntimeException("Error al obtener las solicitudes de cambio en el servicio externo");

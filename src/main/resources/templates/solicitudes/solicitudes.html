@@ -132,8 +132,8 @@
                                     <!-- Estado (string de la API) -->
                                     <span class="px-4 py-1.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full border border-yellow-200"
                                           th:text="${solicitud.estado != null ? solicitud.estado : 'SIN_ESTADO'}">
-                        PENDIENTE
-                    </span>
+                                        PENDIENTE
+                                    </span>
                                 </div>
 
                                 <!-- Cuerpo tarjeta -->
@@ -150,19 +150,19 @@
                                                 Título del hecho
                                             </p>
                                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                                    <i class="fas fa-tag mr-1"></i>
-                                    <span th:text="${solicitud.hecho.categoria}">Categoría</span>
-                                </span>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                                    <i class="fas fa-tag mr-1"></i>
+                                                    <span th:text="${solicitud.hecho.categoria}">Categoría</span>
+                                                </span>
 
                                                 <!-- Fecha acontecimiento del hecho -->
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700"
                                                       th:if="${solicitud.hecho.fechaAcontecimiento != null}">
-                                    <i class="far fa-calendar-alt mr-1"></i>
-                                    <span th:text="${#dates.format(solicitud.hecho.fechaAcontecimiento, 'dd/MM/yyyy')}">
-                                        30/06/2020
-                                    </span>
-                                </span>
+                                                    <i class="far fa-calendar-alt mr-1"></i>
+                                                    <span th:text="${#dates.format(solicitud.hecho.fechaAcontecimiento, 'dd/MM/yyyy')}">
+                                                        30/06/2020
+                                                    </span>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -195,8 +195,8 @@
                                             <p class="text-sm font-medium text-gray-900 flex items-center">
                                                 <i class="fas fa-info-circle mr-2 text-blue-600"></i>
                                                 <span th:text="${solicitud.estado != null ? solicitud.estado : 'SIN_ESTADO'}">
-                                    PENDIENTE
-                                </span>
+                                                    PENDIENTE
+                                                </span>
                                             </p>
                                         </div>
                                     </div>
@@ -253,13 +253,12 @@
 
                                         <i class="fas" th:classappend="${solicitud.estado.name() == 'APROBADA' ? 'fa-check-circle' : 'fa-times-circle'}"></i>
                                         <span class="font-medium">
-            Solicitud procesada: <span th:text="${solicitud.estado}">ESTADO</span>
-        </span>
+                                            Solicitud procesada: <span th:text="${solicitud.estado}">ESTADO</span>
+                                        </span>
                                     </div>
 
                                 </div>
 
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -279,9 +278,9 @@
 
                             <!-- Anterior -->
                             <a th:href="@{/solicitudes/eliminacion(
-                    page=${currentPage - 1},
-                    estadoSolicitud=${estadoSolicitud}
-                 )}"
+                                page=${currentPage - 1},
+                                estadoSolicitud=${estadoSolicitud}
+                            )}"
                                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                                th:classappend="${currentPage <= 1} ? ' opacity-50 pointer-events-none' : ''">
                                 <i class="fas fa-chevron-left"></i>
@@ -289,17 +288,17 @@
 
                             <!-- Indicador -->
                             <span class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm">
-                Página
-                <strong th:text="${currentPage}">1</strong>
-                de
-                <strong th:text="${totalPages}">1</strong>
-            </span>
+                                Página
+                                <strong th:text="${currentPage}">1</strong>
+                                de
+                                <strong th:text="${totalPages}">1</strong>
+                            </span>
 
                             <!-- Siguiente -->
                             <a th:href="@{/solicitudes/eliminacion(
-                    page=${currentPage + 1},
-                    estadoSolicitud=${estadoSolicitud}
-                 )}"
+                                page=${currentPage + 1},
+                                estadoSolicitud=${estadoSolicitud}
+                            )}"
                                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                                th:classappend="${currentPage >= totalPages} ? ' opacity-50 pointer-events-none' : ''">
                                 <i class="fas fa-chevron-right"></i>
@@ -312,92 +311,258 @@
 
 
                 <!-- ⭐ LISTA: CAMBIOS -->
-                <div th:if="${activeTab} == 'CAMBIO'">
-                    <div th:each="solicitud : ${solicitudesCambio}"
-                         class="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
+                <div th:if="${activeTab == 'CAMBIO'}">
 
-                        <div class="p-6">
+                    <!-- FILTRO POR ESTADO (PENDIENTE / RESUELTA) -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
 
-                            <div class="flex items-start justify-between mb-5">
-                                <div class="flex items-center space-x-4">
-                                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                                        <i class="fas fa-edit text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-bold text-gray-900">Solicitud de Cambio</h3>
-                                        <p class="text-sm text-gray-500 flex items-center mt-1">
-                                            <i class="far fa-clock mr-1.5"></i>
-                                            <span th:text="${solicitud.tiempo}">Hace X tiempo</span>
-                                        </p>
-                                    </div>
-                                </div>
+                        <form th:action="@{/solicitudes/cambio}" method="get"
+                              class="flex flex-wrap items-center gap-3">
 
-                                <span class="px-4 py-1.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full border border-yellow-200">
-                                    PENDIENTE
-                                </span>
+                            <input type="hidden" name="page" value="1"/>
+
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm font-medium text-gray-700 flex items-center">
+                                    <i class="fas fa-filter mr-2 text-indigo-500"></i>
+                                    Estado
+                                </label>
+
+                                <select id="estadooSolicitud" name="estadoSolicitud"
+                                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+
+                                    <option value=""
+                                            th:selected="${estadoSolicitud == null}">
+                                        Todas
+                                    </option>
+
+                                    <option value="PENDIENTE"
+                                            th:selected="${estadoSolicitud == 'PENDIENTE'}">
+                                        Pendientes
+                                    </option>
+
+                                    <option value="RESUELTA"
+                                            th:selected="${estadoSolicitud == 'RESUELTA'}">
+                                        Resueltas
+                                    </option>
+
+                                </select>
                             </div>
 
-                            <!-- Usuario + Ubicación -->
-                            <div class="bg-gray-50 rounded-lg p-5 mb-5 border border-gray-100">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div>
-                                        <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Usuario</p>
-                                        <p class="text-sm font-medium text-gray-900 flex items-center">
-                                            <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
-                                            <span th:text="${solicitud.usuario}"></span>
-                                        </p>
+                            <button type="submit"
+                                    class="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg">
+                                <i class="fas fa-search mr-2"></i>Aplicar
+                            </button>
+
+                            <a th:href="@{/solicitudes/cambio}"
+                               class="px-4 py-2 bg-white text-gray-700 border rounded-lg">
+                                <i class="fas fa-undo mr-2"></i>Limpiar
+                            </a>
+                        </form>
+
+                    </div>
+
+                    <!-- Si hay solicitudes de cambio -->
+                    <div th:if="${solicitudesCambio != null and !#lists.isEmpty(solicitudesCambio)}">
+
+                        <div th:each="solicitud : ${solicitudesCambio}"
+                             class="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
+
+                            <div class="p-6">
+
+                                <!-- Header -->
+                                <div class="flex items-start justify-between mb-5">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                                            <i class="fas fa-edit text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">
+                                                Solicitud de Cambio #<span th:text="${solicitud.id}"></span>
+                                            </h3>
+                                            <p class="text-sm text-gray-500 flex items-center mt-1">
+                                                <i class="far fa-clock mr-1.5"></i>
+                                                <span th:text="${solicitud.tiempo}">Solicitud registrada</span>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Ubicación</p>
-                                        <p class="text-sm font-medium text-gray-900 flex items-center">
-                                            <i class="fas fa-map-marker-alt mr-2 text-red-600"></i>
-                                            <span th:text="${solicitud.ubicacion}"></span>
-                                        </p>
-                                    </div>
+
+                                    <span class="px-4 py-1.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full border border-yellow-200"
+                                          th:text="${solicitud.estado != null ? solicitud.estado : 'PENDIENTE'}">
+                                        PENDIENTE
+                                    </span>
                                 </div>
 
-                                <!-- Hecho -->
-                                <div class="mb-4">
-                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Hecho a modificar</p>
+                                <!-- 🔹 HECHO ORIGINAL -->
+                                <div class="bg-gray-50 rounded-lg p-5 mb-5 border border-gray-100">
+
+                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Hecho original</p>
+
                                     <div class="bg-white rounded-lg p-3 border border-gray-200">
-                                        <p class="text-sm font-semibold text-gray-900 mb-1" th:text="${solicitud.hechoTitulo}"></p>
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            <i class="fas fa-tag mr-1"></i> <span th:text="${solicitud.categoria}"></span>
-                                        </span>
+
+                                        <p class="text-sm font-semibold text-gray-900 mb-1"
+                                           th:text="${solicitud.hecho.titulo}"></p>
+
+                                        <p class="text-xs text-gray-500 mb-1"
+                                           th:text="${solicitud.hecho.descripcion}"></p>
+
+                                        <div class="flex items-center gap-2 flex-wrap mt-1">
+
+                                            <!-- categoría original -->
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                                                  th:if="${solicitud.hecho.categoria != null}">
+                                                <i class="fas fa-tag mr-1"></i>
+                                                <span th:text="${solicitud.hecho.categoria}"></span>
+                                            </span>
+
+                                            <!-- fecha original -->
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700"
+                                                  th:if="${solicitud.hecho.fechaAcontecimiento != null}">
+                                                <i class="far fa-calendar-alt mr-1"></i>
+                                                <span th:text="${#dates.format(solicitud.hecho.fechaAcontecimiento,'dd/MM/yyyy')}"></span>
+                                            </span>
+
+                                            <!-- lugar original -->
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                                                  th:if="${solicitud.hecho.lugar != null}">
+                                                <i class="fas fa-map-marker-alt mr-1"></i>
+
+                                                <span th:if="${solicitud.hecho.lugar.localidad != null}"
+                                                      th:text="${solicitud.hecho.lugar.localidad + ' - ' + solicitud.hecho.lugar.ciudad}">
+                                                </span>
+
+                                                <span th:if="${solicitud.hecho.lugar.localidad == null}"
+                                                      th:text="'ID lugar: ' + ${solicitud.hecho.lugar.id}">
+                                                </span>
+                                            </span>
+
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Cambio propuesto -->
+                                <!-- 🔹 CAMBIOS PROPUESTOS -->
                                 <div class="mb-4">
-                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Cambio propuesto</p>
-                                    <p class="text-sm text-gray-700 leading-relaxed mb-3" th:text="${solicitud.descripcion}"></p>
+                                    <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Cambios propuestos</p>
 
-                                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                                        <p class="text-xs text-blue-700 font-semibold mb-2 flex items-center">
-                                            <i class="fas fa-plus-circle mr-2"></i>Información adicional
-                                        </p>
-                                        <p class="text-sm text-gray-800 leading-relaxed" th:text="${solicitud.informacionAdicional}"></p>
+                                    <div class="space-y-3">
+
+                                        <!-- ⭐ CAMBIO DE TÍTULO -->
+                                        <div th:if="${solicitud.titulo != null and solicitud.titulo != solicitud.hecho.titulo}">
+                                            <p class="text-xs font-semibold text-gray-500 mb-1">Título</p>
+                                            <p class="text-sm">
+                                                <span class="line-through text-gray-400"
+                                                      th:text="${solicitud.hecho.titulo}"></span>
+                                                <span class="mx-2 text-gray-400">→</span>
+                                                <span class="font-medium text-gray-900"
+                                                      th:text="${solicitud.titulo}"></span>
+                                            </p>
+                                        </div>
+
+                                        <!-- ⭐ CAMBIO DE DESCRIPCIÓN -->
+                                        <div th:if="${solicitud.descripcion != null and solicitud.descripcion != solicitud.hecho.descripcion}">
+                                            <p class="text-xs font-semibold text-gray-500 mb-1">Descripción</p>
+                                            <p class="text-sm">
+                                                <span class="line-through text-gray-400"
+                                                      th:text="${solicitud.hecho.descripcion}"></span>
+                                                <span class="mx-2 text-gray-400">→</span>
+                                                <span class="font-medium text-gray-900"
+                                                      th:text="${solicitud.descripcion}"></span>
+                                            </p>
+                                        </div>
+
+                                        <!-- ⭐ CAMBIO DE CATEGORÍA -->
+                                        <div th:if="${solicitud.categoria != null and solicitud.categoria != solicitud.hecho.categoria}">
+                                            <p class="text-xs font-semibold text-gray-500 mb-1">Categoría</p>
+                                            <p class="text-sm">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 line-through"
+                                                      th:text="${solicitud.hecho.categoria}"></span>
+                                                <span class="mx-2 text-gray-400">→</span>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                                                      th:text="${solicitud.categoria}"></span>
+                                            </p>
+                                        </div>
+
+                                        <!-- ⭐ CAMBIO DE FECHA -->
+                                        <div th:if="${solicitud.fechaAcontecimiento != null
+                                                    and solicitud.fechaAcontecimiento != solicitud.hecho.fechaAcontecimiento}">
+                                            <p class="text-xs font-semibold text-gray-500 mb-1">Fecha del hecho</p>
+                                            <p class="text-sm">
+                                                <span class="line-through text-gray-400"
+                                                      th:text="${#dates.format(solicitud.hecho.fechaAcontecimiento,'dd/MM/yyyy')}"></span>
+                                                <span class="mx-2 text-gray-400">→</span>
+                                                <span class="font-medium text-gray-900"
+                                                      th:text="${#dates.format(solicitud.fechaAcontecimiento,'dd/MM/yyyy')}"></span>
+                                            </p>
+                                        </div>
+
+                                        <!-- ⭐ CAMBIO DE LUGAR (solo si cambia localidad/ciudad/provincia) -->
+                                        <div th:if="${solicitud.lugar != null
+                                                    and (solicitud.lugar.localidad != null
+                                                         or solicitud.lugar.ciudad != null
+                                                         or solicitud.lugar.provincia != null)}">
+
+                                            <p class="text-xs font-semibold text-gray-500 mb-1">Lugar</p>
+
+                                            <p class="text-sm flex flex-wrap items-center gap-1">
+
+                                                <!-- Lugar original -->
+                                                <span class="line-through text-gray-400"
+                                                      th:text="${
+                                                            solicitud.hecho.lugar.localidad != null ?
+                                                                solicitud.hecho.lugar.localidad + ' - ' + solicitud.hecho.lugar.ciudad :
+                                                                'ID lugar: ' + solicitud.hecho.lugar.id
+                                                      }"></span>
+
+                                                <span class="mx-2 text-gray-400">→</span>
+
+                                                <!-- Nuevo lugar con localidad/ciudad -->
+                                                <span class="font-medium text-gray-900"
+                                                      th:if="${solicitud.lugar.localidad != null or solicitud.lugar.ciudad != null}"
+                                                      th:text="${
+                                                            solicitud.lugar.localidad != null ?
+                                                                solicitud.lugar.localidad + ' - ' + solicitud.lugar.ciudad :
+                                                                solicitud.lugar.ciudad}">
+                                                </span>
+
+                                                <!-- Nuevo lugar solo provincia -->
+                                                <span class="font-medium text-gray-900"
+                                                      th:if="${solicitud.lugar.provincia != null
+                                                              and solicitud.lugar.localidad == null
+                                                              and solicitud.lugar.ciudad == null}"
+                                                      th:text="${solicitud.lugar.provincia}">
+                                                </span>
+                                            </p>
+                                        </div>
+
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Botones -->
-                            <div class="flex items-center gap-3">
-                                <button class="flex-1 px-5 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg text-sm font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg">
-                                    <i class="fas fa-check-circle mr-2"></i>Aprobar
-                                </button>
-                                <button class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-sm font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg">
-                                    <i class="fas fa-times-circle mr-2"></i>Rechazar
-                                </button>
-                                <button class="flex-1 px-5 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-lg text-sm font-semibold hover:from-orange-600 hover:to-orange-700 transition-all shadow-md hover:shadow-lg">
-                                    <i class="fas fa-flag mr-2"></i>Marcar como Spam
-                                </button>
+                                <!-- BOTONES -->
+                                <div class="flex items-center gap-3">
+                                    <button class="flex-1 px-5 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg text-sm font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg">
+                                        <i class="fas fa-check-circle mr-2"></i>Aprobar
+                                    </button>
+                                    <button class="flex-1 px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-sm font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-md hover:shadow-lg">
+                                        <i class="fas fa-times-circle mr-2"></i>Rechazar
+                                    </button>
+                                    <button class="flex-1 px-5 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white rounded-lg text-sm font-semibold hover:from-orange-600 hover:to-orange-700 transition-all shadow-md hover:shadow-lg">
+                                        <i class="fas fa-flag mr-2"></i>Marcar como Spam
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                </div>
 
-            </div> <!-- end space-y -->
+                    <!-- Si NO hay solicitudes -->
+                    <div th:if="${solicitudesCambio == null or #lists.isEmpty(solicitudesCambio)}"
+                         class="text-center py-16">
+                        <i class="fas fa-inbox text-5xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">No hay solicitudes de cambio</h3>
+                        <p class="text-gray-600">Cuando la comunidad solicite cambios sobre hechos, aparecerán aquí.</p>
+                    </div>
+
+                </div>
+            </div>
 
         </div>
     </div>

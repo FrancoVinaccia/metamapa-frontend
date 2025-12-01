@@ -73,30 +73,31 @@ public class SolicitudController {
     @GetMapping("/cambio")
     public String listarSolicitudesCambio(
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(required = false) EstadoSolicitud estadoSolicitud,
+            @RequestParam(value = "estadoSolicitud", required = false) String estadoSolicitud,
             Model model) {
 
         try {
             int pageSize = 5;
 
-            PageSolicitudCambioDTO pagina = solicitudService.listarSolicitudesCambio(page, pageSize, estadoSolicitud);
+            System.out.println("Filtro resuelta = " + estadoSolicitud);
+
+            PageSolicitudCambioDTO pagina =   solicitudService.listarSolicitudesCambio(page, pageSize, estadoSolicitud);
 
             model.addAttribute("activeTab", "CAMBIO");
-
             model.addAttribute("solicitudesCambio", pagina.getElementos());
 
-            model.addAttribute("currentPage", page);                    // UI: 1-based
+            model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", pagina.getTotalPages());
             model.addAttribute("totalElements", pagina.getTotalElements());
 
-            model.addAttribute("titulo", "Lista de Solicitudes de Cambio");
-            model.addAttribute("estadoSolicitud", estadoSolicitud);
+            model.addAttribute("resuelta", estadoSolicitud);
 
             return "solicitudes/solicitudes";
 
         } catch (Exception e) {
             e.printStackTrace();
-            model.addAttribute("errorMensaje", "Ocurrió un error al cargar las solicitudes de cambio: " + e.getMessage());
+            model.addAttribute("errorMensaje",
+                    "Ocurrió un error al cargar las solicitudes de cambio: " + e.getMessage());
             return "errorGenerico";
         }
     }

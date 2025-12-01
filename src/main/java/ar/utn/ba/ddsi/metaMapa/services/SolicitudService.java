@@ -28,8 +28,8 @@ public class SolicitudService {
         return metaMapaApiService.obetnerTodasLasSolicitudesEliminacion( page,  size,  estado);
     }
 
-    public PageSolicitudCambioDTO listarSolicitudesCambio(int page, int size, EstadoSolicitud estado) {
-        return metaMapaApiService.obetnerTodasLasSolicitudesCambio(page, size, estado);
+    public PageSolicitudCambioDTO listarSolicitudesCambio(int page, int size, String resuelta) {
+        return metaMapaApiService.obtenerTodasLasSolicitudesCambio(page, size, resuelta);
     }
 
     public void aceptarSolicitud(Long id) {
