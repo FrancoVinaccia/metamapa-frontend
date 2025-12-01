@@ -31,6 +31,7 @@ public class HechoController {
                                @RequestParam(required = false) String fechaFin,
                                @RequestParam(required = false) String cargaOrigen,
                                @RequestParam(required = false) String misHechos,
+                               @RequestParam(required = false) String busquedaCurada,
                                Model model,
                                RedirectAttributes redirectAttributes) {
         try {
@@ -45,7 +46,8 @@ public class HechoController {
                             (fechaInicio != null && !fechaInicio.isBlank()) ||
                             (fechaFin != null && !fechaFin.isBlank()) ||
                             (cargaOrigen != null && !cargaOrigen.isBlank()) ||
-                            (misHechos != null && misHechos.equalsIgnoreCase("true"));
+                            (misHechos != null && misHechos.equalsIgnoreCase("true")) ||
+                            (busquedaCurada != null && busquedaCurada.equalsIgnoreCase("true"));
 
             List<HechoDTO> hechos = hechoService.obtenerTodosLosHechos(
                     page,
@@ -58,7 +60,8 @@ public class HechoController {
                     fechaInicio,
                     fechaFin,
                     cargaOrigen,
-                    misHechos
+                    misHechos,
+                    busquedaCurada
             );
 
             model.addAttribute("hechos", hechos);
@@ -76,6 +79,7 @@ public class HechoController {
             model.addAttribute("fechaFin", fechaFin);
             model.addAttribute("cargaOrigen", cargaOrigen);
             model.addAttribute("misHechos", misHechos);
+            model.addAttribute("busquedaCurada", busquedaCurada);
 
             return "hecho/hechos";
         } catch (Exception e) {

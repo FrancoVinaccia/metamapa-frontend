@@ -29,6 +29,7 @@ public class HechoDTO {
     private String cargaOrigen;
     private Long idUsuario;
     private Boolean anonimo;
+    private  Boolean busquedaCurada;
 
     public String getImagen() {
         if (multimedia != null && !multimedia.isEmpty()) {

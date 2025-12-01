@@ -105,7 +105,8 @@ public class MetaMapaApiService {
             String fechaInicio,
             String fechaFin,
             String cargaOrigen,
-            String misHechos
+            String misHechos,
+            String busquedaCurada
     ) {
         try {
             // base: http://localhost:8080/agre/hechos?page=...&limit=...
@@ -140,6 +141,12 @@ public class MetaMapaApiService {
             // si querés mapear "misHechos" al parámetro del back `busquedaCurada`
             if (misHechos != null && misHechos.equalsIgnoreCase("true")) {
                 url += "&busquedaCurada=true";
+            }
+
+            if (busquedaCurada != null && busquedaCurada.equalsIgnoreCase("true")) {
+                if (!url.contains("busquedaCurada")) {
+                    url += "&busquedaCurada=true";
+                }
             }
 
             System.out.println(">>> URL agregación (filtrados): " + url);

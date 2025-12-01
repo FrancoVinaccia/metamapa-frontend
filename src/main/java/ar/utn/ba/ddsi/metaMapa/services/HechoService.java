@@ -34,13 +34,12 @@ public class HechoService {
             String fechaInicio,
             String fechaFin,
             String cargaOrigen,
-            String misHechos
+            String misHechos,
+            String busquedaCurada
     ) {
         if (!aplicarFiltros) {
-            // ✅ mismo comportamiento de siempre: destacados
             return metaMapaApiService.listarHechos(page, limit);
         } else {
-            // ✅ llamada nueva con filtros
             return metaMapaApiService.listarHechosFiltrados(
                     page,
                     limit,
@@ -51,7 +50,8 @@ public class HechoService {
                     fechaInicio,
                     fechaFin,
                     cargaOrigen,
-                    misHechos
+                    misHechos,
+                    busquedaCurada
             );
         }
     }
