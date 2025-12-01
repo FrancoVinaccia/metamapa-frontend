@@ -1,18 +1,18 @@
-// java
-// File: src/main/java/ar/utn/ba/ddsi/metaMapa/controllers/ColeccionController.java
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
 import ar.utn.ba.ddsi.metaMapa.dto.ColeccionDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.RangoFechaDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.LugarDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.ColeccionInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.CriterioPertenenciaInputDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.ColeccionService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -25,6 +25,11 @@ import java.util.List;
 public class ColeccionController {
 
     private final ColeccionService coleccionService;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 
     @GetMapping
     public String listarColecciones(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -45,18 +50,6 @@ public class ColeccionController {
         }
     }
 
-//    @GetMapping("/{id}")
-//    public String visualizarColeccion(@PathVariable Long id, Model model) {
-//        ColeccionDTO c = coleccionService.visualizarColeccion(id.intValue());
-//        model.addAttribute("coleccion", c);
-//        model.addAttribute("titulo", c.getTitulo());
-//        // Pasar la lista plana de hechos a la vista
-//        model.addAttribute("hechos", c.getHechosLista());
-//        return "coleccion/coleccion";
-//    }
-
-// Archivo: ColeccionController.java
-
     @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/nueva")
     public String mostrarFormularioCrear(Model model) {
@@ -64,8 +57,8 @@ public class ColeccionController {
 
         // Inicializar objetos anidados para evitar NullPointerException en la vista o el binding
         CriterioPertenenciaInputDTO criterios = new CriterioPertenenciaInputDTO();
-        criterios.setFecha(new ar.utn.ba.ddsi.metaMapa.dto.RangoFechaDTO());
-        criterios.setLugar(new ar.utn.ba.ddsi.metaMapa.dto.LugarDTO());
+        criterios.setFecha(new RangoFechaDTO());
+        criterios.setLugar(new LugarDTO());
 
         coleccionDTO.setCriterios(criterios);
 
@@ -81,7 +74,12 @@ public class ColeccionController {
                              RedirectAttributes redirectAttributes,
                              HttpServletRequest request) {
         try {
-            System.out.println(coleccion);
+            System.out.println("Coleccion (antes sanitizar) = " + coleccion);
+
+            // Sanitizar antes de enviar al servicio (quita DTOs anidados vacíos)
+            sanitizeColeccion(coleccion);
+
+            System.out.println("Coleccion (sanitizada) = " + coleccion);
             ColeccionDTO coleccionCreada = coleccionService.crearColeccion(coleccion);
             System.out.println(coleccionCreada);
             redirectAttributes.addFlashAttribute("success", "Colección creada con éxito.");
@@ -93,6 +91,49 @@ public class ColeccionController {
             model.addAttribute("error", "Error al crear la colección: " + e.getMessage());
             model.addAttribute("tipoMensaje", "danger");
             return "coleccion/crearColeccion";
+        }
+    }
+
+    // Métod privado que normaliza el DTO: quita criterios.fecha y criterios.lugar si están vacíos,
+    // y setea criterios a null si queda completamente vacío.
+    private void sanitizeColeccion(ColeccionInputDTO coleccion) {
+        if (coleccion == null) return;
+
+        CriterioPertenenciaInputDTO criterios = coleccion.getCriterios();
+        if (criterios == null) return;
+
+        // Normalizar categoría
+        if (criterios.getCategoria() != null && criterios.getCategoria().isBlank()) {
+            criterios.setCategoria(null);
+        }
+
+        // Fecha: si ambos campos vacíos -> quitar el DTO fecha
+        RangoFechaDTO fecha = criterios.getFecha();
+        if (fecha != null) {
+            String fi = fecha.getFechaInicio();
+            String ff = fecha.getFechaFin();
+            if ((fi == null || fi.isBlank()) && (ff == null || ff.isBlank())) {
+                criterios.setFecha(null);
+            }
+        }
+
+        // Lugar: si todos los campos relevantes vacíos -> quitar el DTO lugar
+        LugarDTO lugar = criterios.getLugar();
+        if (lugar != null) {
+            String loc = lugar.getLocalidad();
+            String ciu = lugar.getCiudad();
+            String prov = lugar.getProvincia();
+            if ((loc == null || loc.isBlank()) &&
+                    (ciu == null || ciu.isBlank()) &&
+                    (prov == null || prov.isBlank())) {
+                criterios.setLugar(null);
+            }
+        }
+
+        // Si criterios quedó vacío (sin categoría, sin fecha, sin lugar) -> setear a null
+        boolean categoriaVacia = criterios.getCategoria() == null || criterios.getCategoria().isBlank();
+        if (categoriaVacia && criterios.getFecha() == null && criterios.getLugar() == null) {
+            coleccion.setCriterios(null);
         }
     }
 }

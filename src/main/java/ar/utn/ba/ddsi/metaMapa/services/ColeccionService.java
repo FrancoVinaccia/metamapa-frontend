@@ -24,75 +24,7 @@ public class ColeccionService {
         return metaMapaApiService.listarColecciones(page, limit);
     }
 
-//    public ColeccionDTO visualizarColeccion(Integer id) {
-//        // Busca por id en el mock y devuelve una copia con su lista de hechos
-//        return coleccionesMock().stream()
-//                .filter(c -> c.getIdColeccion().equals(id)
-//                .findFirst()
-//                .orElseGet(() -> {
-//                    // fallback vacío pero con wrapper de hechos inicializado
-//                    return ColeccionDTO.builder()
-//                            .idColeccion(id)
-//                            .titulo("Colección no encontrada")
-//                            .descripcion("No existen datos para el id " + id)
-//                            .imagen("https://picsum.photos/seed/notfound/800/400")
-//                            .hechos(pageFromList(new ArrayList<>()))
-//                            .build();
-//                });
-//    }
-//
     public ColeccionDTO crearColeccion(ColeccionInputDTO coleccion) {
-        System.out.println("ASDADSAD");
         return metaMapaApiService.crearColeccion(coleccion);
     }
-//
-//    public List<ColeccionDTO> coleccionesDestacadas() {
-//        return coleccionesMock();
-//    }
-//
-//    // ===== MOCK =====
-//    private List<ColeccionDTO> coleccionesMock() {
-//        List<ColeccionDTO> list = new ArrayList<>();
-//
-//        ColeccionDTO c1 = ColeccionDTO.builder()
-//                .idColeccion(1L)
-//                .titulo("Conflictos Globales")
-//                .descripcion("Eventos y hitos de conflictos internacionales recientes.")
-//                .imagen("https://picsum.photos/seed/col-1/800/400")
-//                .hechos(pageFromList(hechosPara(1)))
-//                .build();
-//
-//        ColeccionDTO c2 = ColeccionDTO.builder()
-//                .idColeccion(2L)
-//                .titulo("Innovación y Ciencia")
-//                .descripcion("Avances científicos y tecnológicos destacados.")
-//                .imagen("https://picsum.photos/seed/col-2/800/400")
-//                .hechos(pageFromList(hechosPara(2)))
-//                .build();
-//
-//        ColeccionDTO c3 = ColeccionDTO.builder()
-//                .idColeccion(3L)
-//                .titulo("Economía y Mercados")
-//                .descripcion("Cambios macroeconómicos y movimientos de mercado.")
-//                .imagen("https://picsum.photos/seed/col-3/800/400")
-//                .hechos(pageFromList(hechosPara(3)))
-//                .build();
-//
-//        list.add(c1);
-//        list.add(c2);
-//        list.add(c3);
-//        return list;
-//    }
-//
-//    private List<HechoDTO> hechosPara(int coleccionId) {
-//        List<HechoDTO> hechos = new ArrayList<>();
-//        // … llenar con objetos de prueba si se desea
-//        return hechos;
-//    }
-//
-//    private PageHechoDTO pageFromList(List<HechoDTO> list) {
-//        PageHechoDTO page = new PageHechoDTO();
-//        page.setElementos(list);
-//        return page;
-//    }
 }

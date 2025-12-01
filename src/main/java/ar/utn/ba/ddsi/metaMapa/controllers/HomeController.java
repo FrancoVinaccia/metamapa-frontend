@@ -17,13 +17,6 @@ public class HomeController {
     }
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
-    @GetMapping("/solicitudes")
-    public String solicitudes() {
-        // Default: siempre mostrar primero las de eliminación
-        return "redirect:/solicitudes/eliminacion";
-    }
-
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/importarCsv")
     public String importarCsv() {
         return "Fragments/importarCsv";
@@ -57,19 +50,4 @@ public class HomeController {
         model.addAttribute("titulo", "Acceso denegado");
         return "403";
     }
-
-    @GetMapping("/formularioSolicitudEliminacion")
-    public String crearSolicitudEli() {
-        return "Fragments/crearSolicitudEliminacion"; // CORREGIDO
-    }
-
-    @PreAuthorize("hasAnyRole('CONTRIBUYENTE')")
-    @GetMapping("/formularioSolicitudCambio")
-    public String crearSolicitudCambio() {
-        return "Fragments/crearSolicitudCambio"; // CORREGIDO
-    }
-
-
-
-
 }

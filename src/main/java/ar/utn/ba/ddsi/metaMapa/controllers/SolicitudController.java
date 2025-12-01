@@ -2,7 +2,6 @@ package ar.utn.ba.ddsi.metaMapa.controllers;
 
 
 import ar.utn.ba.ddsi.metaMapa.dto.*;
-import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.SolicitudCambioInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.SolicitudEliminacionInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.SolicitudService;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/solicitudes")
 @RequiredArgsConstructor
@@ -29,8 +26,48 @@ public class SolicitudController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        // trim y convierte "" en null para TODOS los String de este controller
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @GetMapping("/solicitudes")
+    public String solicitudes() {
+        // Default: siempre mostrar primero las de eliminación
+        return "redirect:/solicitudes/eliminacion";
+    }
+
+    @GetMapping("/eliminacion")
+    public String listarSolicitudesEliminacion(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(required = false) EstadoSolicitud estadoSolicitud,
+            Model model) {
+
+        try {
+            int pageSize = 5;
+
+            PageSolicitudEliminacionDTO pagina =  solicitudService.listarSolicitudesEliminacion(page, pageSize, estadoSolicitud);
+
+            // pestaña activa
+            model.addAttribute("activeTab", "ELIMINACION");
+
+            // lista de solicitudes para iterar en el HTML
+            model.addAttribute("solicitudesEliminacion", pagina.getElementos());
+
+            // datos de paginación para la vista
+            model.addAttribute("currentPage", page);                    // UI: 1-based
+            model.addAttribute("totalPages", pagina.getTotalPages());
+            model.addAttribute("totalElements", pagina.getTotalElements());
+
+            model.addAttribute("titulo", "Lista de Solicitudes de Eliminación");
+            model.addAttribute("estadoSolicitud", estadoSolicitud);
+
+            return "solicitudes/solicitudes";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMensaje", "Ocurrió un error al cargar las solicitudes: " + e.getMessage());
+            return "errorGenerico";
+        }
     }
 
     @GetMapping("/solicitudCambio/{idHecho}")
@@ -81,30 +118,6 @@ public class SolicitudController {
         }
     }
 
-    private void normalizarCamposOpcionales(SolicitudCambioInputDTO solicitud) {
-        // Si tenés campos String extras que querés asegurarte que estén en null, podés reforzar acá,
-        // pero con el InitBinder ya vienen null si estaban vacíos.
-
-        // Normalizar lugar: si todos sus campos son null, seteamos lugar = null
-        if (solicitud.getLugar() != null) {
-            LugarDTO lugar = solicitud.getLugar();
-            boolean lugarVacio =
-                    lugar.getLatitud() == null &&
-                            lugar.getLongitud() == null &&
-                            esNullOVacio(lugar.getLocalidad()) &&
-                            esNullOVacio(lugar.getCiudad()) &&
-                            esNullOVacio(lugar.getProvincia());
-
-            if (lugarVacio) {
-                solicitud.setLugar(null);
-            }
-        }
-    }
-
-    private boolean esNullOVacio(String s) {
-        return s == null || s.isBlank();
-    }
-
     @PostMapping("/solicitudEliminacion")
     public String crearSolicitudEliminar(
             @ModelAttribute("solicitudEliminacion") SolicitudEliminacionInputDTO solicitud,
@@ -127,48 +140,4 @@ public class SolicitudController {
 
 
     }
-
-   /* @GetMapping
-    public String redirectSolicitudesDefault() {
-        return "redirect:/solicitudes/eliminacion";
-    }*/
-
-    @GetMapping("/eliminacion")
-    public String listarSolicitudesEliminacion(
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(required = false) EstadoSolicitud estadoSolicitud,
-            Model model) {
-
-        try {
-            int pageSize = 5;
-
-            System.out.println("entroo");
-
-            PageSolicitudEliminacionDTO pagina =  solicitudService.listarSolicitudesEliminacion(page, pageSize, estadoSolicitud);
-
-            System.out.println(pagina.getElementos());
-
-            // pestaña activa
-            model.addAttribute("activeTab", "ELIMINACION");
-
-            // lista de solicitudes para iterar en el HTML
-            model.addAttribute("solicitudesEliminacion", pagina.getElementos());
-
-            // datos de paginación para la vista
-            model.addAttribute("currentPage", page);                    // UI: 1-based
-            model.addAttribute("totalPages", pagina.getTotalPages());
-            model.addAttribute("totalElements", pagina.getTotalElements());
-
-            model.addAttribute("titulo", "Lista de Solicitudes de Eliminación");
-            model.addAttribute("estadoSolicitud", estadoSolicitud);
-
-            return "Fragments/solicitudes";
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("errorMensaje", "Ocurrió un error al cargar las solicitudes: " + e.getMessage());
-            return "errorGenerico";
-        }
-    }
-
 }
