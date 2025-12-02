@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.util.UriComponentsBuilder;
 
 
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -440,14 +441,20 @@ public class MetaMapaApiService {
     }
 
     public void actualizarEstadoSolicitudCambio(Long idSolicitud, Long idAdmin, boolean aceptada) {
-        String url = dinamicApi + "/priv/hechos/solicitudes/" + idSolicitud
-                + "?idAdmin=" + idAdmin
-                + "&aceptada=" + aceptada;
-
-        System.out.println(">>> Llamando a Backend cambio (PUT): " + url);
-
         try {
+            String url = UriComponentsBuilder.fromHttpUrl(dinamicApi)
+                    .pathSegment("priv", "hechos", String.valueOf(idSolicitud))
+                    .queryParam("idAdmin", idAdmin)
+                    .queryParam("aceptada", aceptada)
+                    .toUriString();
+
             webApiCallerService.putAdmin(url, Map.of(), Void.class);
+
+        } catch (WebClientResponseException e) {
+            System.out.println(">>> WebClientResponseException status: " + e.getRawStatusCode());
+            System.out.println(">>> WebClientResponseException body: " + e.getResponseBodyAsString());
+            log.error("Error al actualizar solicitud de cambio (status {}): {}", e.getRawStatusCode(), e.getResponseBodyAsString(), e);
+            throw new RuntimeException("Error en backend: " + e.getResponseBodyAsString(), e);
         } catch (Exception e) {
             log.error("Error al actualizar solicitud de cambio {}: {}", idSolicitud, e.getMessage(), e);
             throw new RuntimeException("Error en backend: " + e.getMessage(), e);

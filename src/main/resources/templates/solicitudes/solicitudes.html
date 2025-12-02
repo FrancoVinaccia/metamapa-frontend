@@ -557,6 +557,44 @@
                         </div>
                     </div>
 
+                    <!-- html -->
+                    <!-- PAGINACIÓN para CAMBIOS -->
+                    <div th:if="${totalPagesCambio != null && totalPagesCambio > 1}"
+                         class="mt-6 flex justify-center">
+                        <nav class="flex items-center gap-2">
+
+                            <!-- Anterior -->
+                            <a th:href="@{/solicitudes/cambio(
+            page=${currentPageCambio - 1},
+            estadoSolicitud=${estadoSolicitud}
+        )}"
+                               class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                               th:classappend="${currentPageCambio <= 1} ? ' opacity-50 pointer-events-none' : ''">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+
+                            <!-- Indicador -->
+                            <span class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm">
+            Página
+            <strong th:text="${currentPageCambio}">1</strong>
+            de
+            <strong th:text="${totalPagesCambio}">1</strong>
+        </span>
+
+                            <!-- Siguiente -->
+                            <a th:href="@{/solicitudes/cambio(
+            page=${currentPageCambio + 1},
+            estadoSolicitud=${estadoSolicitud}
+        )}"
+                               class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                               th:classappend="${currentPageCambio >= totalPagesCambio} ? ' opacity-50 pointer-events-none' : ''">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+
+                        </nav>
+                    </div>
+
+
                     <!-- Si NO hay solicitudes -->
                     <div th:if="${solicitudesCambio == null or #lists.isEmpty(solicitudesCambio)}"
                          class="text-center py-16">

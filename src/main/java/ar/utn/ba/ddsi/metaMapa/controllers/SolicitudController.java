@@ -70,6 +70,7 @@ public class SolicitudController {
         }
     }
 
+
     @GetMapping("/cambio")
     public String listarSolicitudesCambio(
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -81,16 +82,23 @@ public class SolicitudController {
 
             System.out.println("Filtro resuelta = " + estadoSolicitud);
 
-            PageSolicitudCambioDTO pagina =   solicitudService.listarSolicitudesCambio(page, pageSize, estadoSolicitud);
+            PageSolicitudCambioDTO pagina = solicitudService.listarSolicitudesCambio(page, pageSize, estadoSolicitud);
 
             model.addAttribute("activeTab", "CAMBIO");
             model.addAttribute("solicitudesCambio", pagina.getElementos());
 
+            // Atributos genéricos (compatibilidad)
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", pagina.getTotalPages());
             model.addAttribute("totalElements", pagina.getTotalElements());
 
-            model.addAttribute("resuelta", estadoSolicitud);
+            // Atributos específicos que usa la vista de CAMBIO
+            model.addAttribute("currentPageCambio", page);
+            model.addAttribute("totalPagesCambio", pagina.getTotalPages());
+            model.addAttribute("totalElementsCambio", pagina.getTotalElements());
+
+            // Exponer el parámetro para que el select y los enlaces funcionen
+            model.addAttribute("estadoSolicitud", estadoSolicitud);
 
             return "solicitudes/solicitudes";
 
@@ -101,6 +109,7 @@ public class SolicitudController {
             return "errorGenerico";
         }
     }
+
 
     @GetMapping("/solicitudCambio/{idHecho}")
     public String solicitudCambio(

@@ -130,7 +130,7 @@
                     <!-- Dropdown solo visible para ADMIN -->
                     <div id="userDropdown" class="dropdown-menu">
                         <a th:href="@{/solicitudes/eliminacion}" class="dropdown-item"  sec:authorize="hasRole('ADMINISTRADOR')">
-                            <i class="fas fa-inbox mr-2"></i> Solicitudes de eliminación
+                            <i class="fas fa-inbox mr-2"></i> Solicitudes
                         </a>
                         <a th:href="@{/estadisticas}" class="dropdown-item"  sec:authorize="hasRole('ADMINISTRADOR')">
                             <i class="fas fa-chart-bar mr-2"></i> Estadísticas
