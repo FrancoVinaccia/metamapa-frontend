@@ -210,6 +210,36 @@ public class SolicitudController {
         }
         return "redirect:/solicitudes/eliminacion";
     }
+
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PutMapping("/cambio/{id}/aceptar")
+    public String aceptarSolicitudCambio(@PathVariable("id") Long idSolicitud,
+                                         @SessionAttribute(value = "id") Long idAdmin,
+                                         RedirectAttributes redirectAttributes) {
+        try {
+            solicitudService.aceptarSolicitudCambio(idSolicitud, idAdmin);
+            redirectAttributes.addFlashAttribute("success", "Solicitud de cambio ACEPTADA.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al aprobar solicitud de cambio: " + e.getMessage());
+        }
+        return "redirect:/solicitudes/cambio";
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PutMapping("/cambio/{id}/rechazar")
+    public String rechazarSolicitudCambio(@PathVariable("id") Long idSolicitud,
+                                          @SessionAttribute(value = "id") Long idAdmin,
+                                          RedirectAttributes redirectAttributes) {
+        try {
+            solicitudService.rechazarSolicitudCambio(idSolicitud, idAdmin);
+            redirectAttributes.addFlashAttribute("success", "Solicitud de cambio RECHAZADA.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al rechazar solicitud de cambio: " + e.getMessage());
+        }
+        return "redirect:/solicitudes/cambio";
+    }
 }
 
 

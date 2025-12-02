@@ -40,6 +40,14 @@ public class SolicitudService {
         metaMapaApiService.actualizarEstadoSolicitud(id, "RECHAZADA");
     }
 
+    public void aceptarSolicitudCambio(Long id, Long idAdmin) {
+        metaMapaApiService.actualizarEstadoSolicitudCambio(id, idAdmin, true);
+    }
+
+    public void rechazarSolicitudCambio(Long id, Long idAdmin) {
+        metaMapaApiService.actualizarEstadoSolicitudCambio(id, idAdmin, false);
+    }
+
     public void marcarComoSpam(Long id) {
         // Antes enviábamos "RECHAZADA", ahora enviamos "SPAM" para usar la 'S' del backend
         metaMapaApiService.actualizarEstadoSolicitud(id, "SPAM");

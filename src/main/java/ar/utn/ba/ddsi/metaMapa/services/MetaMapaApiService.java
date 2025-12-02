@@ -272,13 +272,55 @@ public class MetaMapaApiService {
 
     public HechoDTO crearHecho(HechoInputDTO hecho) {
         System.out.println(hecho);
+        System.out.println("print pre llamada ");
 
-        HechoDTO response = webApiCallerService.post(dinamicApi + "/hechos/new", hecho, HechoDTO.class);
-        System.out.println(response);
-        if (response == null) {
-            throw new RuntimeException("Error al crear hecho en el servicio externo");
+        String url = dinamicApi + "/hechos/new";
+
+        try {
+            // Logueo del URL y body
+            String bodyJson = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(hecho);
+            System.out.println("Llamando a webApiCallerService.post -> URL: " + url + " BODY: " + bodyJson);
+
+            HechoDTO response = webApiCallerService.post(url, hecho, HechoDTO.class);
+            System.out.println("Respuesta webApiCallerService: " + response);
+
+            if (response == null) {
+                throw new RuntimeException("Error al crear hecho en el servicio externo (respuesta nula)");
+            }
+            return response;
+        } catch (WebClientResponseException webEx) {
+            // Log detallado de la respuesta 4xx/5xx del backend
+            System.out.println(">>> WebClientResponseException status: " + webEx.getRawStatusCode());
+            System.out.println(">>> WebClientResponseException body: " + webEx.getResponseBodyAsString());
+            log.error("Error al crear hecho (status {}): {}", webEx.getRawStatusCode(), webEx.getResponseBodyAsString(), webEx);
+            throw new RuntimeException("Bad request al crear hecho: " + webEx.getResponseBodyAsString(), webEx);
+        } catch (Exception e) {
+            log.error("Error al crear hecho via webApiCallerService: {}", e.getMessage(), e);
+            System.out.println("Error en webApiCallerService: " + e.getMessage());
+            // Intento de fallback directo con WebClient para diagnosticar
+            try {
+                System.out.println("Intentando llamada directa con WebClient a: " + url);
+                HechoDTO direct = webClient.post()
+                        .uri(url)
+                        .bodyValue(hecho)
+                        .retrieve()
+                        .bodyToMono(HechoDTO.class)
+                        .block();
+                System.out.println("Respuesta directa WebClient: " + direct);
+                if (direct == null) {
+                    throw new RuntimeException("Respuesta directa nula");
+                }
+                return direct;
+            } catch (WebClientResponseException webEx2) {
+                System.out.println(">>> Fallback WebClient status: " + webEx2.getRawStatusCode());
+                System.out.println(">>> Fallback WebClient body: " + webEx2.getResponseBodyAsString());
+                log.error("Fallback WebClient response body: {}", webEx2.getResponseBodyAsString(), webEx2);
+                throw new RuntimeException("Bad request en fallback: " + webEx2.getResponseBodyAsString(), webEx2);
+            } catch (Exception ex) {
+                log.error("Error en llamada directa WebClient: {}", ex.getMessage(), ex);
+                throw new RuntimeException("No se pudo crear hecho. webApiCallerService error: " + e.getMessage() + " / fallback error: " + ex.getMessage(), ex);
+            }
         }
-        return response;
     }
 // Archivo: MetaMapaApiService.java
 
@@ -394,6 +436,21 @@ public class MetaMapaApiService {
         } catch (Exception e) {
             log.error("Error al actualizar solicitud {}: {}", idSolicitud, e.getMessage());
             throw new RuntimeException("Error en backend: " + e.getMessage());
+        }
+    }
+
+    public void actualizarEstadoSolicitudCambio(Long idSolicitud, Long idAdmin, boolean aceptada) {
+        String url = dinamicApi + "/priv/hechos/solicitudes/" + idSolicitud
+                + "?idAdmin=" + idAdmin
+                + "&aceptada=" + aceptada;
+
+        System.out.println(">>> Llamando a Backend cambio (PUT): " + url);
+
+        try {
+            webApiCallerService.putAdmin(url, Map.of(), Void.class);
+        } catch (Exception e) {
+            log.error("Error al actualizar solicitud de cambio {}: {}", idSolicitud, e.getMessage(), e);
+            throw new RuntimeException("Error en backend: " + e.getMessage(), e);
         }
     }
 }

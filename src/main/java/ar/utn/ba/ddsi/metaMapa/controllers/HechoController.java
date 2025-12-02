@@ -110,21 +110,34 @@ public class HechoController {
     }
 
 
-    @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
     @PostMapping("/crear")
-    public String crearHecho(@ModelAttribute("hecho") HechoInputDTO hecho,
-                             @SessionAttribute(value = "id") Long usuarioId,
-                             BindingResult bindingResult,
-                             Model model,
-                             RedirectAttributes redirectAttributes) {
-        try{
-            hecho.setIdUsuario(usuarioId);
-            HechoDTO hechoCreado = hechoService.crearHecho(hecho);
-            redirectAttributes.addFlashAttribute("success", "Hecho creado con éxito.");
-            redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+    public String crearHecho(
+            @ModelAttribute("hecho") HechoInputDTO hecho,
+            BindingResult bindingResult,
+            @SessionAttribute(value = "id", required = false) Long idUsuario,
+            RedirectAttributes redirectAttributes,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("error", "Corrija los campos del formulario.");
+            model.addAttribute("tipoMensaje", "danger");
             return "hecho/crearHecho";
         }
-        catch (Exception e){
+
+        try {
+            if (idUsuario != null) {
+                hecho.setIdUsuario(idUsuario);
+            }
+
+            HechoDTO creado = hechoService.crearHecho(hecho);
+
+            // Si la creación fue OK redirigimos al listado y mostramos mensaje
+            redirectAttributes.addFlashAttribute("success", "Hecho creado con éxito.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+            return "redirect:/hechos"; // redirige a la lista de hechos
+
+        } catch (Exception e) {
+            // en caso de error mostramos la misma página con el mensaje
             model.addAttribute("error", "Error al crear el hecho: " + e.getMessage());
             model.addAttribute("tipoMensaje", "danger");
             return "hecho/crearHecho";
