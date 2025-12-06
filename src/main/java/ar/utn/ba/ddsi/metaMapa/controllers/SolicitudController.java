@@ -43,7 +43,7 @@ public class SolicitudController {
             Model model) {
 
         try {
-            int pageSize = 5;
+            int pageSize = 3;
 
             PageSolicitudEliminacionDTO pagina =  solicitudService.listarSolicitudesEliminacion(page, pageSize, estadoSolicitud);
 
@@ -78,26 +78,19 @@ public class SolicitudController {
             Model model) {
 
         try {
-            int pageSize = 5;
+            int pageSize = 3;
 
-            System.out.println("Filtro resuelta = " + estadoSolicitud);
+            System.out.println(">>> Controller CAMBIO page=" + page + " estado=" + estadoSolicitud);
 
             PageSolicitudCambioDTO pagina = solicitudService.listarSolicitudesCambio(page, pageSize, estadoSolicitud);
 
             model.addAttribute("activeTab", "CAMBIO");
             model.addAttribute("solicitudesCambio", pagina.getElementos());
 
-            // Atributos genéricos (compatibilidad)
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", pagina.getTotalPages());
             model.addAttribute("totalElements", pagina.getTotalElements());
 
-            // Atributos específicos que usa la vista de CAMBIO
-            model.addAttribute("currentPageCambio", page);
-            model.addAttribute("totalPagesCambio", pagina.getTotalPages());
-            model.addAttribute("totalElementsCambio", pagina.getTotalElements());
-
-            // Exponer el parámetro para que el select y los enlaces funcionen
             model.addAttribute("estadoSolicitud", estadoSolicitud);
 
             return "solicitudes/solicitudes";
@@ -153,6 +146,8 @@ public class SolicitudController {
             return "solicitudes/solicitudCambio";
         }
     }
+
+
 
     @PostMapping("/solicitudEliminacion")
     public String crearSolicitudEliminar(

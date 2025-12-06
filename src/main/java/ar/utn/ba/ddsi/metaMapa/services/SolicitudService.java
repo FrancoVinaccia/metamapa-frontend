@@ -32,6 +32,8 @@ public class SolicitudService {
         return metaMapaApiService.obtenerTodasLasSolicitudesCambio(page, size, resuelta);
     }
 
+
+
     public void aceptarSolicitud(Long id) {
         metaMapaApiService.actualizarEstadoSolicitud(id, "APROBADA");
     }

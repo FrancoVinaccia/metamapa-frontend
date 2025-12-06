@@ -207,8 +207,8 @@ public class MetaMapaApiService {
 
     public PageSolicitudEliminacionDTO obetnerTodasLasSolicitudesEliminacion(int page, int limit, EstadoSolicitud estado) {
 
-        int pageBackend = page - 1;
-        if (pageBackend < 0) pageBackend = 0;
+        int pageBackend = page;
+
 
         String url;
         if (estado != null) {
@@ -230,13 +230,11 @@ public class MetaMapaApiService {
 
     public PageSolicitudCambioDTO obtenerTodasLasSolicitudesCambio(int page, int limit, String estado) {
 
-        int pageBackend = Math.max(0, page - 1);
-
+        int pageBackend = page;
         StringBuilder url = new StringBuilder(
                 dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit
         );
 
-        // Convertimos STRING → Boolean para mandar al back externo
         if (estado != null && !estado.trim().isEmpty()) {
 
             Boolean estadoBoolean;
@@ -251,22 +249,28 @@ public class MetaMapaApiService {
                     break;
 
                 default:
-                    estadoBoolean = null;  // cualquier otro valor no filtra nada
+                    estadoBoolean = null;
             }
 
-            // Si el estado es válido, lo enviamos al backend
             if (estadoBoolean != null) {
+                // 👀 OJO: acá tiene que ir EXACTAMENTE el nombre del parámetro
+                // que espera la API dinámica. Si allá es "estado", cambiá "resuelta"
                 url.append("&resuelta=").append(estadoBoolean);
             }
         }
 
+        String finalUrl = url.toString();
 
 
-        PageSolicitudCambioDTO response =  webApiCallerService.getAdmin(url.toString(), PageSolicitudCambioDTO.class);
+        PageSolicitudCambioDTO response =
+                webApiCallerService.getAdmin(finalUrl, PageSolicitudCambioDTO.class);
 
         if (response == null) {
             throw new RuntimeException("Error al obtener las solicitudes de cambio en el servicio externo");
         }
+
+        // ver qué viene realmente
+
 
         return response;
     }
@@ -443,21 +447,26 @@ public class MetaMapaApiService {
     public void actualizarEstadoSolicitudCambio(Long idSolicitud, Long idAdmin, boolean aceptada) {
         try {
             String url = UriComponentsBuilder.fromHttpUrl(dinamicApi)
-                    .pathSegment("priv", "hechos", String.valueOf(idSolicitud))
+                    .pathSegment("priv", "hechos", "solicitudCambio", String.valueOf(idSolicitud))
                     .queryParam("idAdmin", idAdmin)
                     .queryParam("aceptada", aceptada)
                     .toUriString();
 
-            webApiCallerService.putAdmin(url, Map.of(), Void.class);
+            System.out.println(">>> PUT actualizarEstadoSolicitudCambio -> " + url);
+
+            // No mando body, solo query params, y no me interesa el DTO de vuelta
+            webApiCallerService.putAdmin(url,Map.of(), Void.class);
 
         } catch (WebClientResponseException e) {
             System.out.println(">>> WebClientResponseException status: " + e.getRawStatusCode());
             System.out.println(">>> WebClientResponseException body: " + e.getResponseBodyAsString());
-            log.error("Error al actualizar solicitud de cambio (status {}): {}", e.getRawStatusCode(), e.getResponseBodyAsString(), e);
+            log.error("Error al actualizar solicitud de cambio (status {}): {}",
+                    e.getRawStatusCode(), e.getResponseBodyAsString(), e);
             throw new RuntimeException("Error en backend: " + e.getResponseBodyAsString(), e);
         } catch (Exception e) {
             log.error("Error al actualizar solicitud de cambio {}: {}", idSolicitud, e.getMessage(), e);
             throw new RuntimeException("Error en backend: " + e.getMessage(), e);
         }
     }
+
 }
