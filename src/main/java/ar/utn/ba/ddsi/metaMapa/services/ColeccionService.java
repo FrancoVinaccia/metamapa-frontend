@@ -42,17 +42,6 @@ public class ColeccionService {
             idLong = Long.parseLong(idColeccion);
         } catch (NumberFormatException ignored) {}
 
-        PageHechoDTO hechosPage = metaMapaApiService.buscarHechos(page, limit,
-                null, // categoria/tema/ubicacion no usados aquí
-                null,
-                null,
-                null,
-                null,
-                curada,
-                idLong,
-                null);
-
-        coleccion.setHechos(hechosPage);
         return coleccion;
     }
 
