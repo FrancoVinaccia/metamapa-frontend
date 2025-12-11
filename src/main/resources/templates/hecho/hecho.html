@@ -24,32 +24,35 @@
                     <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 pb-6 border-b border-gray-200">
                         <!-- Fecha -->
                         <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-50 border border-gray-200"
-                              th:if="${hecho != null && hecho.fecha != null}">
-                            <i class="fas fa-calendar-alt mr-2 text-blue-500"></i>
-                            <span th:text="${hecho.fecha}">dd/mm/aaaa</span>
-                        </span>
+                              th:if="${hecho != null && hecho.fechaAcontecimiento != null}">
+        <i class="fas fa-calendar-alt mr-2 text-blue-500"></i>
+        <span th:text="${#dates.format(hecho.fechaAcontecimiento, 'dd/MM/yyyy')}">
+            dd/mm/aaaa
+        </span>
+    </span>
 
                         <!-- Categoría -->
                         <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800"
                               th:if="${hecho != null && hecho.categoria != null}">
-                            <i class="fas fa-tag mr-2"></i>
-                            <span th:text="${hecho.categoria}">Categoría</span>
-                        </span>
+        <i class="fas fa-tag mr-2"></i>
+        <span th:text="${hecho.categoria}">Categoría</span>
+    </span>
 
                         <!-- Ubicación armada desde lugar -->
                         <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-50 border border-gray-200"
                               th:if="${hecho != null && hecho.lugar != null}">
-                            <i class="fas fa-map-marker-alt mr-2 text-red-500"></i>
-                            <span>
-                                <span th:if="${hecho.lugar.localidad != null}"
-                                      th:text="${hecho.lugar.localidad + ', '}">Localidad, </span>
-                                <span th:if="${hecho.lugar.ciudad != null}"
-                                      th:text="${hecho.lugar.ciudad + ', '}">Ciudad, </span>
-                                <span th:if="${hecho.lugar.provincia != null}"
-                                      th:text="${hecho.lugar.provincia}">Provincia</span>
-                            </span>
-                        </span>
+        <i class="fas fa-map-marker-alt mr-2 text-red-500"></i>
+        <span>
+            <span th:if="${hecho.lugar.localidad != null}"
+                  th:text="${hecho.lugar.localidad + ', '}">Localidad, </span>
+            <span th:if="${hecho.lugar.ciudad != null}"
+                  th:text="${hecho.lugar.ciudad + ', '}">Ciudad, </span>
+            <span th:if="${hecho.lugar.provincia != null}"
+                  th:text="${hecho.lugar.provincia}">Provincia</span>
+        </span>
+    </span>
                     </div>
+
 
                     <!-- Cuerpo / Detalle de ubicación -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">

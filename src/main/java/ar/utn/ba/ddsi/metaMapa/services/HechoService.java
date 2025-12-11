@@ -57,9 +57,8 @@ public class HechoService {
     }
 
     public HechoDTO obtenerHecho(long id) {
-        // Mock simple para vista detalle
-        List <HechoDTO> hechos = hechosDestacados();
-        return hechos.stream().filter(h -> h.getIdHecho() == id).findFirst().orElse(null);
+        HechoDTO hecho = metaMapaApiService.getHechoById(id);
+        return  hecho;
     }
 
     public List<HechoDTO> hechosDestacados() {

@@ -93,6 +93,16 @@ public class MetaMapaApiService {
         }
     }
 
+    public HechoDTO getHechoById(Long idHecho) {
+        try {
+            String url = agregacionApi + "/hechos/" + idHecho;
+            return webApiCallerService.get(url, HechoDTO.class);
+        } catch (Exception e) {
+            log.error("Error obteniendo hecho {} desde agregacion: {}", idHecho, e.getMessage(), e);
+            return null;
+        }
+    }
+
     public List<HechoDTO> listarHechos(int page, int limit) {
         try {
             PageHechoDTO response = webApiCallerService.get(
