@@ -7,6 +7,7 @@
          th:src="${coleccion != null and coleccion.imagen != null and !#strings.isEmpty(coleccion.imagen)} ? ${coleccion.imagen} : ${ph}"
          th:alt="${coleccion != null and coleccion.titulo != null ? coleccion.titulo : 'Colección'}" />
 
+
     <div class="p-6">
         <h3 class="text-xl font-semibold text-gray-900 mb-2"
             th:text="${coleccion != null and coleccion.titulo != null ? coleccion.titulo : 'Título'}">Título</h3>

@@ -30,17 +30,32 @@ public class ColeccionService {
             return null;
         }
 
-        // parsear busquedaCurada a Boolean si viene
-        Boolean curada = null;
+        Boolean curada = false;
         if (busquedaCurada != null && !busquedaCurada.isBlank()) {
             curada = Boolean.valueOf(busquedaCurada);
         }
 
-        // intentar parsear id a Long si corresponde (si la API lo espera)
-        Long idLong = null;
+        // Pasar el id de la colección tal cual (String) al buscar hechos
         try {
-            idLong = Long.parseLong(idColeccion);
-        } catch (NumberFormatException ignored) {}
+            PageHechoDTO pageHechos = metaMapaApiService.buscarHechos(
+                    page,
+                    limit,
+                    null,   // tema/etiquetas
+                    null,   // ubicacion (ciudad/localidad)
+                    null,   // categoria
+                    null,   // fuente / cargaOrigen
+                    null,   // fecha (fechaInicio)
+                    curada, // busquedaCurada
+                    idColeccion, // idColeccion como String
+                    null    // idUsuario
+            );
+            if (pageHechos == null) {
+                pageHechos = new PageHechoDTO();
+            }
+            coleccion.setHechos(pageHechos);
+        } catch (Exception e) {
+            coleccion.setHechos(new PageHechoDTO());
+        }
 
         return coleccion;
     }

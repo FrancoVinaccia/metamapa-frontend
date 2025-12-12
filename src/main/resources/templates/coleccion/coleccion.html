@@ -49,10 +49,8 @@
 
             <label class="text-sm font-medium text-gray-700">Mostrar hechos:</label>
             <select name="busquedaCurada" class="px-3 py-2 border border-gray-300 rounded-lg">
-                <!-- usar '' para indicar literal string vacía -->
-                <option th:value="''" th:selected="${param.busquedaCurada == null or param.busquedaCurada == ''}">Todos</option>
+                <option th:value="false" th:selected="${param.busquedaCurada == null or param.busquedaCurada == 'false'}">Irrestricto</option>
                 <option th:value="true" th:selected="${param.busquedaCurada == 'true'}">Curados</option>
-                <option th:value="false" th:selected="${param.busquedaCurada == 'false'}">Irrestricto</option>
             </select>
 
             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Aplicar</button>
@@ -62,7 +60,6 @@
                 <span th:text="${#lists.size(coleccion.hechosLista)} + ' hechos'">0 hechos</span>
             </div>
         </form>
-
     </section>
 
     <!-- Lista de hechos -->

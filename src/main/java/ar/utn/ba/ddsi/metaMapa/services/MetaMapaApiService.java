@@ -116,8 +116,6 @@ public class MetaMapaApiService {
         }
     }
 
-
-
     public List<HechoDTO> listarHechosFiltrados(
             int page,
             int limit,
@@ -383,41 +381,41 @@ public class MetaMapaApiService {
                                      String fuente,     // cargaOrigen
                                      String fecha,      // fechaInicio
                                      Boolean busquedaCurada,
-                                     Long idColeccion,  // Para filtrar por colección
+                                     String idColeccion,  // ahora String para aceptar cualquier id
                                      Long idUsuario) {  // Para filtrar 'Mis Hechos'
 
         try {
-            // Usamos UriComponentsBuilder para armar la URL con parámetros opcionales
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(agregacionApi + "/hechos")
                     .queryParam("page", page)
                     .queryParam("limit", limit);
 
-            // Agregamos filtros solo si no son nulos/vacíos
-            if (idColeccion != null) builder.queryParam("idColeccion", idColeccion);
+            if (idColeccion != null && !idColeccion.isBlank()) builder.queryParam("idColeccion", idColeccion);
 
-            // Mapeo de tus filtros del front a los del back (PublicHechoController)
+            // Mapeo de filtros del front a los del back (PublicHechoController)
             if (categoria != null && !categoria.isEmpty()) builder.queryParam("categoria", categoria);
             if (ubicacion != null && !ubicacion.isEmpty()) builder.queryParam("ciudad", ubicacion); // Asumiendo que ubicación es ciudad
             if (fuente != null && !fuente.isEmpty()) builder.queryParam("cargaOrigen", fuente);
 
-            // La fecha del front suele ser un día específico. El back espera rango o inicio.
-            // Lo mandamos como fechaInicio
             if (fecha != null && !fecha.isEmpty()) builder.queryParam("fechaInicio", fecha);
 
             if (busquedaCurada != null) builder.queryParam("busquedaCurada", busquedaCurada);
 
-            // Nota: El backend NO parece tener filtro por 'idUsuario' o 'tema' (etiquetas) en PublicHechoController.
-            // Esos dos quizás tengamos que seguir filtrándolos en memoria o agregarlos al back después.
-            // Por ahora, pedimos los datos filtrados al back y refinamos lo que falte.
-
             String url = builder.toUriString();
             System.out.println("Llamando a API Externa: " + url);
+            System.out.println("tema: " + tema);
+            System.out.println("ubicacion: " + ubicacion);
+            System.out.println("categoria: " + categoria);
+            System.out.println("fuente: " + fuente);
+            System.out.println("fecha: " + fecha);
+            System.out.println("busquedaCurada: " + busquedaCurada);
+            System.out.println("idColeccion: " + idColeccion);
+
 
             return webApiCallerService.get(url, PageHechoDTO.class);
 
         } catch (Exception e) {
             System.err.println("Error buscando hechos en API: " + e.getMessage());
-            return new PageHechoDTO(); // Retorno vacío seguro
+            return new PageHechoDTO();
         }
     }
 
