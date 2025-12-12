@@ -239,11 +239,16 @@ public class MetaMapaApiService {
     public PageSolicitudCambioDTO obtenerTodasLasSolicitudesCambio(int page, int limit, String estado) {
 
         int pageBackend = page;
-        StringBuilder url = new StringBuilder(
-                dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit
-        );
 
-        if (estado != null && !estado.trim().isEmpty()) {
+
+        String url;
+        if (estado != null) {
+            url = dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit + "&estado=" + estado;
+        } else {
+            url = dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit ;
+        }
+
+        /*if (estado != null && !estado.trim().isEmpty()) {
 
             Boolean estadoBoolean;
 
@@ -268,10 +273,10 @@ public class MetaMapaApiService {
         }
 
         String finalUrl = url.toString();
-
+*/
 
         PageSolicitudCambioDTO response =
-                webApiCallerService.getAdmin(finalUrl, PageSolicitudCambioDTO.class);
+                webApiCallerService.getAdmin(url, PageSolicitudCambioDTO.class);
 
         if (response == null) {
             throw new RuntimeException("Error al obtener las solicitudes de cambio en el servicio externo");

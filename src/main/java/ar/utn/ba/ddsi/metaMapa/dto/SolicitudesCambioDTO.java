@@ -22,7 +22,7 @@ public class SolicitudesCambioDTO {
     private LugarDTO lugar;               // puede venir sólo con id
     private Date fechaAcontecimiento;     // nueva_fecha_hecho
     private List<MultimediaDTO> multimedia;
-    private Boolean resuelta;
+    private EstadoSolicitud estado;
 
     // --- Helpers que la vista espera ---
 
@@ -61,9 +61,5 @@ public class SolicitudesCambioDTO {
         return null;
     }
 
-    // Estado textual que la vista espera (APROBADA / PENDIENTE)
-    public String getEstado() {
-        if (resuelta == null) return null;
-        return Boolean.TRUE.equals(resuelta) ? "APROBADA" : "PENDIENTE";
-    }
+
 }

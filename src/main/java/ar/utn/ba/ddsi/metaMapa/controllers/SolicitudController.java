@@ -84,6 +84,8 @@ public class SolicitudController {
 
             PageSolicitudCambioDTO pagina = solicitudService.listarSolicitudesCambio(page, pageSize, estadoSolicitud);
 
+            System.out.println(pagina.getElementos());
+
             model.addAttribute("activeTab", "CAMBIO");
             model.addAttribute("solicitudesCambio", pagina.getElementos());
 
