@@ -17,5 +17,5 @@ public class ColeccionInputDTO {
 
     private List<String> fuentes;
 
-    //private String metodoConsenso;
+    private String metodoConsenso;
 }

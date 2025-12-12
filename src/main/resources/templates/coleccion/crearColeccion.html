@@ -63,7 +63,7 @@
             <!-- Categoría (texto libre) -->
             <div>
                 <label for="categoria" class="block text-sm font-semibold text-gray-700 mb-2">
-                    Categoría (criterios.categoria) <span class="text-red-500">*</span>
+                    Categoría
                 </label>
                 <input
                         type="text"
@@ -94,7 +94,7 @@
                     <div>
                         <label for="fechaInicio"
                                class="block text-xs font-medium text-gray-700 mb-1">
-                            Fecha inicio (criterios.fecha.fechaInicio)
+                            Fecha inicio
                         </label>
                         <input
                                 id="fechaInicio"
@@ -112,7 +112,7 @@
                     <div>
                         <label for="fechaFin"
                                class="block text-xs font-medium text-gray-700 mb-1">
-                            Fecha fin (criterios.fecha.fechaFin)
+                            Fecha fin
                         </label>
                         <input
                                 id="fechaFin"
@@ -147,7 +147,7 @@
                     <!-- Localidad -->
                     <div>
                         <label for="localidad" class="block text-xs font-medium text-gray-700 mb-1">
-                            Localidad (criterios.lugar.localidad)
+                            Localidad
                         </label>
                         <input
                                 type="text"
@@ -163,7 +163,7 @@
                     <!-- Ciudad -->
                     <div>
                         <label for="ciudad" class="block text-xs font-medium text-gray-700 mb-1">
-                            Ciudad (criterios.lugar.ciudad)
+                            Ciudad
                         </label>
                         <input
                                 type="text"
@@ -179,7 +179,7 @@
                     <!-- Provincia -->
                     <div>
                         <label for="provincia" class="block text-xs font-medium text-gray-700 mb-1">
-                            Provincia (criterios.lugar.provincia)
+                            Provincia
                         </label>
                         <input
                                 type="text"
@@ -194,25 +194,20 @@
                 </div>
             </div>
 
-            <!-- Método de consenso
+            <!-- Métod0 de consenso-->
             <div>
                 <label for="metodoConsenso" class="block text-sm font-semibold text-gray-700 mb-2">
-                    Método de consenso (metodoConsenso)
+                    Método de consenso
                 </label>
-                <select
-                        id="metodoConsenso"
-                        th:field="*{metodoConsenso}"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
-                               focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                               outline-none transition-all text-sm bg-white"
-                >
-                    <option value="">Sin algoritmo (todos los hechos se consideran consensuados)</option>
-                    <option value="mayoria">Mayoría simple</option>
-                    <option value="consenso">Consenso</option>
-                    <option value="delegado">Delegado</option>
-                    <option value="otro">Otro</option>
+                <select id="metodoConsenso" th:field="*{metodoConsenso}"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
+                    <option value="BASICO">Básico</option>
+                    <option value="MULTIPLESMENCIONES">Múltiples menciones</option>
+                    <option value="ABSOLUTA">Absoluta</option>
+                    <option value="MAYORIASIMPLE">Mayoría simple</option>
                 </select>
-            </div>-->
+                <p class="text-xs text-gray-500 mt-1">Seleccioná la estrategia de consenso para la colección (por defecto: Básico).</p>
+            </div>
 
             <!-- Fuentes: Dinámica, Proxy, Estática -->
             <div>
