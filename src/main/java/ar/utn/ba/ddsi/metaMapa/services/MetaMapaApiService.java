@@ -21,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,16 +32,19 @@ public class MetaMapaApiService {
     private final WebApiCallerService webApiCallerService;
     private final String agregacionApi;
     private final String dinamicApi;
+    private final String estadisticasApi;
 
     @Autowired
     public MetaMapaApiService(
             WebApiCallerService webApiCallerService,
             @Value("${metamapa.dinamica.url}") String dinamicApi,
-            @Value("${metamapa.agregacion.url}") String agregacionApi) {
+            @Value("${metamapa.agregacion.url}") String agregacionApi,
+    @Value("${metamapa.estadistica.url}") String estadisticaApi) {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
         this.agregacionApi = agregacionApi;
         this.dinamicApi = dinamicApi;
+        this.estadisticasApi = estadisticaApi;
     }
 
     public AuthResponseDTO login(String username, String password) {
@@ -126,7 +130,7 @@ public class MetaMapaApiService {
             String fechaInicio,
             String fechaFin,
             String cargaOrigen,
-            String misHechos,
+            Long misHechos,
             String busquedaCurada
     ) {
         try {
@@ -160,8 +164,8 @@ public class MetaMapaApiService {
             }
 
             // si querés mapear "misHechos" al parámetro del back `busquedaCurada`
-            if (misHechos != null && misHechos.equalsIgnoreCase("true")) {
-                url += "&busquedaCurada=true";
+            if (misHechos != null && misHechos > 0) {
+                url += "&misHechos=" + URLEncoder.encode(misHechos.toString(), StandardCharsets.UTF_8);
             }
 
             if (busquedaCurada != null && busquedaCurada.equalsIgnoreCase("true")) {
@@ -480,6 +484,33 @@ public class MetaMapaApiService {
             log.error("Error al actualizar solicitud de cambio {}: {}", idSolicitud, e.getMessage(), e);
             throw new RuntimeException("Error en backend: " + e.getMessage(), e);
         }
+    }
+
+    public CategoriaTopDTO obtenerCategoriaConMasHechos() {
+        // ⚠️ Ajustá el path si tu endpoint es otro
+        return webApiCallerService.getAdmin(
+                estadisticasApi + "/categoria",
+                CategoriaTopDTO.class
+        );
+    }
+
+    public List<CategoriaProvinciaDTO> obtenerProvinciaTopPorCategoria() {
+        // ⚠️ Ajustá el path si tu endpoint es otro
+        CategoriaProvinciaDTO[] response = webApiCallerService.getAdmin(
+                estadisticasApi + "/provincia-categoria",
+                CategoriaProvinciaDTO[].class
+        );
+        return response == null ? List.of() : Arrays.asList(response);
+    }
+
+
+
+    public SolicitudesSpamDTO obtenerSolicitudesSpamNoSpamDelMes() {
+        // ⚠️ Ajustá el path si tu endpoint es otro
+        return webApiCallerService.getAdmin(
+                estadisticasApi + "/spam",
+                SolicitudesSpamDTO.class
+        );
     }
 
 }

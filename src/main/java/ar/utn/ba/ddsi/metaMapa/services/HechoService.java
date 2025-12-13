@@ -19,9 +19,9 @@ public class HechoService {
         this.metaMapaApiService = metaMapaApiService;
     }
 
-    public List<HechoDTO> obtenerTodosLosHechos(int page, int limit) {
+    /*public List<HechoDTO> obtenerTodosLosHechos(int page, int limit) {
         return metaMapaApiService.listarHechos(page, limit);
-    }
+    }*/
 
     public List<HechoDTO> obtenerTodosLosHechos(
             int page,
@@ -34,11 +34,23 @@ public class HechoService {
             String fechaInicio,
             String fechaFin,
             String cargaOrigen,
-            String misHechos,
+            Long misHechos,
             String busquedaCurada
     ) {
         if (!aplicarFiltros) {
-            return metaMapaApiService.listarHechos(page, limit);
+            return metaMapaApiService.listarHechosFiltrados(
+                    page,
+                    limit,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
         } else {
             return metaMapaApiService.listarHechosFiltrados(
                     page,

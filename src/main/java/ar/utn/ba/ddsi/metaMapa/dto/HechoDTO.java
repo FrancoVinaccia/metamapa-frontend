@@ -36,6 +36,7 @@ public class HechoDTO {
         if (multimedia != null && !multimedia.isEmpty()) {
             return multimedia.get(0).getUrl();
         }
+
         return null;
     }
 }

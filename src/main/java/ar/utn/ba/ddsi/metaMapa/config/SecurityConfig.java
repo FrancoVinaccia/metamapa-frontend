@@ -24,7 +24,6 @@ public class SecurityConfig {
     }
 
 
-    //todo ni idea me lo hizo gpt
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 

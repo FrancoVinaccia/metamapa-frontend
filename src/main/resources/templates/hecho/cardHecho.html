@@ -4,7 +4,7 @@
      th:with="ph=@{/img/placeholder.jpg}" xmlns:th="http://www.w3.org/1999/xhtml">
 
     <img class="w-full h-48 object-cover"
-         th:src="${hecho != null and hecho.imagen != null and !#strings.isEmpty(hecho.imagen)} ? ${hecho.imagen} : ${ph}"
+         th:src="${hecho != null and hecho.imagen != null and !#strings.isEmpty(hecho.imagen)} ? ${hecho.imagen} : @{/images/default.jpg}"
          th:alt="${hecho != null and hecho.titulo != null ? hecho.titulo : 'Hecho'}" />
 
     <div class="p-6">
