@@ -1,9 +1,11 @@
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
+import ar.utn.ba.ddsi.metaMapa.dto.EPageOutputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.HechoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -148,5 +150,54 @@ public class HechoController {
         }
     }
 
+    @Value("${metamapa.estatica.forward-url}")
+    private String estaticaForwardUrl;
 
+    @Value("${metamapa.priv.token:}")
+    private String privToken;
+
+    @Value("${metamapa.priv.header:X-ADMIN-TOKEN}")
+    private String privHeader;
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @GetMapping("/importarCsv")
+    public String mostrarImportarCsv(Model model) {
+        // ✅ esto es lo que Estática usa para notificar al suscriptor.
+        model.addAttribute("estaticaUrl", estaticaForwardUrl);
+
+        model.addAttribute("privToken", privToken);
+        model.addAttribute("privHeader", privHeader);
+
+        return "Fragments/importarCsv";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @PostMapping(value = "/importar", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String importarHechos(
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+            @RequestParam("URL") String url,
+            @RequestParam("TOKEN") String token,
+            @RequestParam("HEADER") String header,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            if (file == null || file.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Archivo vacío o no seleccionado.");
+                return "redirect:/hechos/importarCsv";
+            }
+
+            // opcional: fallback por si vinieran vacíos desde el form
+            if (url == null || url.isBlank()) url = estaticaForwardUrl;
+            if (token == null || token.isBlank()) token = privToken;
+            if (header == null || header.isBlank()) header = privHeader;
+
+            EPageOutputDTO resp = hechoService.importHechos(url, token, header, file);
+
+            redirectAttributes.addFlashAttribute("success", "Importación completada.");
+            return "redirect:/hechos/importarCsv";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error en la importación: " + e.getMessage());
+            return "redirect:/hechos/importarCsv";
+        }
+    }
 }

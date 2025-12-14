@@ -87,4 +87,10 @@ public class HechoService {
     public HechoDTO crearHecho(HechoInputDTO hecho) {
         return metaMapaApiService.crearHecho(hecho);
     }
+
+    public ar.utn.ba.ddsi.metaMapa.dto.EPageOutputDTO importHechos(String url, String token, String header, org.springframework.web.multipart.MultipartFile file) {
+        return metaMapaApiService.importHechos(url, token, header, file);
+    }
 }
+
+

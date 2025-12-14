@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.web.reactive.function.BodyInserters;
 
 
 import java.net.URI;
@@ -33,18 +35,23 @@ public class MetaMapaApiService {
     private final String agregacionApi;
     private final String dinamicApi;
     private final String estadisticasApi;
+    private final String estaticaApi;
 
     @Autowired
     public MetaMapaApiService(
             WebApiCallerService webApiCallerService,
             @Value("${metamapa.dinamica.url}") String dinamicApi,
             @Value("${metamapa.agregacion.url}") String agregacionApi,
-    @Value("${metamapa.estadistica.url}") String estadisticaApi) {
+            @Value("${metamapa.estadistica.url}") String estadisticaApi,
+            @Value("${metamapa.estatica.url}") String estaticaApi
+    )
+    {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
         this.agregacionApi = agregacionApi;
         this.dinamicApi = dinamicApi;
         this.estadisticasApi = estadisticaApi;
+        this.estaticaApi = estaticaApi;
     }
 
     public AuthResponseDTO login(String username, String password) {
@@ -513,4 +520,45 @@ public class MetaMapaApiService {
         );
     }
 
+    public EPageOutputDTO importHechos(String urlHeader, String token, String headerHeader, org.springframework.web.multipart.MultipartFile file) {
+        try {
+            String apiUrl = estaticaApi + "/priv/hechos";
+
+            // Construir multipart para WebClient
+            org.springframework.util.MultiValueMap<String, Object> multipartData = new org.springframework.util.LinkedMultiValueMap<>();
+            // ByteArrayResource para enviar archivo con filename
+            org.springframework.core.io.ByteArrayResource resource = new org.springframework.core.io.ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
+                }
+            };
+            multipartData.add("file", resource);
+
+            WebClient.RequestBodySpec req = webClient.post()
+                    .uri(apiUrl)
+                    .contentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+
+            req = req.header("X-ADMIN-TOKEN", "GRUPO-28");
+
+            if (urlHeader != null && !urlHeader.isBlank()) req = req.header("URL", urlHeader);
+            if (token != null && !token.isBlank()) req = req.header("TOKEN", token);
+            if (headerHeader != null && !headerHeader.isBlank()) req = req.header("HEADER", headerHeader);
+
+            ar.utn.ba.ddsi.metaMapa.dto.EPageOutputDTO response = req
+                    .body(org.springframework.web.reactive.function.BodyInserters.fromMultipartData(multipartData))
+                    .retrieve()
+                    .bodyToMono(ar.utn.ba.ddsi.metaMapa.dto.EPageOutputDTO.class)
+                    .block();
+
+            if (response == null) {
+                throw new RuntimeException("Respuesta nula desde servicio externo al importar hechos");
+            }
+            return response;
+        } catch (org.springframework.web.reactive.function.client.WebClientResponseException webEx) {
+            throw new RuntimeException("Error al importar hechos: " + webEx.getResponseBodyAsString(), webEx);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al importar hechos: " + e.getMessage(), e);
+        }
+    }
 }

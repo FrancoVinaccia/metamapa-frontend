@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 "formularioSolicitudEliminacion",
                                 "formularioSolicitudCambio",
                                 "/importarCsv",
+                                "/importar",
                                 "enDesarrollo",// si la usás
                                 "/login", "/signin",      // vistas de auth
                                 "/error", "/403", "/404",
@@ -50,6 +51,9 @@ public class SecurityConfig {
 
                         // Visualización anónima (Entrega 5): GET a colecciones/hechos sin login
                         .requestMatchers(HttpMethod.GET, "/colecciones/**", "/hechos/**","/coleccion/**").permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/hechos/importar").hasRole("ADMINISTRADOR")
+
 
                         // TODO: endpoints públicos adicionales, agregalos arriba
 
@@ -72,8 +76,9 @@ public class SecurityConfig {
                 // CSRF: dejalo ON para formularios Thymeleaf. Si tenés APIs, podés ignorar rutas puntuales.
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers(
-                                "/signin",                // si haces POST sin token CSRF
-                                "/solicitudes/**"         // ejemplo API pública
+                                "/signin",
+                                "/solicitudes/**",
+                                "/hechos/importar"
                         )
                 )
 

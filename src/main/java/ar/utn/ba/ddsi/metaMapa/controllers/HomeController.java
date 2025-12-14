@@ -16,12 +16,6 @@ public class HomeController {
         return "redirect:/landingPage";
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
-    @GetMapping("/importarCsv")
-    public String importarCsv() {
-        return "Fragments/importarCsv";
-    }
-
     @GetMapping("/mapa")
     public String mapa() {
         return "home/mapa";
