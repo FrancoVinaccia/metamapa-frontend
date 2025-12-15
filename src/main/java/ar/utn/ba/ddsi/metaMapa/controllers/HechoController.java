@@ -95,7 +95,6 @@ public class HechoController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
     @GetMapping("/{id}")
     public String visualizarHecho(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
        HechoDTO hecho = hechoService.obtenerHecho(id);

@@ -46,112 +46,56 @@
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // Lista de hechos con coordenadas y enlaces
-    const hechos = [
-        {
-            latitud: 19.4326,
-            longitud: -99.1332,
-            enlace: 'https://es.wikipedia.org/wiki/Ciudad_de_M%C3%A9xico',
-            titulo: 'Ciudad de México'
-        },
-        {
-            latitud: 20.6597,
-            longitud: -103.3496,
-            enlace: 'https://es.wikipedia.org/wiki/Guadalajara',
-            titulo: 'Guadalajara'
-        },
-        {
-            latitud: 25.6866,
-            longitud: -100.3161,
-            enlace: 'https://es.wikipedia.org/wiki/Monterrey',
-            titulo: 'Monterrey'
-        },
-        {
-            latitud: -34.6037,
-            longitud: -58.3816,
-            enlace: 'https://es.wikipedia.org/wiki/Buenos_Aires',
-            titulo: 'Buenos Aires'
-        },
-        {
-            latitud: -31.4201,
-            longitud: -64.1888,
-            enlace: 'https://es.wikipedia.org/wiki/C%C3%B3rdoba_(Argentina)',
-            titulo: 'Córdoba'
-        },
-        {
-            latitud: -32.9442,
-            longitud: -60.6505,
-            enlace: 'https://es.wikipedia.org/wiki/Rosario_(Argentina)',
-            titulo: 'Rosario'
-        },
-        {
-            latitud: -32.8895,
-            longitud: -68.8458,
-            enlace: 'https://es.wikipedia.org/wiki/Mendoza_(Argentina)',
-            titulo: 'Mendoza'
-        },
-        {
-            latitud: -34.9214,
-            longitud: -57.9544,
-            enlace: 'https://es.wikipedia.org/wiki/La_Plata',
-            titulo: 'La Plata'
-        },
-        {
-            latitud: -38.0055,
-            longitud: -57.5426,
-            enlace: 'https://es.wikipedia.org/wiki/Mar_del_Plata',
-            titulo: 'Mar del Plata'
-        },
-        {
-            latitud: -24.7821,
-            longitud: -65.4232,
-            enlace: 'https://es.wikipedia.org/wiki/Salta_(ciudad)',
-            titulo: 'Salta'
-        },
-        {
-            latitud: -26.8206,
-            longitud: -65.2176,
-            enlace: 'https://es.wikipedia.org/wiki/San_Miguel_de_Tucum%C3%A1n',
-            titulo: 'San Miguel de Tucumán'
-        },
-        {
-            latitud: -41.1335,
-            longitud: -71.3103,
-            enlace: 'https://es.wikipedia.org/wiki/San_Carlos_de_Bariloche',
-            titulo: 'San Carlos de Bariloche'
-        },
-        {
-            latitud: -54.8019,
-            longitud: -68.3030,
-            enlace: 'https://es.wikipedia.org/wiki/Ushuaia',
-            titulo: 'Ushuaia'
-        },
-        {
-            latitud: -35.022413,
-            longitud: -58.451601,
-            enlace: 'https://es.wikipedia.org/wiki/Cabra_Miot%C3%B3nica',
-            titulo: 'Casa de Fran'
-        }
-    ];
+    // 1. Inicializar el mapa (centrado en Argentina por defecto)
+    const map = L.map('map').setView([-38.4161, -63.6167], 4);
 
-    // Inicializar el mapa en argentina
-    const map = L.map('map').setView([ -38.4161, -63.6167], 4);
-    //const map = L.map('map').setView([19.4326, -99.1332], 5);
-
-    // Añadir capa del mapa (OpenStreetMap)
+    // 2. Añadir capa del mapa (OpenStreetMap)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // Añadir marcadores para cada hecho
-    hechos.forEach(hecho => {
-        const marcador = L.marker([hecho.latitud, hecho.longitud])
-            .addTo(map)
-            .bindPopup(`
-                    <strong>${hecho.titulo}</strong><br>
-                    <a href="${hecho.enlace}" target="_blank">Más información</a>
-                `);
-    });
+    // 3. Función para cargar los hechos desde la API
+    // IMPORTANTE: Reemplaza '/api/hechos' por la ruta real de tu controlador que devuelve la lista
+    const API_URL = "http://localhost:8080/agre/priv/hechos/all";
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-ADMIN-TOKEN': 'GRUPO-28'
+        }
+    };
+
+    fetch(API_URL, requestOptions)
+        .then(r => {
+            if(!r.ok) {
+                if(response.status === 401) console.error("Error 401: No autorizado (Revisa el Header)");
+                if(response.status === 403) console.error("Error 403: Prohibido");
+                throw new Error("Error al cargar los hechos: " + r.status);
+            }
+            return r.json();
+        })
+        .then(data => {
+            data.forEach(hecho => {
+                if(hecho.lugar && hecho.lugar.latitud && hecho.lugar.longitud) {
+                    const lat = hecho.lugar.latitud;
+                    const lon = hecho.lugar.longitud;
+                    const titulo = hecho.titulo || "Hecho sin título";
+                    const id = hecho.idHecho;
+
+                    const urlDetalle = `/hechos/${id}`;
+
+                    L.marker([lat, lon])
+                        .addTo(map)
+                        .bindPopup(`
+                            <strong>${titulo}</strong><br>
+                            <a href="${urlDetalle}" target="_blank">Más información</a>
+                        `);
+                }
+            })
+        })
+        .catch(error => {
+            console.error("Error al obtener los hechos:", error);
+        });
 </script>
 </body>
 </html>
