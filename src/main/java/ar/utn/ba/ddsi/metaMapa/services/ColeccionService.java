@@ -63,4 +63,8 @@ public class ColeccionService {
     public ColeccionDTO crearColeccion(ColeccionInputDTO coleccion) {
         return metaMapaApiService.crearColeccion(coleccion);
     }
+
+    public void actualizarColeccion(String id, ColeccionInputDTO coleccionInput) {
+        metaMapaApiService.actualizarColeccion(id, coleccionInput);
+    }
 }

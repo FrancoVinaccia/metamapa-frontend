@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
+
 import java.util.List;
 
 @Controller
@@ -156,6 +158,72 @@ public class ColeccionController {
         boolean categoriaVacia = criterios.getCategoria() == null || criterios.getCategoria().isBlank();
         if (categoriaVacia && criterios.getFecha() == null && criterios.getLugar() == null) {
             coleccion.setCriterios(null);
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @GetMapping("/editar/{id}")
+    public String mostrarFormularioEditar(@PathVariable("id") String id, Model model) {
+        try {
+            // 1. Buscamos la colección existente para pre-llenar los datos
+            // Usamos page=1, limit=1 porque solo queremos los metadatos de la colección
+            ColeccionDTO coleccionExistente = coleccionService.obtenerColeccionPorId(id, 1, 1, null);
+
+            if (coleccionExistente == null) {
+                model.addAttribute("errorMensaje", "La colección no existe.");
+                return "errorGenerico";
+            }
+
+            // 2. Mapeamos DTO -> InputDTO manualmente para el formulario
+            ColeccionInputDTO inputDTO = new ColeccionInputDTO();
+            inputDTO.setTitulo(coleccionExistente.getTitulo());
+            inputDTO.setDescripcion(coleccionExistente.getDescripcion());
+            inputDTO.setMetodoConsenso(coleccionExistente.getMetodoConsenso());
+            inputDTO.setFuentes(coleccionExistente.getFuentes());
+
+            // Manejo cuidadoso de Criterios para evitar NullPointer en la vista
+            if (coleccionExistente.getCriterios() != null) {
+                inputDTO.setCriterios(coleccionExistente.getCriterios());
+                // Asegurar que los sub-objetos existan
+                if (inputDTO.getCriterios().getFecha() == null) inputDTO.getCriterios().setFecha(new RangoFechaDTO());
+                if (inputDTO.getCriterios().getLugar() == null) inputDTO.getCriterios().setLugar(new LugarDTO());
+            } else {
+                CriterioPertenenciaInputDTO crit = new CriterioPertenenciaInputDTO();
+                crit.setFecha(new RangoFechaDTO());
+                crit.setLugar(new LugarDTO());
+                inputDTO.setCriterios(crit);
+            }
+
+            model.addAttribute("coleccion", inputDTO);
+            model.addAttribute("idColeccion", id); // ID necesario para el action del form
+
+            return "coleccion/editarColeccion"; // Vista que crearemos en el paso 4
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/colecciones";
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @PostMapping("/actualizar/{id}")
+    public String actualizarColeccion(@PathVariable("id") String id,
+                                      @ModelAttribute("coleccion") ColeccionInputDTO coleccion,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            // Reutilizamos tu lógica de sanitización existente
+            sanitizeColeccion(coleccion);
+
+            // Llamamos al servicio
+            coleccionService.actualizarColeccion(id, coleccion);
+
+            redirectAttributes.addFlashAttribute("success", "Colección actualizada correctamente.");
+            return "redirect:/colecciones/" + id; // Volvemos al detalle
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar: " + e.getMessage());
+            return "redirect:/colecciones/editar/" + id;
         }
     }
 }

@@ -561,4 +561,17 @@ public class MetaMapaApiService {
             throw new RuntimeException("Error al importar hechos: " + e.getMessage(), e);
         }
     }
+
+    public void actualizarColeccion(String idColeccion, ColeccionInputDTO coleccion) {
+        // Asumimos que el backend de agregación espera un PUT en /priv/colecciones/{id}
+        String url = agregacionApi + "/priv/colecciones/" + idColeccion;
+
+        System.out.println(">>> Actualizando colección: " + url);
+
+        // Usamos putAdmin para tener permisos de administrador
+        webApiCallerService.putAdmin(url, coleccion, Void.class);
+    }
+
 }
+
+
