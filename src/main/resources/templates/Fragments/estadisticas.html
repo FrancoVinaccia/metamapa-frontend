@@ -1,6 +1,5 @@
 <html th:replace="~{layout/base :: html(contenido=~{::contenido})}" xmlns:th="http://www.thymeleaf.org">
 
-<!-- Content fragment that will be injected into base.html -->
 <div th:fragment="contenido" class="row">
 
     <!-- Hero -->
@@ -57,9 +56,12 @@
     <section class="py-12 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl p-8 shadow-md">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">
-                    Por cada categoría: provincia con más hechos
-                </h2>
+                <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        Por cada categoría: provincia con más hechos
+                    </h2>
+                    <span class="text-sm text-gray-500">Ordenado por cantidad</span>
+                </div>
 
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">
@@ -91,7 +93,7 @@
         </div>
     </section>
 
-    <!-- Por cada colección: provincia con más hechos (pendiente JSON) -->
+    <!-- Por cada colección: provincia con más hechos -->
     <section class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl p-8 shadow-md border border-gray-200">
@@ -169,7 +171,6 @@
                     </div>
                 </div>
 
-                <!-- Barras (porcentaje) -->
                 <div th:with="spam=${solicitudesMes != null ? solicitudesMes.cantSpam : 0},
                               nospam=${solicitudesMes != null ? solicitudesMes.cantNoSpam : 0},
                               total=${(solicitudesMes != null ? solicitudesMes.cantSpam : 0) + (solicitudesMes != null ? solicitudesMes.cantNoSpam : 0)},
@@ -199,6 +200,83 @@
                     </div>
 
                 </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- NUEVA: Día del mes + categoría (endpoint /dia-categoria) -->
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-xl p-8 shadow-md border border-gray-200">
+
+                <h2 class="text-xl font-bold text-gray-900 mb-2">
+                    ¿Qué día del mes se registraron hechos y en qué categoría?
+                </h2>
+                <p class="text-gray-600 mb-6">
+                    Listado de eventos por día (ordenado por día).
+                </p>
+
+                <!-- Tarjeta: día con más hechos (si hay empates, toma el primero) -->
+                <div class="mb-6"
+                     th:if="${diaCategoriaTop != null}"
+                     th:with="maxItem=${diaCategoriaTop}">
+
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-calendar-day text-3xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-indigo-100 text-sm mb-1">Día destacado</p>
+                                    <p class="text-3xl font-bold">
+                                        Día <span th:text="${maxItem.dia}">0</span>
+                                    </p>
+                                    <p class="text-indigo-100">
+                                        Categoría: <span class="font-semibold" th:text="${maxItem.categoria}">—</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-4xl font-bold" th:text="${maxItem.cantidad}">0</p>
+                                <p class="text-indigo-100">hechos</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead>
+                        <tr class="text-left text-gray-600 border-b">
+                            <th class="py-3 pr-4">Día</th>
+                            <th class="py-3 pr-4">Categoría</th>
+                            <th class="py-3 pr-4 text-right">Cantidad</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${diaCategoriaStats == null or #lists.isEmpty(diaCategoriaStats)}">
+                            <td class="py-4 text-gray-500" colspan="3">No hay datos para mostrar.</td>
+                        </tr>
+
+                        <tr th:each="row : ${diaCategoriaStats}" class="border-b last:border-b-0">
+                            <td class="py-3 pr-4 font-medium text-gray-900"
+                                th:text="${row.dia}">0</td>
+                            <td class="py-3 pr-4 text-gray-700"
+                                th:text="${row.categoria}">Categoria</td>
+                            <td class="py-3 pr-4 text-right font-bold text-gray-900"
+                                th:text="${row.cantidad}">0</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Nota -->
+                <p class="text-xs text-gray-500 mt-4">
+                    *Si querés que “Día destacado” sea el verdadero máximo, ordená la lista por cantidad desc en el controller/service antes de mandarla al model.
+                </p>
 
             </div>
         </div>

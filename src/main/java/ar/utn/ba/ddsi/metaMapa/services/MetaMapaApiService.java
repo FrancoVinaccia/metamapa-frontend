@@ -510,6 +510,14 @@ public class MetaMapaApiService {
         return response == null ? List.of() : Arrays.asList(response);
     }
 
+    public List<ColeccionProvinciaDTO> obtenerProvinciaTopPorColeccion() {
+        ColeccionProvinciaDTO[] response = webApiCallerService.getAdmin(
+                estadisticasApi + "/provincia-coleccion",
+                ColeccionProvinciaDTO[].class
+        );
+        return response == null ? List.of() : Arrays.asList(response);
+    }
+
 
 
     public SolicitudesSpamDTO obtenerSolicitudesSpamNoSpamDelMes() {
@@ -518,6 +526,14 @@ public class MetaMapaApiService {
                 estadisticasApi + "/spam",
                 SolicitudesSpamDTO.class
         );
+    }
+
+    public List<DiaCategoriaDTO> obtenerDiaCategoria() {
+        DiaCategoriaDTO[] response = webApiCallerService.getAdmin(
+                estadisticasApi + "/dia-categoria",
+                DiaCategoriaDTO[].class
+        );
+        return response == null ? List.of() : Arrays.asList(response);
     }
 
     public EPageOutputDTO importHechos(String urlHeader, String token, String headerHeader, org.springframework.web.multipart.MultipartFile file) {

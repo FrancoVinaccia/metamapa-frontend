@@ -1,9 +1,7 @@
 package ar.utn.ba.ddsi.metaMapa.services;
 
 
-import ar.utn.ba.ddsi.metaMapa.dto.CategoriaProvinciaDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.CategoriaTopDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.SolicitudesSpamDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +23,22 @@ public class EstadisticasService {
         return lista;
     }
 
+    public List<ColeccionProvinciaDTO> obtenerProvinciaTopPorColeccion() {
+        try {
+            List<ColeccionProvinciaDTO> lista = metaMapaApiService.obtenerProvinciaTopPorColeccion();
+            lista.sort((a,b) -> Integer.compare(b.getCantidad(), a.getCantidad()));
+            return lista;
+        } catch (Exception e) {
+            return List.of();
+        }
+    }
 
     public SolicitudesSpamDTO obtenerSolicitudesSpamNoSpamDelMes() {
         return metaMapaApiService.obtenerSolicitudesSpamNoSpamDelMes();
     }
+
+    public List<DiaCategoriaDTO> obtenerDiaCategoria() {
+        return metaMapaApiService.obtenerDiaCategoria();
+    }
+
 }
