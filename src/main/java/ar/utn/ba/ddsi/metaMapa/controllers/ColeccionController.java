@@ -98,19 +98,21 @@ public class ColeccionController {
                              RedirectAttributes redirectAttributes,
                              HttpServletRequest request) {
         try {
-            System.out.println("Coleccion (antes sanitizar) = " + coleccion);
+            System.out.println("try Coleccion = " + coleccion);
 
             // Sanitizar antes de enviar al servicio (quita DTOs anidados vacíos)
             sanitizeColeccion(coleccion);
 
-            System.out.println("Coleccion (sanitizada) = " + coleccion);
             ColeccionDTO coleccionCreada = coleccionService.crearColeccion(coleccion);
-            System.out.println(coleccionCreada);
+
             redirectAttributes.addFlashAttribute("success", "Colección creada con éxito.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
             // Redirigir para evitar reenvío de formulario y mostrar la lista
             return "redirect:/colecciones";
         } catch (Exception e) {
+
+            System.out.println("catch Coleccion = " + coleccion);
+
             e.printStackTrace(); // para ver el stacktrace en logs
             model.addAttribute("error", "Error al crear la colección: " + e.getMessage());
             model.addAttribute("tipoMensaje", "danger");
