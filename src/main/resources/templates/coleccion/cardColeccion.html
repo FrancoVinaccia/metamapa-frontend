@@ -6,7 +6,8 @@
      th:with="ph=@{/img/placeholder.jpg}">
 
     <img class="w-full h-48 object-cover"
-         th:src="${coleccion != null and coleccion.imagen != null and !#strings.isEmpty(coleccion.imagen)} ? ${coleccion.imagen} : ${ph}"
+         th:src="${coleccion != null and coleccion.imagen != null and !#strings.isEmpty(coleccion.imagen)} ? ${coleccion.imagen} : @{/images/default.jpg}"
+
          th:alt="${coleccion != null and coleccion.titulo != null ? coleccion.titulo : 'Colección'}" />
 
     <div class="p-6 flex flex-col flex-grow">
