@@ -54,6 +54,9 @@ public class HechoController {
                             (busquedaCurada != null && busquedaCurada.equalsIgnoreCase("true"));
 
 
+            boolean misHechosBool = "true".equalsIgnoreCase(misHechos);
+
+            Long misHechosParam = (misHechosBool && idUsuario != null) ? idUsuario : null;
 
             List<HechoDTO> hechos = hechoService.obtenerTodosLosHechos(
                     page,
@@ -66,8 +69,8 @@ public class HechoController {
                     fechaInicio,
                     fechaFin,
                     cargaOrigen,
-                    idUsuario,
-                    busquedaCurada
+                    misHechosParam,
+                    String.valueOf(busquedaCurada)
             );
 
             model.addAttribute("hechos", hechos);

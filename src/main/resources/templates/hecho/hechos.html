@@ -134,21 +134,17 @@
                                     th:selected="${cargaOrigen == null or cargaOrigen == ''}">
                                 Todas las cargas
                             </option>
-                            <option value="oficial"
-                                    th:selected="${cargaOrigen == 'oficial'}">
-                                Oficial
+                            <option value="DINAMICA"
+                                    th:selected="${cargaOrigen == 'DINAMICA'}">
+                                Dinamica
                             </option>
-                            <option value="comunidad"
-                                    th:selected="${cargaOrigen == 'comunidad'}">
-                                Comunidad
+                            <option value="ESTATICA"
+                                    th:selected="${cargaOrigen == 'ESTATICA'}">
+                                Estatica
                             </option>
-                            <option value="verificado"
-                                    th:selected="${cargaOrigen == 'verificado'}">
-                                Verificado
-                            </option>
-                            <option value="pendiente"
-                                    th:selected="${cargaOrigen == 'pendiente'}">
-                                Pendiente Verificación
+                            <option value="PROXY"
+                                    th:selected="${cargaOrigen == 'PROXY'}">
+                                Proxy
                             </option>
                         </select>
                     </div>
@@ -156,24 +152,13 @@
 
                 <!-- Checkbox para Mis Hechos -->
                 <div class="flex items-center gap-6">
-                    <div class="flex items-center">
-                        <input type="checkbox"
-                               name="misHechos"
-                               value="true"
-                               id="misHechos"
-                               th:checked="${misHechos == 'true'}"
-                               class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
-                        <label for="misHechos" class="ml-2 text-sm text-gray-700">
-                            Solo mostrar mis hechos
-                        </label>
-                    </div>
 
                     <div class="flex items-center">
                         <input type="checkbox"
                                name="busquedaCurada"
                                value="true"
                                id="busquedaCurada"
-                               th:checked="${busquedaCurada == 'true'}"
+                               th:checked="${busquedaCurada == 'true' or busquedaCurada == true}"
                                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
                         <label for="busquedaCurada" class="ml-2 text-sm text-gray-700">
                             Solo búsqueda curada

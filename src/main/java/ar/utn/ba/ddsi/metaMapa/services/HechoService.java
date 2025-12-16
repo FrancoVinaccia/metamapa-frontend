@@ -1,5 +1,6 @@
 package ar.utn.ba.ddsi.metaMapa.services;
 
+import ar.utn.ba.ddsi.metaMapa.dto.EPageOutputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.internal.WebApiCallerService;
@@ -88,7 +89,7 @@ public class HechoService {
         return metaMapaApiService.crearHecho(hecho);
     }
 
-    public ar.utn.ba.ddsi.metaMapa.dto.EPageOutputDTO importHechos(String url, String token, String header, org.springframework.web.multipart.MultipartFile file) {
+    public EPageOutputDTO importHechos(String url, String token, String header, org.springframework.web.multipart.MultipartFile file) {
         return metaMapaApiService.importHechos(url, token, header, file);
     }
 }

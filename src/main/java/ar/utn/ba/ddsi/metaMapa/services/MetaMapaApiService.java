@@ -181,6 +181,7 @@ public class MetaMapaApiService {
                 }
             }
 
+
             System.out.println(">>> URL agregación (filtrados): " + url);
 
             PageHechoDTO response = webApiCallerService.get(url, PageHechoDTO.class);
