@@ -43,14 +43,14 @@ public class SecurityConfig {
                                 "formularioSolicitudCambio",
                                 "/importarCsv",
                                 "/importar",
-                                "enDesarrollo",// si la usás
-                                "/login", "/signin",      // vistas de auth
+                                "enDesarrollo",
+                                "/login", "/signin",
                                 "/error", "/403", "/404",
                                 "/favicon.ico",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**"
                         ).permitAll()
 
-                        // Visualización anónima (Entrega 5): GET a colecciones/hechos sin login
+                        // Visualización anónima
                         .requestMatchers(HttpMethod.GET, "/colecciones/**", "/hechos/**","/coleccion/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/hechos/importar").hasRole("ADMINISTRADOR")
