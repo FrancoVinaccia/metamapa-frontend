@@ -45,6 +45,7 @@ public class SecurityConfig {
                                 "/importar",
                                 "enDesarrollo",
                                 "/login", "/signin",
+                                "/signin/submit",
                                 "/error", "/403", "/404",
                                 "/favicon.ico",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**"

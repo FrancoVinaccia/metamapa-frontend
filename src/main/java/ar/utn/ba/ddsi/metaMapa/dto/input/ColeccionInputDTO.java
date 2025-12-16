@@ -1,5 +1,6 @@
 package ar.utn.ba.ddsi.metaMapa.dto.input;
 
+import ar.utn.ba.ddsi.metaMapa.dto.CriterioPertenenciaDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.LugarDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ public class ColeccionInputDTO {
 
     private String descripcion;
 
-    private CriterioPertenenciaInputDTO criterios;
+    private CriterioPertenenciaDTO criterios;
 
     private List<String> fuentes;
 

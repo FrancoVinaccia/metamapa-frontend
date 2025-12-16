@@ -1,8 +1,6 @@
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
-import ar.utn.ba.ddsi.metaMapa.dto.ColeccionDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.RangoFechaDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.LugarDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.*;
 import ar.utn.ba.ddsi.metaMapa.dto.input.ColeccionInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.CriterioPertenenciaInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.ColeccionService;
@@ -80,9 +78,9 @@ public class ColeccionController {
         ColeccionInputDTO coleccionDTO = new ColeccionInputDTO();
 
         // Inicializar objetos anidados para evitar NullPointerException en la vista o el binding
-        CriterioPertenenciaInputDTO criterios = new CriterioPertenenciaInputDTO();
+        CriterioPertenenciaDTO criterios = new CriterioPertenenciaDTO();
         criterios.setFecha(new RangoFechaDTO());
-        criterios.setLugar(new LugarDTO());
+        criterios.setLugar(new LugarSinCoordsDTO());
 
         coleccionDTO.setCriterios(criterios);
 
@@ -125,7 +123,7 @@ public class ColeccionController {
     private void sanitizeColeccion(ColeccionInputDTO coleccion) {
         if (coleccion == null) return;
 
-        CriterioPertenenciaInputDTO criterios = coleccion.getCriterios();
+        CriterioPertenenciaDTO criterios = coleccion.getCriterios();
         if (criterios == null) return;
 
         // Normalizar categoría
@@ -144,7 +142,7 @@ public class ColeccionController {
         }
 
         // Lugar: si todos los campos relevantes vacíos -> quitar el DTO lugar
-        LugarDTO lugar = criterios.getLugar();
+        LugarSinCoordsDTO lugar = criterios.getLugar();
         if (lugar != null) {
             String loc = lugar.getLocalidad();
             String ciu = lugar.getCiudad();
@@ -188,11 +186,11 @@ public class ColeccionController {
                 inputDTO.setCriterios(coleccionExistente.getCriterios());
                 // Asegurar que los sub-objetos existan
                 if (inputDTO.getCriterios().getFecha() == null) inputDTO.getCriterios().setFecha(new RangoFechaDTO());
-                if (inputDTO.getCriterios().getLugar() == null) inputDTO.getCriterios().setLugar(new LugarDTO());
+                if (inputDTO.getCriterios().getLugar() == null) inputDTO.getCriterios().setLugar(new LugarSinCoordsDTO());
             } else {
-                CriterioPertenenciaInputDTO crit = new CriterioPertenenciaInputDTO();
+                CriterioPertenenciaDTO crit = new CriterioPertenenciaDTO();
                 crit.setFecha(new RangoFechaDTO());
-                crit.setLugar(new LugarDTO());
+                crit.setLugar(new LugarSinCoordsDTO());
                 inputDTO.setCriterios(crit);
             }
 
