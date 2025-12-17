@@ -152,7 +152,18 @@
 
                 <!-- Checkbox para Mis Hechos -->
                 <div class="flex items-center gap-6">
-
+                    <div class="flex items-center">
+                        <input type="checkbox"
+                               name="misHechos"
+                               value="true"
+                               id="misHechos"
+                               th:checked="${misHechos == 'true'}"
+                               class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+                        <label for="misHechos" class="ml-2 text-sm text-gray-700">
+                            Solo mostrar mis hechos
+                        </label>
+                    </div>
+                    
                     <div class="flex items-center">
                         <input type="checkbox"
                                name="busquedaCurada"
