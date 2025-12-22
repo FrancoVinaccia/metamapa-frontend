@@ -1,9 +1,11 @@
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
+import ar.utn.ba.ddsi.metaMapa.dto.EPageOutputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.HechoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -31,6 +33,9 @@ public class HechoController {
                                @RequestParam(required = false) String fechaFin,
                                @RequestParam(required = false) String cargaOrigen,
                                @RequestParam(required = false) String misHechos,
+                               @RequestParam(required = false) String busquedaCurada,
+
+                               @SessionAttribute(value = "id", required = false) Long idUsuario,
                                Model model,
                                RedirectAttributes redirectAttributes) {
         try {
@@ -45,7 +50,13 @@ public class HechoController {
                             (fechaInicio != null && !fechaInicio.isBlank()) ||
                             (fechaFin != null && !fechaFin.isBlank()) ||
                             (cargaOrigen != null && !cargaOrigen.isBlank()) ||
-                            (misHechos != null && misHechos.equalsIgnoreCase("true"));
+                            (misHechos != null && misHechos.equalsIgnoreCase("true")) ||
+                            (busquedaCurada != null && busquedaCurada.equalsIgnoreCase("true"));
+
+
+            boolean misHechosBool = "true".equalsIgnoreCase(misHechos);
+
+            Long misHechosParam = (misHechosBool && idUsuario != null) ? idUsuario : null;
 
             List<HechoDTO> hechos = hechoService.obtenerTodosLosHechos(
                     page,
@@ -58,10 +69,9 @@ public class HechoController {
                     fechaInicio,
                     fechaFin,
                     cargaOrigen,
-                    misHechos
+                    misHechosParam,
+                    String.valueOf(busquedaCurada)
             );
-
-
 
             model.addAttribute("hechos", hechos);
             model.addAttribute("titulo", "Lista de Hechos");
@@ -77,10 +87,8 @@ public class HechoController {
             model.addAttribute("fechaInicio", fechaInicio);
             model.addAttribute("fechaFin", fechaFin);
             model.addAttribute("cargaOrigen", cargaOrigen);
+            model.addAttribute("busquedaCurada", busquedaCurada);
             model.addAttribute("misHechos", misHechos);
-
-
-
 
             return "hecho/hechos";
         } catch (Exception e) {
@@ -90,7 +98,6 @@ public class HechoController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
     @GetMapping("/{id}")
     public String visualizarHecho(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
        HechoDTO hecho = hechoService.obtenerHecho(id);
@@ -111,26 +118,88 @@ public class HechoController {
     }
 
 
-    @PreAuthorize("hasAnyRole('CONTRIBUYENTE', 'REGISTRADO', 'ADMINISTRADOR')")
     @PostMapping("/crear")
-    public String crearHecho(@ModelAttribute("hecho") HechoInputDTO hecho,
-                             @SessionAttribute(value = "id") Long usuarioId,
-                             BindingResult bindingResult,
-                             Model model,
-                             RedirectAttributes redirectAttributes) {
-        try{
-            hecho.setIdUsuario(usuarioId);
-            HechoDTO hechoCreado = hechoService.crearHecho(hecho);
-            redirectAttributes.addFlashAttribute("success", "Hecho creado con éxito.");
-            redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+    public String crearHecho(
+            @ModelAttribute("hecho") HechoInputDTO hecho,
+            BindingResult bindingResult,
+            @SessionAttribute(value = "id", required = false) Long idUsuario,
+            RedirectAttributes redirectAttributes,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("error", "Corrija los campos del formulario.");
+            model.addAttribute("tipoMensaje", "danger");
             return "hecho/crearHecho";
         }
-        catch (Exception e){
+
+        try {
+            if (idUsuario != null) {
+                hecho.setIdUsuario(idUsuario);
+            }
+
+            HechoDTO creado = hechoService.crearHecho(hecho);
+
+            // Si la creación fue OK redirigimos al listado y mostramos mensaje
+            redirectAttributes.addFlashAttribute("success", "Hecho creado con éxito.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+            return "redirect:/hechos"; // redirige a la lista de hechos
+
+        } catch (Exception e) {
+            // en caso de error mostramos la misma página con el mensaje
             model.addAttribute("error", "Error al crear el hecho: " + e.getMessage());
             model.addAttribute("tipoMensaje", "danger");
             return "hecho/crearHecho";
         }
     }
 
+    @Value("${metamapa.estatica.forward-url}")
+    private String estaticaForwardUrl;
 
+    @Value("${metamapa.priv.token:}")
+    private String privToken;
+
+    @Value("${metamapa.priv.header:X-ADMIN-TOKEN}")
+    private String privHeader;
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @GetMapping("/importarCsv")
+    public String mostrarImportarCsv(Model model) {
+        // ✅ esto es lo que Estática usa para notificar al suscriptor.
+        model.addAttribute("estaticaUrl", estaticaForwardUrl);
+
+        model.addAttribute("privToken", privToken);
+        model.addAttribute("privHeader", privHeader);
+
+        return "Fragments/importarCsv";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @PostMapping(value = "/importar", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String importarHechos(
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+            @RequestParam("URL") String url,
+            @RequestParam("TOKEN") String token,
+            @RequestParam("HEADER") String header,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            if (file == null || file.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Archivo vacío o no seleccionado.");
+                return "redirect:/hechos/importarCsv";
+            }
+
+            // opcional: fallback por si vinieran vacíos desde el form
+            if (url == null || url.isBlank()) url = estaticaForwardUrl;
+            if (token == null || token.isBlank()) token = privToken;
+            if (header == null || header.isBlank()) header = privHeader;
+
+            EPageOutputDTO resp = hechoService.importHechos(url, token, header, file);
+
+            redirectAttributes.addFlashAttribute("success", "Importación completada.");
+            return "redirect:/hechos/importarCsv";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error en la importación: " + e.getMessage());
+            return "redirect:/hechos/importarCsv";
+        }
+    }
 }

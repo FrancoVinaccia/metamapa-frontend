@@ -4,7 +4,7 @@
      th:with="ph=@{/img/placeholder.jpg}" xmlns:th="http://www.w3.org/1999/xhtml">
 
     <img class="w-full h-48 object-cover"
-         th:src="${hecho != null and hecho.imagen != null and !#strings.isEmpty(hecho.imagen)} ? ${hecho.imagen} : ${ph}"
+         th:src="${hecho != null and hecho.imagen != null and !#strings.isEmpty(hecho.imagen)} ? ${hecho.imagen} : @{/images/default.jpg}"
          th:alt="${hecho != null and hecho.titulo != null ? hecho.titulo : 'Hecho'}" />
 
     <div class="p-6">
@@ -15,7 +15,7 @@
            th:text="${hecho != null and hecho.descripcion != null ? hecho.descripcion : 'Descripción del hecho'}">Descripción del hecho</p>
 
         <div class="flex gap-3 mb-4">
-            <a th:href="@{/solicitudes/solicitudCambio/{idHecho}(idHecho=${hecho.idHecho})}"
+            <a th:if="${session.id == hecho.idUsuario}"  th:href="@{/solicitudes/solicitudCambio/{idHecho}(idHecho=${hecho.idFuente})}"
                class="btn-editar px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
                 <i class="fas fa-edit mr-2"></i>
                 Editar

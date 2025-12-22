@@ -8,9 +8,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor // Constructor sin argumentos
 @AllArgsConstructor // Constructor con todos los argumentos
 public class SignInRequestDTO {
-    private String nombre;
-    private String apellido;
+    private String nombreUsuario;
     private String email;
-    private String password;
-    private String fechaNacimiento;
+    private String contrasenia;
 }

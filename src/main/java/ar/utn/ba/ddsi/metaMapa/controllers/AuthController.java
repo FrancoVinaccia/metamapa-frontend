@@ -32,13 +32,13 @@ public class AuthController {
     @PostMapping("/signin/submit")
     public String processSignin(@ModelAttribute SignInRequestDTO signinRequest) {
         try {
-            // 1. Llama al servicio para registrar al usuario.
-            metaMapaApiService.register(signinRequest);
+            System.out.println("try : " + signinRequest);
 
-            // 2. Si tiene éxito, redirige al login con un mensaje.
+            metaMapaApiService.register(signinRequest);
             return "redirect:/login?registered=true";
         } catch (Exception e) {
-            // 3. Si falla, redirige de vuelta al registro con un mensaje de error.
+            System.out.println("catch : " + signinRequest);
+
             System.err.println("Error durante el registro: " + e.getMessage());
             return "redirect:/signin?error=true";
         }

@@ -16,18 +16,6 @@ public class HomeController {
         return "redirect:/landingPage";
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
-    @GetMapping("/solicitudes")
-    public String solicitudes() {
-        return "Fragments/solicitudes";
-    }
-
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
-    @GetMapping("/importarCsv")
-    public String importarCsv() {
-        return "Fragments/importarCsv";
-    }
-
     @GetMapping("/mapa")
     public String mapa() {
         return "home/mapa";
@@ -56,19 +44,4 @@ public class HomeController {
         model.addAttribute("titulo", "Acceso denegado");
         return "403";
     }
-
-    @GetMapping("/formularioSolicitudEliminacion")
-    public String crearSolicitudEli() {
-        return "Fragments/crearSolicitudEliminacion"; // CORREGIDO
-    }
-
-    @PreAuthorize("hasAnyRole('CONTRIBUYENTE')")
-    @GetMapping("/formularioSolicitudCambio")
-    public String crearSolicitudCambio() {
-        return "Fragments/crearSolicitudCambio"; // CORREGIDO
-    }
-
-
-
-
 }

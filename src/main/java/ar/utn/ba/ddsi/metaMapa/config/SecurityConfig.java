@@ -24,7 +24,6 @@ public class SecurityConfig {
     }
 
 
-    //todo ni idea me lo hizo gpt
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -38,19 +37,25 @@ public class SecurityConfig {
                                 "/estadisticas",
                                 "mapa",
                                 "/legal",
-                                "solicitudes",
+                                "/hechos/**",
+                                "solicitudes/**",
                                 "formularioSolicitudEliminacion",
                                 "formularioSolicitudCambio",
                                 "/importarCsv",
-                                "enDesarrollo",// si la usás
-                                "/login", "/signin",      // vistas de auth
+                                "/importar",
+                                "enDesarrollo",
+                                "/login", "/signin",
+                                "/signin/submit",
                                 "/error", "/403", "/404",
                                 "/favicon.ico",
                                 "/css/**", "/js/**", "/images/**", "/webjars/**"
                         ).permitAll()
 
-                        // Visualización anónima (Entrega 5): GET a colecciones/hechos sin login
+                        // Visualización anónima
                         .requestMatchers(HttpMethod.GET, "/colecciones/**", "/hechos/**","/coleccion/**").permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/hechos/importar").hasRole("ADMINISTRADOR")
+
 
                         // TODO: endpoints públicos adicionales, agregalos arriba
 
@@ -73,8 +78,9 @@ public class SecurityConfig {
                 // CSRF: dejalo ON para formularios Thymeleaf. Si tenés APIs, podés ignorar rutas puntuales.
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers(
-                                "/signin",                // si haces POST sin token CSRF
-                                "/solicitudes/**"         // ejemplo API pública
+                                "/signin",
+                                "/solicitudes/**",
+                                "/hechos/importar"
                         )
                 )
 

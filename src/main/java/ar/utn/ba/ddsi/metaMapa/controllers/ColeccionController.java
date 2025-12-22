@@ -1,21 +1,21 @@
-// java
-// File: src/main/java/ar/utn/ba/ddsi/metaMapa/controllers/ColeccionController.java
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
-import ar.utn.ba.ddsi.metaMapa.dto.ColeccionDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
+import ar.utn.ba.ddsi.metaMapa.dto.*;
 import ar.utn.ba.ddsi.metaMapa.dto.input.ColeccionInputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.CriterioPertenenciaInputDTO;
-import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.ColeccionService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+
 
 import java.util.List;
 
@@ -25,6 +25,11 @@ import java.util.List;
 public class ColeccionController {
 
     private final ColeccionService coleccionService;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 
     @GetMapping
     public String listarColecciones(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -45,17 +50,27 @@ public class ColeccionController {
         }
     }
 
-//    @GetMapping("/{id}")
-//    public String visualizarColeccion(@PathVariable Long id, Model model) {
-//        ColeccionDTO c = coleccionService.visualizarColeccion(id.intValue());
-//        model.addAttribute("coleccion", c);
-//        model.addAttribute("titulo", c.getTitulo());
-//        // Pasar la lista plana de hechos a la vista
-//        model.addAttribute("hechos", c.getHechosLista());
-//        return "coleccion/coleccion";
-//    }
-
-// Archivo: ColeccionController.java
+    @GetMapping("/{id}")
+    public String verColeccion(@PathVariable("id") String id,
+                               @RequestParam(value = "page", defaultValue = "1") int page,
+                               @RequestParam(value = "busquedaCurada", required = false) String busquedaCurada,
+                               Model model) {
+        try {
+            int pageSize = 9;
+            ColeccionDTO coleccion = coleccionService.obtenerColeccionPorId(id, page, pageSize, busquedaCurada);
+            if (coleccion == null) {
+                model.addAttribute("errorMensaje", "Colección no encontrada");
+                return "errorGenerico";
+            }
+            model.addAttribute("coleccion", coleccion);
+            model.addAttribute("currentPage", page);
+            return "coleccion/coleccion";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMensaje", "Ocurrió un error al cargar la colección: " + e.getMessage());
+            return "errorGenerico";
+        }
+    }
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/nueva")
@@ -63,9 +78,9 @@ public class ColeccionController {
         ColeccionInputDTO coleccionDTO = new ColeccionInputDTO();
 
         // Inicializar objetos anidados para evitar NullPointerException en la vista o el binding
-        CriterioPertenenciaInputDTO criterios = new CriterioPertenenciaInputDTO();
-        criterios.setFecha(new ar.utn.ba.ddsi.metaMapa.dto.RangoFechaDTO());
-        criterios.setLugar(new ar.utn.ba.ddsi.metaMapa.dto.LugarDTO());
+        CriterioPertenenciaDTO criterios = new CriterioPertenenciaDTO();
+        criterios.setFecha(new RangoFechaDTO());
+        criterios.setLugar(new LugarSinCoordsDTO());
 
         coleccionDTO.setCriterios(criterios);
 
@@ -81,18 +96,134 @@ public class ColeccionController {
                              RedirectAttributes redirectAttributes,
                              HttpServletRequest request) {
         try {
-            System.out.println(coleccion);
+            System.out.println("try Coleccion = " + coleccion);
+
+            // Sanitizar antes de enviar al servicio (quita DTOs anidados vacíos)
+            sanitizeColeccion(coleccion);
+
             ColeccionDTO coleccionCreada = coleccionService.crearColeccion(coleccion);
-            System.out.println(coleccionCreada);
+
             redirectAttributes.addFlashAttribute("success", "Colección creada con éxito.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
             // Redirigir para evitar reenvío de formulario y mostrar la lista
             return "redirect:/colecciones";
         } catch (Exception e) {
+
+            System.out.println("catch Coleccion = " + coleccion);
+
             e.printStackTrace(); // para ver el stacktrace en logs
             model.addAttribute("error", "Error al crear la colección: " + e.getMessage());
             model.addAttribute("tipoMensaje", "danger");
             return "coleccion/crearColeccion";
+        }
+    }
+
+    // Métod privado que normaliza el DTO: quita criterios.fecha y criterios.lugar si están vacíos,
+    // y setea criterios a null si queda completamente vacío.
+    private void sanitizeColeccion(ColeccionInputDTO coleccion) {
+        if (coleccion == null) return;
+
+        CriterioPertenenciaDTO criterios = coleccion.getCriterios();
+        if (criterios == null) return;
+
+        // Normalizar categoría
+        if (criterios.getCategoria() != null && criterios.getCategoria().isBlank()) {
+            criterios.setCategoria(null);
+        }
+
+        // Fecha: si ambos campos vacíos -> quitar el DTO fecha
+        RangoFechaDTO fecha = criterios.getFecha();
+        if (fecha != null) {
+            String fi = fecha.getFechaInicio();
+            String ff = fecha.getFechaFin();
+            if ((fi == null || fi.isBlank()) && (ff == null || ff.isBlank())) {
+                criterios.setFecha(null);
+            }
+        }
+
+        // Lugar: si todos los campos relevantes vacíos -> quitar el DTO lugar
+        LugarSinCoordsDTO lugar = criterios.getLugar();
+        if (lugar != null) {
+            String loc = lugar.getLocalidad();
+            String ciu = lugar.getCiudad();
+            String prov = lugar.getProvincia();
+            if ((loc == null || loc.isBlank()) &&
+                    (ciu == null || ciu.isBlank()) &&
+                    (prov == null || prov.isBlank())) {
+                criterios.setLugar(null);
+            }
+        }
+
+        // Si criterios quedó vacío (sin categoría, sin fecha, sin lugar) -> setear a null
+        boolean categoriaVacia = criterios.getCategoria() == null || criterios.getCategoria().isBlank();
+        if (categoriaVacia && criterios.getFecha() == null && criterios.getLugar() == null) {
+            coleccion.setCriterios(null);
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @GetMapping("/editar/{id}")
+    public String mostrarFormularioEditar(@PathVariable("id") String id, Model model) {
+        try {
+            // 1. Buscamos la colección existente para pre-llenar los datos
+            // Usamos page=1, limit=1 porque solo queremos los metadatos de la colección
+            ColeccionDTO coleccionExistente = coleccionService.obtenerColeccionPorId(id, 1, 1, null);
+
+            if (coleccionExistente == null) {
+                model.addAttribute("errorMensaje", "La colección no existe.");
+                return "errorGenerico";
+            }
+
+            // 2. Mapeamos DTO -> InputDTO manualmente para el formulario
+            ColeccionInputDTO inputDTO = new ColeccionInputDTO();
+            inputDTO.setTitulo(coleccionExistente.getTitulo());
+            inputDTO.setDescripcion(coleccionExistente.getDescripcion());
+            inputDTO.setMetodoConsenso(coleccionExistente.getMetodoConsenso());
+            inputDTO.setFuentes(coleccionExistente.getFuentes());
+
+            // Manejo cuidadoso de Criterios para evitar NullPointer en la vista
+            if (coleccionExistente.getCriterios() != null) {
+                inputDTO.setCriterios(coleccionExistente.getCriterios());
+                // Asegurar que los sub-objetos existan
+                if (inputDTO.getCriterios().getFecha() == null) inputDTO.getCriterios().setFecha(new RangoFechaDTO());
+                if (inputDTO.getCriterios().getLugar() == null) inputDTO.getCriterios().setLugar(new LugarSinCoordsDTO());
+            } else {
+                CriterioPertenenciaDTO crit = new CriterioPertenenciaDTO();
+                crit.setFecha(new RangoFechaDTO());
+                crit.setLugar(new LugarSinCoordsDTO());
+                inputDTO.setCriterios(crit);
+            }
+
+            model.addAttribute("coleccion", inputDTO);
+            model.addAttribute("idColeccion", id); // ID necesario para el action del form
+
+            return "coleccion/editarColeccion"; // Vista que crearemos en el paso 4
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/colecciones";
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @PostMapping("/actualizar/{id}")
+    public String actualizarColeccion(@PathVariable("id") String id,
+                                      @ModelAttribute("coleccion") ColeccionInputDTO coleccion,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            // Reutilizamos tu lógica de sanitización existente
+            sanitizeColeccion(coleccion);
+
+            // Llamamos al servicio
+            coleccionService.actualizarColeccion(id, coleccion);
+
+            redirectAttributes.addFlashAttribute("success", "Colección actualizada correctamente.");
+            return "redirect:/colecciones/" + id; // Volvemos al detalle
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar: " + e.getMessage());
+            return "redirect:/colecciones/editar/" + id;
         }
     }
 }

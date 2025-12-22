@@ -1,49 +1,22 @@
 <!DOCTYPE html>
-<html th:replace="~{layout/base :: html(contenido=~{::contenido})}" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: html(contenido=~{::body})}">
+<body>
 
-<!-- Content fragment that will be injected into base.html -->
-<div th:fragment="contenido" class="container mx-auto px-4 py-8 max-w-4xl">
-    <!-- Page Header -->
+<div class="container mx-auto px-4 py-8 max-w-4xl">
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-        <!-- Header -->
         <div class="mb-6">
-            <div class="flex items-center mb-2">
-                <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                </svg>
-                <h1 class="text-2xl font-bold text-gray-900">Importar Hechos desde CSV</h1>
-            </div>
+            <h1 class="text-2xl font-bold text-gray-900">Importar Hechos desde CSV</h1>
             <p class="text-sm text-gray-500">Carga un archivo CSV para importar múltiples hechos de forma masiva</p>
         </div>
 
-        <!-- Instructions -->
-        <div class="bg-orange-50 border-l-4 border-orange-500 rounded-lg p-4 mb-6">
-            <h3 class="text-orange-800 font-semibold mb-2 flex items-center">
-                <i class="fas fa-info-circle mr-2"></i>
-                Formato del archivo CSV
-            </h3>
-            <ul class="text-sm text-orange-900 ml-6 space-y-1">
-                <li>El archivo debe tener las siguientes columnas: <strong>titulo, descripcion, categoria, ubicacion, fecha</strong></li>
-                <li>La primera fila debe contener los nombres de las columnas</li>
-                <li>Las fechas deben estar en formato: YYYY-MM-DD (ejemplo: 2024-03-15)</li>
-                <li>Las categorías válidas son: Político, Económico, Social, Cultural, Deportivo, Científico, Tecnológico, Ambiental</li>
-                <li>El archivo no debe superar los 5MB</li>
-                <li>Máximo 1000 registros por importación</li>
-            </ul>
-        </div>
+        <form id="importarCSVForm" th:action="@{/hechos/importar}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-        <!-- CSV Format Example -->
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-            <p class="text-sm font-semibold text-gray-700 mb-2">Ejemplo de formato CSV:</p>
-            <pre class="text-xs text-gray-800 overflow-x-auto"><code>titulo, descripcion,categoria,ubicacion,fecha
-"Inauguración del nuevo hospital","Se inauguró el Hospital Central con capacidad para 500 pacientes","Social","Ciudad de México","2024-03-15"
-"Firma de tratado comercial","México y Canadá firman nuevo acuerdo comercial","Económico","Ottawa","2024-03-20"</code></pre>
-        </div>
+            <input type="hidden" name="URL" th:value="${estaticaUrl}" />
+            <input type="hidden" name="TOKEN" th:value="${privToken}" />
+            <input type="hidden" name="HEADER" th:value="${privHeader}" />
 
-        <!-- Form -->
-        <form id="importarCSVForm" action="/hechos/importar" method="POST" enctype="multipart/form-data">
-
-            <!-- Upload Area -->
             <div class="mb-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-3">
                     Cargar Archivo <span class="text-red-500">*</span>
@@ -53,13 +26,13 @@
                     <div class="text-5xl mb-4">📁</div>
                     <p class="text-lg font-medium text-gray-700 mb-2">Arrastra tu archivo CSV aquí</p>
                     <p class="text-sm text-gray-500 mb-4">o haz clic para seleccionar</p>
+
                     <label class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-medium cursor-pointer hover:bg-blue-700 transition-colors">
                         Seleccionar archivo
-                        <input type="file" id="fileInput" name="csvFile" accept=".csv" class="hidden" required>
+                        <input type="file" id="fileInput" name="file" accept=".csv" class="hidden" required>
                     </label>
                 </div>
 
-                <!-- File Info -->
                 <div id="fileInfo" class="hidden mt-4 bg-blue-50 border border-blue-500 rounded-lg p-4 flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div class="text-3xl">📄</div>
@@ -74,469 +47,97 @@
                 </div>
             </div>
 
-            <!-- Validation Messages -->
-            <div id="validationMessages" class="hidden mb-6">
-                <!-- Validation messages will be inserted here -->
-            </div>
-
-            <!-- Preview Section -->
-            <div id="previewSection" class="hidden mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                    <span class="w-1 h-6 bg-blue-600 rounded mr-2"></span>
-                    Vista Previa de Datos
-                </h3>
-                <div class="border border-gray-200 rounded-lg overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead id="tableHead" class="bg-gray-50">
-                            <!-- Table headers will be inserted here -->
-                            </thead>
-                            <tbody id="tableBody" class="divide-y divide-gray-200">
-                            <!-- Table rows will be inserted here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="flex justify-between items-center mt-3 text-sm text-gray-600">
-                    <div class="flex gap-6">
-                        <div class="flex items-center gap-1">
-                            <span>Total de registros:</span>
-                            <span id="totalRecords" class="font-semibold text-blue-600">0</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span>Registros válidos:</span>
-                            <span id="validRecords" class="font-semibold text-green-600">0</span>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <span>Con errores:</span>
-                            <span id="errorRecords" class="font-semibold text-red-600">0</span>
-                        </div>
-                    </div>
-                    <div>Mostrando primeros 10 registros</div>
-                </div>
-            </div>
-
-            <!-- Column Mapping Section -->
-            <div id="mappingSection" class="hidden mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2 flex items-center">
-                    <span class="w-1 h-6 bg-blue-600 rounded mr-2"></span>
-                    Mapeo de Columnas
-                </h3>
-                <p class="text-sm text-gray-500 mb-4">
-                    Verifica que las columnas del CSV correspondan correctamente a los campos del sistema
-                </p>
-                <div id="mappingGrid" class="space-y-3">
-                    <!-- Mapping rows will be inserted here -->
-                </div>
-            </div>
-
-            <!-- Progress Container -->
             <div id="progressContainer" class="hidden mb-6">
                 <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
-                    <div id="progressFill" class="h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300" style="width: 0%"></div>
+                    <div id="progressFill" class="h-full transition-all duration-300" style="width: 0%"></div>
                 </div>
                 <p id="progressText" class="text-center text-sm text-gray-600">Procesando... 0%</p>
             </div>
 
-            <!-- Action Buttons -->
             <div class="flex flex-wrap gap-3 justify-end items-center pt-6 border-t border-gray-200">
-                <button
-                        type="button"
-                        onclick="window.history.back()"
-                        class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                >
+                <button type="button" onclick="window.history.back()" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                     Cancelar
                 </button>
-                <button
-                        type="button"
-                        id="btnImport"
-                        disabled
-                        class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors flex items-center disabled:bg-gray-300 disabled:cursor-not-allowed"
-                >
-                    <i class="fas fa-upload mr-2"></i>
+                <button type="submit" id="btnImport" disabled class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed">
                     Importar Hechos
                 </button>
             </div>
         </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('importarCSVForm');
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const btnRemove = document.getElementById('btnRemove');
+            const btnImport = document.getElementById('btnImport');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+
+            let selectedFile = null;
+
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+                return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+            }
+
+            function handleFile(file) {
+                if (!file) return;
+
+                selectedFile = file;
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+
+                fileInfo.classList.remove('hidden');
+                uploadArea.style.display = 'none';
+                btnImport.disabled = false;
+            }
+
+            function resetUpload() {
+                selectedFile = null;
+                fileInput.value = '';
+                fileInfo.classList.add('hidden');
+                uploadArea.style.display = 'block';
+                btnImport.disabled = true;
+
+                progressContainer.classList.add('hidden');
+                progressFill.style.width = '0%';
+                progressText.textContent = 'Procesando... 0%';
+            }
+
+            uploadArea.addEventListener('click', (e) => {
+                if (e.target.closest('label')) return;
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const f = e.target.files && e.target.files.length > 0 ? e.target.files[0] : null;
+                handleFile(f);
+            });
+
+            btnRemove.addEventListener('click', resetUpload);
+
+            form.addEventListener('submit', (e) => {
+                const realFile = (fileInput.files && fileInput.files.length > 0) ? fileInput.files[0] : null;
+                if (!selectedFile || !realFile) {
+                    e.preventDefault();
+                    alert('Seleccioná un archivo antes de importar.');
+                    return;
+                }
+                progressContainer.classList.remove('hidden');
+                progressFill.style.width = '35%';
+                progressText.textContent = 'Subiendo archivo...';
+                btnImport.disabled = true;
+            });
+        });
+    </script>
 </div>
 
-<script>
-    const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('fileInput');
-    const fileInfo = document.getElementById('fileInfo');
-    const fileName = document.getElementById('fileName');
-    const fileSize = document.getElementById('fileSize');
-    const btnRemove = document.getElementById('btnRemove');
-    const btnImport = document.getElementById('btnImport');
-    const previewSection = document.getElementById('previewSection');
-    const mappingSection = document.getElementById('mappingSection');
-    const validationMessages = document.getElementById('validationMessages');
-    const progressContainer = document.getElementById('progressContainer');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-
-    let csvData = null;
-    let csvHeaders = [];
-    let validationErrors = [];
-
-    const validCategories = ['Político', 'Económico', 'Social', 'Cultural', 'Deportivo', 'Científico', 'Tecnológico', 'Ambiental'];
-    const requiredFields = ['titulo', 'descripcion', 'categoria', 'ubicacion', 'fecha'];
-
-    // Drag and drop handlers
-    uploadArea.addEventListener('click', () => fileInput.click());
-
-    uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('border-blue-500', 'bg-blue-50');
-        uploadArea.classList.remove('border-gray-300');
-    });
-
-    uploadArea.addEventListener('dragleave', () => {
-        uploadArea.classList.remove('border-blue-500', 'bg-blue-50');
-        uploadArea.classList.add('border-gray-300');
-    });
-
-    uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('border-blue-500', 'bg-blue-50');
-        uploadArea.classList.add('border-gray-300');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            handleFile(files[0]);
-        }
-    });
-
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-            handleFile(e.target.files[0]);
-        }
-    });
-
-    btnRemove.addEventListener('click', () => {
-        resetUpload();
-    });
-
-    function handleFile(file) {
-        // Validate file type
-        if (!file.name.endsWith('.csv')) {
-            showValidationMessage('error', 'Tipo de archivo inválido', 'Por favor selecciona un archivo CSV válido.');
-            return;
-        }
-
-        // Validate file size (5MB max)
-        if (file.size > 5 * 1024 * 1024) {
-            showValidationMessage('error', 'Archivo muy grande', 'El archivo no debe superar los 5MB.');
-            return;
-        }
-
-        // Show file info
-        fileName.textContent = file.name;
-        fileSize.textContent = formatFileSize(file.size);
-        fileInfo.classList.remove('hidden');
-        uploadArea.style.display = 'none';
-
-        // Read and parse CSV
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            parseCSV(e.target.result);
-        };
-        reader.readAsText(file);
-    }
-
-    function parseCSV(content) {
-        const lines = content.split('\n').filter(line => line.trim());
-
-        if (lines.length < 2) {
-            showValidationMessage('error', 'Archivo vacío', 'El archivo CSV debe contener al menos una fila de encabezados y una fila de datos.');
-            return;
-        }
-
-        // Parse headers
-        csvHeaders = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-
-        // Parse data rows
-        csvData = [];
-        validationErrors = [];
-
-        for (let i = 1; i < lines.length && i <= 1000; i++) {
-            const values = parseCSVLine(lines[i]);
-            const row = {};
-
-            csvHeaders.forEach((header, index) => {
-                row[header] = values[index] || '';
-            });
-
-            // Validate row
-            const rowErrors = validateRow(row, i);
-            if (rowErrors.length > 0) {
-                row._errors = rowErrors;
-                validationErrors.push({ row: i, errors: rowErrors });
-            }
-
-            csvData.push(row);
-        }
-
-        // Show results
-        displayPreview();
-        displayMapping();
-        displayValidationSummary();
-
-        // Enable import button if there are valid records
-        const validCount = csvData.filter(row => !row._errors).length;
-        btnImport.disabled = validCount === 0;
-    }
-
-    function parseCSVLine(line) {
-        const values = [];
-        let current = '';
-        let inQuotes = false;
-
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-
-            if (char === '"') {
-                inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-                values.push(current.trim());
-                current = '';
-            } else {
-                current += char;
-            }
-        }
-
-        values.push(current.trim());
-        return values;
-    }
-
-    function validateRow(row, rowNumber) {
-        const errors = [];
-
-        // Check required fields
-        requiredFields.forEach(field => {
-            if (!row[field] || row[field].trim() === '') {
-                errors.push(`Campo "${field}" es obligatorio`);
-            }
-        });
-
-        // Validate category
-        if (row.categoria && !validCategories.includes(row.categoria.trim())) {
-            errors.push(`Categoría "${row.categoria}" no es válida`);
-        }
-
-        // Validate date format
-        if (row.fecha) {
-            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-            if (!dateRegex.test(row.fecha.trim())) {
-                errors.push('Formato de fecha inválido (debe ser YYYY-MM-DD)');
-            }
-        }
-
-        return errors;
-    }
-
-    function displayPreview() {
-        const tableHead = document.getElementById('tableHead');
-        const tableBody = document.getElementById('tableBody');
-
-        // Create headers
-        let headerHTML = '<tr>';
-        csvHeaders.forEach(header => {
-            headerHTML += `<th class="px-4 py-3 text-left font-semibold text-gray-700">${header}</th>`;
-        });
-        headerHTML += '<th class="px-4 py-3 text-left font-semibold text-gray-700">Estado</th></tr>';
-        tableHead.innerHTML = headerHTML;
-
-        // Create rows (first 10)
-        let bodyHTML = '';
-        csvData.slice(0, 10).forEach((row, index) => {
-            bodyHTML += '<tr class="hover:bg-gray-50">';
-            csvHeaders.forEach(header => {
-                bodyHTML += `<td class="px-4 py-3 text-gray-600">${row[header] || '-'}</td>`;
-            });
-
-            const status = row._errors ?
-                `<span class="text-red-600 text-xs">❌ ${row._errors.length} error(es)</span>` :
-                '<span class="text-green-600 text-xs">✓ Válido</span>';
-            bodyHTML += `<td class="px-4 py-3">${status}</td>`;
-            bodyHTML += '</tr>';
-        });
-        tableBody.innerHTML = bodyHTML;
-
-        // Update stats
-        const validCount = csvData.filter(row => !row._errors).length;
-        const errorCount = csvData.length - validCount;
-
-        document.getElementById('totalRecords').textContent = csvData.length;
-        document.getElementById('validRecords').textContent = validCount;
-        document.getElementById('errorRecords').textContent = errorCount;
-
-        previewSection.classList.remove('hidden');
-    }
-
-    function displayMapping() {
-        const mappingGrid = document.getElementById('mappingGrid');
-        const fieldMapping = {
-            'titulo': 'Título',
-            'descripcion': 'Descripción',
-            'categoria': 'Categoría',
-            'ubicacion': 'Ubicación',
-            'fecha': 'Fecha'
-        };
-
-        let mappingHTML = '';
-        csvHeaders.forEach(header => {
-            const normalizedHeader = header.toLowerCase();
-            const suggestedField = fieldMapping[normalizedHeader] || 'No mapear';
-
-            mappingHTML += `
-                <div class="grid grid-cols-3 items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                    <div class="font-medium text-gray-900">${header}</div>
-                    <div class="text-center text-blue-600 text-xl">→</div>
-                    <select class="form-select w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm" data-csv-column="${header}">
-                        <option value="">No mapear</option>
-                        ${Object.entries(fieldMapping).map(([key, value]) =>
-                            `<option value="${key}" ${normalizedHeader === key ? 'selected' : ''}>${value}</option>`
-                        ).join('')}
-                    </select>
-                </div>
-            `;
-        });
-
-        mappingGrid.innerHTML = mappingHTML;
-        mappingSection.classList.remove('hidden');
-    }
-
-    function displayValidationSummary() {
-        validationMessages.innerHTML = '';
-
-        const validCount = csvData.filter(row => !row._errors).length;
-        const errorCount = csvData.length - validCount;
-
-        if (errorCount === 0) {
-            validationMessages.innerHTML = `
-                <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4 flex items-start gap-3">
-                    <div class="text-green-600 text-xl">✓</div>
-                    <div>
-                        <p class="font-semibold text-green-900">Validación exitosa</p>
-                        <p class="text-sm text-green-800">Todos los ${validCount} registros son válidos y están listos para importar.</p>
-                    </div>
-                </div>
-            `;
-        } else if (validCount > 0) {
-            validationMessages.innerHTML = `
-                <div class="bg-orange-50 border-l-4 border-orange-500 rounded-lg p-4 flex items-start gap-3">
-                    <div class="text-orange-600 text-xl">⚠</div>
-                    <div>
-                        <p class="font-semibold text-orange-900">Validación parcial</p>
-                        <p class="text-sm text-orange-800">
-                            ${validCount} registros son válidos. ${errorCount} registros tienen errores y serán omitidos.
-                            Revisa la columna "Estado" en la vista previa para más detalles.
-                        </p>
-                    </div>
-                </div>
-            `;
-        } else {
-            validationMessages.innerHTML = `
-                <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 flex items-start gap-3">
-                    <div class="text-red-600 text-xl">✕</div>
-                    <div>
-                        <p class="font-semibold text-red-900">Errores de validación</p>
-                        <p class="text-sm text-red-800">
-                            Todos los registros tienen errores. Por favor corrige el archivo CSV y vuelve a intentar.
-                        </p>
-                    </div>
-                </div>
-            `;
-        }
-
-        validationMessages.classList.remove('hidden');
-    }
-
-    function showValidationMessage(type, title, message) {
-        const colors = {
-            error: { bg: 'bg-red-50', border: 'border-red-500', text: 'text-red-900', subtext: 'text-red-800', icon: 'text-red-600' },
-            warning: { bg: 'bg-orange-50', border: 'border-orange-500', text: 'text-orange-900', subtext: 'text-orange-800', icon: 'text-orange-600' },
-            success: { bg: 'bg-green-50', border: 'border-green-500', text: 'text-green-900', subtext: 'text-green-800', icon: 'text-green-600' }
-        };
-        const color = colors[type];
-        const icon = type === 'error' ? '✕' : type === 'warning' ? '⚠' : '✓';
-
-        validationMessages.innerHTML = `
-            <div class="${color.bg} border-l-4 ${color.border} rounded-lg p-4 flex items-start gap-3">
-                <div class="${color.icon} text-xl">${icon}</div>
-                <div>
-                    <p class="font-semibold ${color.text}">${title}</p>
-                    <p class="text-sm ${color.subtext}">${message}</p>
-                </div>
-            </div>
-        `;
-        validationMessages.classList.remove('hidden');
-    }
-
-    function formatFileSize(bytes) {
-        if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
-        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
-    }
-
-    function resetUpload() {
-        fileInput.value = '';
-        fileInfo.classList.add('hidden');
-        uploadArea.style.display = 'block';
-        previewSection.classList.add('hidden');
-        mappingSection.classList.add('hidden');
-        validationMessages.classList.add('hidden');
-        progressContainer.classList.add('hidden');
-        btnImport.disabled = true;
-        csvData = null;
-        csvHeaders = [];
-        validationErrors = [];
-    }
-
-    btnImport.addEventListener('click', async () => {
-        if (!csvData) return;
-
-        // Get column mapping
-        const mapping = {};
-        document.querySelectorAll('.form-select').forEach(select => {
-            const csvColumn = select.dataset.csvColumn;
-            const dbField = select.value;
-            if (dbField) {
-                mapping[csvColumn] = dbField;
-            }
-        });
-
-        // Filter valid records and remap columns
-        const validRecords = csvData
-            .filter(row => !row._errors)
-            .map(row => {
-                const mappedRow = {};
-                Object.entries(mapping).forEach(([csvCol, dbField]) => {
-                    mappedRow[dbField] = row[csvCol];
-                });
-                return mappedRow;
-            });
-
-        // Show progress
-        progressContainer.classList.remove('hidden');
-        btnImport.disabled = true;
-
-        // Simulate import process
-        for (let i = 0; i <= 100; i += 10) {
-            await new Promise(resolve => setTimeout(resolve, 200));
-            progressFill.style.width = i + '%';
-            progressText.textContent = `Procesando... ${i}%`;
-        }
-
-        // In a real application, you would send the data to the server here
-        console.log('Importing records:', validRecords);
-
-        // Show success message
-        setTimeout(() => {
-            alert(`✓ Se importaron exitosamente ${validRecords.length} hechos`);
-            window.location.href = '/hechos'; // Redirect to facts list
-        }, 500);
-    });
-</script>
+</body>
 </html>

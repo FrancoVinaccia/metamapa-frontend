@@ -16,10 +16,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.web.reactive.function.BodyInserters;
 
 
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -30,16 +34,24 @@ public class MetaMapaApiService {
     private final WebApiCallerService webApiCallerService;
     private final String agregacionApi;
     private final String dinamicApi;
+    private final String estadisticasApi;
+    private final String estaticaApi;
 
     @Autowired
     public MetaMapaApiService(
             WebApiCallerService webApiCallerService,
             @Value("${metamapa.dinamica.url}") String dinamicApi,
-            @Value("${metamapa.agregacion.url}") String agregacionApi) {
+            @Value("${metamapa.agregacion.url}") String agregacionApi,
+            @Value("${metamapa.estadistica.url}") String estadisticaApi,
+            @Value("${metamapa.estatica.url}") String estaticaApi
+    )
+    {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
         this.agregacionApi = agregacionApi;
         this.dinamicApi = dinamicApi;
+        this.estadisticasApi = estadisticaApi;
+        this.estaticaApi = estaticaApi;
     }
 
     public AuthResponseDTO login(String username, String password) {
@@ -82,6 +94,26 @@ public class MetaMapaApiService {
         }
     }
 
+    public ColeccionDTO getColeccionById(String idColeccion) {
+        try {
+            String url = agregacionApi + "/colecciones/" + idColeccion;
+            return webApiCallerService.get(url, ColeccionDTO.class);
+        } catch (Exception e) {
+            log.error("Error obteniendo coleccion {} desde agregacion: {}", idColeccion, e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public HechoDTO getHechoById(Long idHecho) {
+        try {
+            String url = agregacionApi + "/hechos/" + idHecho;
+            return webApiCallerService.get(url, HechoDTO.class);
+        } catch (Exception e) {
+            log.error("Error obteniendo hecho {} desde agregacion: {}", idHecho, e.getMessage(), e);
+            return null;
+        }
+    }
+
     public List<HechoDTO> listarHechos(int page, int limit) {
         try {
             PageHechoDTO response = webApiCallerService.get(
@@ -105,7 +137,8 @@ public class MetaMapaApiService {
             String fechaInicio,
             String fechaFin,
             String cargaOrigen,
-            String misHechos
+            Long misHechos,
+            String busquedaCurada
     ) {
         try {
             // base: http://localhost:8080/agre/hechos?page=...&limit=...
@@ -138,9 +171,16 @@ public class MetaMapaApiService {
             }
 
             // si querés mapear "misHechos" al parámetro del back `busquedaCurada`
-            if (misHechos != null && misHechos.equalsIgnoreCase("true")) {
-                url += "&busquedaCurada=true";
+            if (misHechos != null && misHechos > 0) {
+                url += "&misHechos=" + URLEncoder.encode(misHechos.toString(), StandardCharsets.UTF_8);
             }
+
+            if (busquedaCurada != null && busquedaCurada.equalsIgnoreCase("true")) {
+                if (!url.contains("busquedaCurada")) {
+                    url += "&busquedaCurada=true";
+                }
+            }
+
 
             System.out.println(">>> URL agregación (filtrados): " + url);
 
@@ -154,39 +194,165 @@ public class MetaMapaApiService {
     }
 
     public List<HechoDTO> obtenerHechosDestacados() {
-        // La URL correcta usa ? para el primer parámetro y & para el segundo.
         PageHechoDTO response = webApiCallerService.get(agregacionApi + "/hechos/destacados?page=1&limit=3", PageHechoDTO.class);
         return response.getElementos();
     }
 
     public SolicitudEliminacionDTO crearSolicitudEliminacion(SolicitudEliminacionInputDTO solicitud) {
-        System.out.println("sssssss");
+        System.out.println("Solicitud eliminacion: " + solicitud);
+
         SolicitudEliminacionDTO response = webApiCallerService.post(agregacionApi + "/solicitudes/new", solicitud, SolicitudEliminacionDTO.class);
-        System.out.println(response);
         if (response == null) {
             throw new RuntimeException("Error al crear solicitud de eliminacion en el servicio externo");
         }
         return response;
     }
 
-    public HechoDTO crearHecho(HechoInputDTO hecho) {
-        System.out.println("sssssss");
-        HechoDTO response = webApiCallerService.post(dinamicApi + "/hechos/new", hecho, HechoDTO.class);
-        System.out.println(response);
-        if (response == null) {
-            throw new RuntimeException("Error al crear hecho en el servicio externo");
-        }
-        return response;
-    }
+    public SolicitudCambioInputDTO crearSolicitudCambio(Long idHecho,Long idUsuario, SolicitudCambioInputDTO solicitud) {
+        System.out.println("Solicitud: " + solicitud);
+        System.out.println("id usuario: " + idUsuario);
+        System.out.println("id hecho: " + idHecho);
 
-    public SolicitudCambioInputDTO crearSolicitudCambio(Long idHecho, SolicitudCambioInputDTO solicitud) {
-        String url = dinamicApi + "/hechos/" + idHecho;
+
+
+        String url = dinamicApi + "/hechos/" + idHecho + "?idUsuario=" + idUsuario;
         SolicitudCambioInputDTO response = webApiCallerService.post(url, solicitud, SolicitudCambioInputDTO.class);
+        System.out.println("RT: " + response);
+
         if (response == null) {
             throw new RuntimeException("Error al crear solicitud de cambio en el servicio externo");
         }
         return response;
     }
+
+    public PageSolicitudEliminacionDTO obetnerTodasLasSolicitudesEliminacion(int page, int limit, EstadoSolicitud estado) {
+
+        int pageBackend = page;
+
+
+        String url;
+        if (estado != null) {
+            String estadoParam = estado.name();
+            url = agregacionApi + "/priv/solicitudes?page=" + pageBackend + "&limit=" + limit + "&estado=" + estadoParam;
+        } else {
+            url = agregacionApi + "/priv/solicitudes?page=" + pageBackend + "&limit=" + limit;
+        }
+
+        PageSolicitudEliminacionDTO response =
+                webApiCallerService.getAdmin(url, PageSolicitudEliminacionDTO.class);
+
+        if (response == null) {
+            throw new RuntimeException("Error al obtener las solicitudes de eliminacion en el servicio externo");
+        }
+
+        return response;
+    }
+
+    public PageSolicitudCambioDTO obtenerTodasLasSolicitudesCambio(int page, int limit, String estado) {
+
+        int pageBackend = page;
+
+
+        String url;
+        if (estado != null) {
+            url = dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit + "&estado=" + estado;
+        } else {
+            url = dinamicApi + "/priv/hechos/solicitudes?page=" + pageBackend + "&limit=" + limit ;
+        }
+
+        /*if (estado != null && !estado.trim().isEmpty()) {
+
+            Boolean estadoBoolean;
+
+            switch (estado.toUpperCase()) {
+                case "RESUELTA":
+                    estadoBoolean = true;
+                    break;
+
+                case "PENDIENTE":
+                    estadoBoolean = false;
+                    break;
+
+                default:
+                    estadoBoolean = null;
+            }
+
+            if (estadoBoolean != null) {
+                // 👀 OJO: acá tiene que ir EXACTAMENTE el nombre del parámetro
+                // que espera la API dinámica. Si allá es "estado", cambiá "resuelta"
+                url.append("&resuelta=").append(estadoBoolean);
+            }
+        }
+
+        String finalUrl = url.toString();
+*/
+
+        PageSolicitudCambioDTO response =
+                webApiCallerService.getAdmin(url, PageSolicitudCambioDTO.class);
+
+        if (response == null) {
+            throw new RuntimeException("Error al obtener las solicitudes de cambio en el servicio externo");
+        }
+
+        // ver qué viene realmente
+
+
+        return response;
+    }
+
+    public HechoDTO crearHecho(HechoInputDTO hecho) {
+        System.out.println(hecho);
+        System.out.println("print pre llamada ");
+
+        String url = dinamicApi + "/hechos/new";
+
+        try {
+            // Logueo del URL y body
+            String bodyJson = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(hecho);
+            System.out.println("Llamando a webApiCallerService.post -> URL: " + url + " BODY: " + bodyJson);
+
+            HechoDTO response = webApiCallerService.post(url, hecho, HechoDTO.class);
+            System.out.println("Respuesta webApiCallerService: " + response);
+
+            if (response == null) {
+                throw new RuntimeException("Error al crear hecho en el servicio externo (respuesta nula)");
+            }
+            return response;
+        } catch (WebClientResponseException webEx) {
+            // Log detallado de la respuesta 4xx/5xx del backend
+            System.out.println(">>> WebClientResponseException status: " + webEx.getRawStatusCode());
+            System.out.println(">>> WebClientResponseException body: " + webEx.getResponseBodyAsString());
+            log.error("Error al crear hecho (status {}): {}", webEx.getRawStatusCode(), webEx.getResponseBodyAsString(), webEx);
+            throw new RuntimeException("Bad request al crear hecho: " + webEx.getResponseBodyAsString(), webEx);
+        } catch (Exception e) {
+            log.error("Error al crear hecho via webApiCallerService: {}", e.getMessage(), e);
+            System.out.println("Error en webApiCallerService: " + e.getMessage());
+            // Intento de fallback directo con WebClient para diagnosticar
+            try {
+                System.out.println("Intentando llamada directa con WebClient a: " + url);
+                HechoDTO direct = webClient.post()
+                        .uri(url)
+                        .bodyValue(hecho)
+                        .retrieve()
+                        .bodyToMono(HechoDTO.class)
+                        .block();
+                System.out.println("Respuesta directa WebClient: " + direct);
+                if (direct == null) {
+                    throw new RuntimeException("Respuesta directa nula");
+                }
+                return direct;
+            } catch (WebClientResponseException webEx2) {
+                System.out.println(">>> Fallback WebClient status: " + webEx2.getRawStatusCode());
+                System.out.println(">>> Fallback WebClient body: " + webEx2.getResponseBodyAsString());
+                log.error("Fallback WebClient response body: {}", webEx2.getResponseBodyAsString(), webEx2);
+                throw new RuntimeException("Bad request en fallback: " + webEx2.getResponseBodyAsString(), webEx2);
+            } catch (Exception ex) {
+                log.error("Error en llamada directa WebClient: {}", ex.getMessage(), ex);
+                throw new RuntimeException("No se pudo crear hecho. webApiCallerService error: " + e.getMessage() + " / fallback error: " + ex.getMessage(), ex);
+            }
+        }
+    }
+// Archivo: MetaMapaApiService.java
 
     public ColeccionDTO crearColeccion(ColeccionInputDTO coleccion) {
         System.out.println("2");
@@ -232,91 +398,197 @@ public class MetaMapaApiService {
                                      String fuente,     // cargaOrigen
                                      String fecha,      // fechaInicio
                                      Boolean busquedaCurada,
-                                     Long idColeccion,  // Para filtrar por colección
+                                     String idColeccion,  // ahora String para aceptar cualquier id
                                      Long idUsuario) {  // Para filtrar 'Mis Hechos'
 
         try {
-            // Usamos UriComponentsBuilder para armar la URL con parámetros opcionales
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(agregacionApi + "/hechos")
                     .queryParam("page", page)
                     .queryParam("limit", limit);
 
-            // Agregamos filtros solo si no son nulos/vacíos
-            if (idColeccion != null) builder.queryParam("idColeccion", idColeccion);
+            if (idColeccion != null && !idColeccion.isBlank()) builder.queryParam("idColeccion", idColeccion);
 
-            // Mapeo de tus filtros del front a los del back (PublicHechoController)
+            // Mapeo de filtros del front a los del back (PublicHechoController)
             if (categoria != null && !categoria.isEmpty()) builder.queryParam("categoria", categoria);
             if (ubicacion != null && !ubicacion.isEmpty()) builder.queryParam("ciudad", ubicacion); // Asumiendo que ubicación es ciudad
             if (fuente != null && !fuente.isEmpty()) builder.queryParam("cargaOrigen", fuente);
 
-            // La fecha del front suele ser un día específico. El back espera rango o inicio.
-            // Lo mandamos como fechaInicio
             if (fecha != null && !fecha.isEmpty()) builder.queryParam("fechaInicio", fecha);
 
             if (busquedaCurada != null) builder.queryParam("busquedaCurada", busquedaCurada);
 
-            // Nota: El backend NO parece tener filtro por 'idUsuario' o 'tema' (etiquetas) en PublicHechoController.
-            // Esos dos quizás tengamos que seguir filtrándolos en memoria o agregarlos al back después.
-            // Por ahora, pedimos los datos filtrados al back y refinamos lo que falte.
-
             String url = builder.toUriString();
             System.out.println("Llamando a API Externa: " + url);
+            System.out.println("tema: " + tema);
+            System.out.println("ubicacion: " + ubicacion);
+            System.out.println("categoria: " + categoria);
+            System.out.println("fuente: " + fuente);
+            System.out.println("fecha: " + fecha);
+            System.out.println("busquedaCurada: " + busquedaCurada);
+            System.out.println("idColeccion: " + idColeccion);
+
 
             return webApiCallerService.get(url, PageHechoDTO.class);
 
         } catch (Exception e) {
             System.err.println("Error buscando hechos en API: " + e.getMessage());
-            return new PageHechoDTO(); // Retorno vacío seguro
+            return new PageHechoDTO();
         }
     }
 
 
+    public void actualizarEstadoSolicitud(Long idSolicitud, String nuevoEstado) {
 
-    /*
-    public List<AlumnoDTO> obtenerTodosLosAlumnos() {
-        List<AlumnoDTO> response = webApiCallerService.getList(alumnosServiceUrl + "/alumnos", AlumnoDTO.class);
-        return response != null ? response : List.of();
-    }
+        // 1. Traducir el Estado (String) al Char que pide tu Backend ('A', 'R', 'S')
+        char codigoEstado;
 
-    public AlumnoDTO obtenerAlumnoPorLegajo(String legajo) {
-        AlumnoDTO response = webApiCallerService.get(alumnosServiceUrl + "/alumnos/" + legajo, AlumnoDTO.class);
-        if (response == null) {
-            throw new NotFoundException("Alumno", legajo);
+        if ("APROBADA".equalsIgnoreCase(nuevoEstado)) {
+            codigoEstado = 'A';
+        } else if ("RECHAZADA".equalsIgnoreCase(nuevoEstado)) {
+            codigoEstado = 'R';
+        } else if ("SPAM".equalsIgnoreCase(nuevoEstado)) {
+            codigoEstado = 'S';
+        } else {
+            // Default por seguridad
+            codigoEstado = 'R';
         }
-        return response;
-    }
 
-    public AlumnoDTO crearAlumno(AlumnoDTO alumnoDTO) {
-        AlumnoDTO response = webApiCallerService.post(alumnosServiceUrl + "/alumnos", alumnoDTO, AlumnoDTO.class);
-        if (response == null) {
-            throw new RuntimeException("Error al crear alumno en el servicio externo");
-        }
-        return response;
-    }
 
-    public AlumnoDTO actualizarAlumno(String legajo, AlumnoDTO alumnoDTO) {
-        AlumnoDTO response = webApiCallerService.put(alumnosServiceUrl + "/alumnos/" + legajo, alumnoDTO, AlumnoDTO.class);
-        if (response == null) {
-            throw new RuntimeException("Error al actualizar alumno en el servicio externo");
-        }
-        return response;
-    }
+        //  Usamos 'agregacionApi' + la ruta base.
 
-    public void eliminarAlumno(String legajo) {
-        webApiCallerService.delete(alumnosServiceUrl + "/alumnos/" + legajo);
-    }
+        String url = agregacionApi + "/priv/solicitudes/" + idSolicitud + "/" + codigoEstado;
 
-    public boolean existeAlumno(String legajo) {
+        System.out.println(">>> Llamando a Backend (PUT): " + url);
+
+        // 3. Ejecutar llamada SIN BODY (null), porque el dato ya va en la URL
         try {
-            obtenerAlumnoPorLegajo(legajo);
-            return true;
-        } catch (NotFoundException e) {
-            return false;
+            webApiCallerService.putAdmin(url, Map.of(), Void.class);
         } catch (Exception e) {
-            throw new RuntimeException("Error al verificar existencia del alumno: " + e.getMessage(), e);
+            log.error("Error al actualizar solicitud {}: {}", idSolicitud, e.getMessage());
+            throw new RuntimeException("Error en backend: " + e.getMessage());
         }
     }
-    */
 
+    public void actualizarEstadoSolicitudCambio(Long idSolicitud, Long idAdmin, boolean aceptada) {
+        try {
+            String url = UriComponentsBuilder.fromHttpUrl(dinamicApi)
+                    .pathSegment("priv", "hechos", "solicitudCambio", String.valueOf(idSolicitud))
+                    .queryParam("idAdmin", idAdmin)
+                    .queryParam("aceptada", aceptada)
+                    .toUriString();
+
+            System.out.println(">>> PUT actualizarEstadoSolicitudCambio -> " + url);
+
+            // No mando body, solo query params, y no me interesa el DTO de vuelta
+            webApiCallerService.putAdmin(url,Map.of(), Void.class);
+
+        } catch (WebClientResponseException e) {
+            System.out.println(">>> WebClientResponseException status: " + e.getRawStatusCode());
+            System.out.println(">>> WebClientResponseException body: " + e.getResponseBodyAsString());
+            log.error("Error al actualizar solicitud de cambio (status {}): {}",
+                    e.getRawStatusCode(), e.getResponseBodyAsString(), e);
+            throw new RuntimeException("Error en backend: " + e.getResponseBodyAsString(), e);
+        } catch (Exception e) {
+            log.error("Error al actualizar solicitud de cambio {}: {}", idSolicitud, e.getMessage(), e);
+            throw new RuntimeException("Error en backend: " + e.getMessage(), e);
+        }
+    }
+
+    public CategoriaTopDTO obtenerCategoriaConMasHechos() {
+        // ⚠️ Ajustá el path si tu endpoint es otro
+        return webApiCallerService.getAdmin(
+                estadisticasApi + "/categoria",
+                CategoriaTopDTO.class
+        );
+    }
+
+    public List<CategoriaProvinciaDTO> obtenerProvinciaTopPorCategoria() {
+        // ⚠️ Ajustá el path si tu endpoint es otro
+        CategoriaProvinciaDTO[] response = webApiCallerService.getAdmin(
+                estadisticasApi + "/provincia-categoria",
+                CategoriaProvinciaDTO[].class
+        );
+        return response == null ? List.of() : Arrays.asList(response);
+    }
+
+    public List<ColeccionProvinciaDTO> obtenerProvinciaTopPorColeccion() {
+        ColeccionProvinciaDTO[] response = webApiCallerService.getAdmin(
+                estadisticasApi + "/provincia-coleccion",
+                ColeccionProvinciaDTO[].class
+        );
+        return response == null ? List.of() : Arrays.asList(response);
+    }
+
+
+
+    public SolicitudesSpamDTO obtenerSolicitudesSpamNoSpamDelMes() {
+        // ⚠️ Ajustá el path si tu endpoint es otro
+        return webApiCallerService.getAdmin(
+                estadisticasApi + "/spam",
+                SolicitudesSpamDTO.class
+        );
+    }
+
+    public List<DiaCategoriaDTO> obtenerDiaCategoria() {
+        DiaCategoriaDTO[] response = webApiCallerService.getAdmin(
+                estadisticasApi + "/dia-categoria",
+                DiaCategoriaDTO[].class
+        );
+        return response == null ? List.of() : Arrays.asList(response);
+    }
+
+    public EPageOutputDTO importHechos(String urlHeader, String token, String headerHeader, org.springframework.web.multipart.MultipartFile file) {
+        try {
+            String apiUrl = estaticaApi + "/priv/hechos";
+
+            // Construir multipart para WebClient
+            org.springframework.util.MultiValueMap<String, Object> multipartData = new org.springframework.util.LinkedMultiValueMap<>();
+            // ByteArrayResource para enviar archivo con filename
+            org.springframework.core.io.ByteArrayResource resource = new org.springframework.core.io.ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
+                }
+            };
+            multipartData.add("file", resource);
+
+            WebClient.RequestBodySpec req = webClient.post()
+                    .uri(apiUrl)
+                    .contentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+
+            req = req.header("X-ADMIN-TOKEN", "GRUPO-28");
+
+            if (urlHeader != null && !urlHeader.isBlank()) req = req.header("URL", urlHeader);
+            if (token != null && !token.isBlank()) req = req.header("TOKEN", token);
+            if (headerHeader != null && !headerHeader.isBlank()) req = req.header("HEADER", headerHeader);
+
+            ar.utn.ba.ddsi.metaMapa.dto.EPageOutputDTO response = req
+                    .body(org.springframework.web.reactive.function.BodyInserters.fromMultipartData(multipartData))
+                    .retrieve()
+                    .bodyToMono(ar.utn.ba.ddsi.metaMapa.dto.EPageOutputDTO.class)
+                    .block();
+
+            if (response == null) {
+                throw new RuntimeException("Respuesta nula desde servicio externo al importar hechos");
+            }
+            return response;
+        } catch (org.springframework.web.reactive.function.client.WebClientResponseException webEx) {
+            throw new RuntimeException("Error al importar hechos: " + webEx.getResponseBodyAsString(), webEx);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al importar hechos: " + e.getMessage(), e);
+        }
+    }
+
+    public void actualizarColeccion(String idColeccion, ColeccionInputDTO coleccion) {
+        // Asumimos que el backend de agregación espera un PUT en /priv/colecciones/{id}
+        String url = agregacionApi + "/priv/colecciones/" + idColeccion;
+
+        System.out.println(">>> Actualizando colección: " + url);
+
+        // Usamos putAdmin para tener permisos de administrador
+        webApiCallerService.putAdmin(url, coleccion, Void.class);
+    }
 
 }
+
+

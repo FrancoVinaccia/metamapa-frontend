@@ -1,5 +1,6 @@
 package ar.utn.ba.ddsi.metaMapa.services;
 
+import ar.utn.ba.ddsi.metaMapa.dto.EPageOutputDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.HechoDTO;
 import ar.utn.ba.ddsi.metaMapa.dto.input.HechoInputDTO;
 import ar.utn.ba.ddsi.metaMapa.services.internal.WebApiCallerService;
@@ -19,9 +20,9 @@ public class HechoService {
         this.metaMapaApiService = metaMapaApiService;
     }
 
-    public List<HechoDTO> obtenerTodosLosHechos(int page, int limit) {
+    /*public List<HechoDTO> obtenerTodosLosHechos(int page, int limit) {
         return metaMapaApiService.listarHechos(page, limit);
-    }
+    }*/
 
     public List<HechoDTO> obtenerTodosLosHechos(
             int page,
@@ -34,13 +35,24 @@ public class HechoService {
             String fechaInicio,
             String fechaFin,
             String cargaOrigen,
-            String misHechos
+            Long misHechos,
+            String busquedaCurada
     ) {
         if (!aplicarFiltros) {
-            // ✅ mismo comportamiento de siempre: destacados
-            return metaMapaApiService.listarHechos(page, limit);
+            return metaMapaApiService.listarHechosFiltrados(
+                    page,
+                    limit,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
         } else {
-            // ✅ llamada nueva con filtros
             return metaMapaApiService.listarHechosFiltrados(
                     page,
                     limit,
@@ -51,15 +63,15 @@ public class HechoService {
                     fechaInicio,
                     fechaFin,
                     cargaOrigen,
-                    misHechos
+                    misHechos,
+                    busquedaCurada
             );
         }
     }
 
     public HechoDTO obtenerHecho(long id) {
-        // Mock simple para vista detalle
-        List <HechoDTO> hechos = hechosDestacados();
-        return hechos.stream().filter(h -> h.getIdHecho() == id).findFirst().orElse(null);
+        HechoDTO hecho = metaMapaApiService.getHechoById(id);
+        return  hecho;
     }
 
     public List<HechoDTO> hechosDestacados() {
@@ -76,4 +88,10 @@ public class HechoService {
     public HechoDTO crearHecho(HechoInputDTO hecho) {
         return metaMapaApiService.crearHecho(hecho);
     }
+
+    public EPageOutputDTO importHechos(String url, String token, String header, org.springframework.web.multipart.MultipartFile file) {
+        return metaMapaApiService.importHechos(url, token, header, file);
+    }
 }
+
+

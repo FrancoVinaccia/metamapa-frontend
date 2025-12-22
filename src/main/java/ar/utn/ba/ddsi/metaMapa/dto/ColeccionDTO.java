@@ -15,7 +15,7 @@ public class ColeccionDTO {
     private String titulo;
     private String descripcion;
     private List<String> fuentes;
-    private CriterioPertenenciaInputDTO criterios;
+    private CriterioPertenenciaDTO criterios;
     private String metodoConsenso;
     private PageHechoDTO hechos;
     private String imagen;

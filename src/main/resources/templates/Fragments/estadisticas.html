@@ -1,8 +1,8 @@
 <html th:replace="~{layout/base :: html(contenido=~{::contenido})}" xmlns:th="http://www.thymeleaf.org">
 
-Content fragment that will be injected into base.html
 <div th:fragment="contenido" class="row">
 
+    <!-- Hero -->
     <section class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
@@ -10,268 +10,146 @@ Content fragment that will be injected into base.html
                     Estadísticas de <span class="text-indigo-600">MetaMapa</span>
                 </h1>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Análisis detallado de hechos y colecciones documentadas
+                    Análisis de hechos, colecciones y solicitudes
                 </p>
             </div>
         </div>
     </section>
 
-    <section class="py-12 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-8 text-white shadow-lg">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-14 h-14 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-map-marker-alt text-3xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-4xl font-bold">1,247</h3>
-                            <p class="text-blue-100 text-lg">Hechos Documentados</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-8 text-white shadow-lg">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-14 h-14 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-layer-group text-3xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-4xl font-bold">23</h3>
-                            <p class="text-green-100 text-lg">Colecciones Activas</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-12 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-white rounded-xl p-8 shadow-md">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">¿En qué provincia se agrupan la mayor cantidad de hechos reportados?</h2>
-
-                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 text-white mb-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-indigo-100 text-sm mb-1">Provincia con más hechos</p>
-                            <p class="text-3xl font-bold">Buenos Aires</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-4xl font-bold">342</p>
-                            <p class="text-indigo-100">hechos <!--(27.4%)--></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-600 w-32">Córdoba</span>
-                        <div class="flex-1 bg-gray-200 rounded-full h-8">
-                            <div class="bg-blue-500 h-full rounded-full flex items-center justify-end px-3 text-white text-sm font-medium" style="width: 68%">234 </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-600 w-32">Santa Fe</span>
-                        <div class="flex-1 bg-gray-200 rounded-full h-8">
-                            <div class="bg-blue-400 h-full rounded-full flex items-center justify-end px-3 text-white text-sm font-medium" style="width: 58%">198 </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-600 w-32">Mendoza</span>
-                        <div class="flex-1 bg-gray-200 rounded-full h-8">
-                            <div class="bg-blue-300 h-full rounded-full flex items-center justify-end px-3 text-white text-sm font-medium" style="width: 42%">145 </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-600 w-32">Otras</span>
-                        <div class="flex-1 bg-gray-200 rounded-full h-8">
-                            <div class="bg-gray-400 h-full rounded-full flex items-center justify-end px-3 text-white text-sm font-medium" style="width: 30%">328 </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    <!-- KPI: categoría con más hechos -->
     <section class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl p-8 shadow-md border border-gray-200">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">¿Cuál es la categoría con mayor cantidad de hechos reportados?</h2>
+                <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        Categoría con mayor cantidad de hechos
+                    </h2>
+                    <p class="text-sm text-gray-500"
+                       th:text="${categoriaMasHechos != null ? ('Cálculo: ' + categoriaMasHechos.fechaCalculo) : ''}"></p>
+                </div>
 
-                <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-6 text-white mb-6">
+                <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-4">
                             <div class="w-16 h-16 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-globe text-3xl"></i>
+                                <i class="fas fa-tags text-3xl"></i>
                             </div>
                             <div>
-                                <p class="text-purple-100 text-sm mb-1">Categoría más documentada</p>
-                                <p class="text-3xl font-bold">Eventos Sociales</p>
+                                <p class="text-purple-100 text-sm mb-1">Categoría líder</p>
+                                <p class="text-3xl font-bold"
+                                   th:text="${categoriaMasHechos != null ? categoriaMasHechos.categoria : '—'}">—</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-4xl font-bold">342</p>
-                            <p class="text-purple-100">hechos <!--(27.4%)--></p>
+                            <p class="text-4xl font-bold"
+                               th:text="${categoriaMasHechos != null ? categoriaMasHechos.cantidadHechos : 0}">0</p>
+                            <p class="text-purple-100">hechos</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-4">
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-leaf text-green-500 text-xl"></i>
-                            <span class="font-medium text-gray-900">Medio Ambiente</span>
-                        </div>
-                        <span class="font-bold text-gray-700">289</span>
-                    </div>
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-laptop-code text-blue-500 text-xl"></i>
-                            <span class="font-medium text-gray-900">Tecnología</span>
-                        </div>
-                        <span class="font-bold text-gray-700">256</span>
-                    </div>
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-heartbeat text-red-500 text-xl"></i>
-                            <span class="font-medium text-gray-900">Salud</span>
-                        </div>
-                        <span class="font-bold text-gray-700">234</span>
-                    </div>
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-graduation-cap text-yellow-500 text-xl"></i>
-                            <span class="font-medium text-gray-900">Educación</span>
-                        </div>
-                        <span class="font-bold text-gray-700">126</span>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 
+    <!-- Por cada categoría: provincia con más hechos -->
     <section class="py-12 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl p-8 shadow-md">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">¿En qué provincia se presenta la mayor cantidad de hechos de una cierta categoría?</h2>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Categoría:</label>
-                    <select class="w-full md:w-64 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option>Eventos Sociales</option>
-                        <option>Medio Ambiente</option>
-                        <option>Tecnología</option>
-                        <option>Salud</option>
-                        <option>Educación</option>
-                    </select>
+                <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                    <h2 class="text-xl font-bold text-gray-900">
+                        Por cada categoría: provincia con más hechos
+                    </h2>
+                    <span class="text-sm text-gray-500">Ordenado por cantidad</span>
                 </div>
 
-                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 text-white mb-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-indigo-100 text-sm mb-1">Eventos Sociales</p>
-                            <p class="text-3xl font-bold">Buenos Aires</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-4xl font-bold">156</p>
-                            <p class="text-indigo-100">hechos <!--(45.6%)--></p>
-                        </div>
-                    </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead>
+                        <tr class="text-left text-gray-600 border-b">
+                            <th class="py-3 pr-4">Categoría</th>
+                            <th class="py-3 pr-4">Provincia</th>
+                            <th class="py-3 pr-4 text-right">Cantidad</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${categoriaProvinciaTop == null or #lists.isEmpty(categoriaProvinciaTop)}">
+                            <td class="py-4 text-gray-500" colspan="3">No hay datos para mostrar.</td>
+                        </tr>
+
+                        <tr th:each="row : ${categoriaProvinciaTop}" class="border-b last:border-b-0">
+                            <td class="py-3 pr-4 font-medium text-gray-900"
+                                th:text="${row.categoria}">Categoria</td>
+                            <td class="py-3 pr-4 text-gray-700"
+                                th:text="${row.provincia}">Provincia</td>
+                            <td class="py-3 pr-4 text-right font-bold text-gray-900"
+                                th:text="${row.cantidad}">0</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="space-y-2">
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <span class="font-medium text-gray-700">Córdoba</span>
-                        <span class="font-bold text-gray-900">89 hechos</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <span class="font-medium text-gray-700">Santa Fe</span>
-                        <span class="font-bold text-gray-900">67 hechos</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <span class="font-medium text-gray-700">Mendoza</span>
-                        <span class="font-bold text-gray-900">30 hechos</span>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 
+    <!-- Por cada colección: provincia con más hechos -->
     <section class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl p-8 shadow-md border border-gray-200">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">¿A qué hora del día ocurren la mayor cantidad de hechos de una cierta categoría?</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-6">
+                    Por cada colección: provincia con más hechos
+                </h2>
 
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Categoría:</label>
-                    <select class="w-full md:w-64 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option>Eventos Sociales</option>
-                        <option>Medio Ambiente</option>
-                        <option>Tecnología</option>
-                        <option>Salud</option>
-                        <option>Educación</option>
-                    </select>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead>
+                        <tr class="text-left text-gray-600 border-b">
+                            <th class="py-3 pr-4">Colección</th>
+                            <th class="py-3 pr-4">Provincia</th>
+                            <th class="py-3 pr-4 text-right">Cantidad</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${coleccionProvinciaTop == null or #lists.isEmpty(coleccionProvinciaTop)}">
+                            <td class="py-4 text-gray-500" colspan="3">
+                                No hay datos para mostrar (falta conectar el endpoint de colecciones).
+                            </td>
+                        </tr>
+
+                        <tr th:each="row : ${coleccionProvinciaTop}" class="border-b last:border-b-0">
+                            <td class="py-3 pr-4 font-medium text-gray-900"
+                                th:text="${row.coleccion}">Coleccion</td>
+                            <td class="py-3 pr-4 text-gray-700"
+                                th:text="${row.provincia}">Provincia</td>
+                            <td class="py-3 pr-4 text-right font-bold text-gray-900"
+                                th:text="${row.cantidad}">0</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-xl p-6 text-white mb-6">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                                <i class="fas fa-clock text-3xl"></i>
-                            </div>
-                            <div>
-                                <p class="text-orange-100 text-sm mb-1">Eventos Sociales - Horario pico</p>
-                                <p class="text-3xl font-bold">12:00 - 18:00</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-4xl font-bold">156</p>
-                            <p class="text-orange-100">hechos <!--(45.6%)--></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-600 w-28">00:00 - 06:00</span>
-                        <div class="flex-1 bg-gray-200 rounded-full h-8">
-                            <div class="bg-gray-400 h-full rounded-full flex items-center justify-end px-3 text-white text-sm font-medium" style="width: 15%">12 hechos</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-600 w-28">06:00 - 12:00</span>
-                        <div class="flex-1 bg-gray-200 rounded-full h-8">
-                            <div class="bg-yellow-500 h-full rounded-full flex items-center justify-end px-3 text-white text-sm font-medium" style="width: 45%">67 hechos</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-600 w-28">12:00 - 18:00</span>
-                        <div class="flex-1 bg-gray-200 rounded-full h-8">
-                            <div class="bg-orange-500 h-full rounded-full flex items-center justify-end px-3 text-white text-sm font-medium" style="width: 100%">156 hechos</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-gray-600 w-28">18:00 - 24:00</span>
-                        <div class="flex-1 bg-gray-200 rounded-full h-8">
-                            <div class="bg-indigo-500 h-full rounded-full flex items-center justify-end px-3 text-white text-sm font-medium" style="width: 72%">107 hechos</div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 
+    <!-- Solicitudes spam vs no spam del mes -->
     <section class="py-12 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl p-8 shadow-md">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">¿Cuántas solicitudes de eliminación son spam?</h2>
+                <h2 class="text-xl font-bold text-gray-900 mb-6">
+                    Solicitudes del mes: spam vs no spam
+                </h2>
 
-                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="grid md:grid-cols-3 gap-6 mb-6"
+                     th:with="spam=${solicitudesMes != null ? solicitudesMes.cantSpam : 0},
+                              nospam=${solicitudesMes != null ? solicitudesMes.cantNoSpam : 0},
+                              total=${(solicitudesMes != null ? solicitudesMes.cantSpam : 0) + (solicitudesMes != null ? solicitudesMes.cantNoSpam : 0)}">
+
                     <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
                         <div class="text-center">
                             <i class="fas fa-inbox text-3xl mb-3"></i>
-                            <h3 class="text-3xl font-bold mb-1">247</h3>
+                            <h3 class="text-3xl font-bold mb-1" th:text="${total}">0</h3>
                             <p class="text-blue-100">Total Solicitudes</p>
                         </div>
                     </div>
@@ -279,36 +157,122 @@ Content fragment that will be injected into base.html
                     <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-6 text-white">
                         <div class="text-center">
                             <i class="fas fa-ban text-3xl mb-3"></i>
-                            <h3 class="text-3xl font-bold mb-1">89</h3>
-                            <p class="text-red-100">Spam <!--(36%)--></p>
+                            <h3 class="text-3xl font-bold mb-1" th:text="${spam}">0</h3>
+                            <p class="text-red-100">Spam</p>
                         </div>
                     </div>
 
                     <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
                         <div class="text-center">
                             <i class="fas fa-check-circle text-3xl mb-3"></i>
-                            <h3 class="text-3xl font-bold mb-1">158</h3>
-                            <p class="text-green-100">Legítimas <!--(64%)--></p>
+                            <h3 class="text-3xl font-bold mb-1" th:text="${nospam}">0</h3>
+                            <p class="text-green-100">No spam</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <span class="text-sm text-gray-600 w-32">Spam</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-10">
-                        <div class="bg-red-500 h-full rounded-full flex items-center justify-between px-4 text-white font-semibold" style="width: 36%">
-                            <span>89</span>
+                <div th:with="spam=${solicitudesMes != null ? solicitudesMes.cantSpam : 0},
+                              nospam=${solicitudesMes != null ? solicitudesMes.cantNoSpam : 0},
+                              total=${(solicitudesMes != null ? solicitudesMes.cantSpam : 0) + (solicitudesMes != null ? solicitudesMes.cantNoSpam : 0)},
+                              pSpam=${total > 0 ? (spam * 100.0 / total) : 0},
+                              pNoSpam=${total > 0 ? (nospam * 100.0 / total) : 0}">
+
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-600 w-32">Spam</span>
+                        <div class="flex-1 bg-gray-200 rounded-full h-10 overflow-hidden">
+                            <div class="bg-red-500 h-full flex items-center justify-between px-4 text-white font-semibold"
+                                 th:style="'width:' + ${pSpam} + '%'">
+                                <span th:text="${spam}">0</span>
+                                <span th:text="${#numbers.formatDecimal(pSpam, 1, 1)} + '%'">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 mt-3">
+                        <span class="text-sm text-gray-600 w-32">No spam</span>
+                        <div class="flex-1 bg-gray-200 rounded-full h-10 overflow-hidden">
+                            <div class="bg-green-500 h-full flex items-center justify-between px-4 text-white font-semibold"
+                                 th:style="'width:' + ${pNoSpam} + '%'">
+                                <span th:text="${nospam}">0</span>
+                                <span th:text="${#numbers.formatDecimal(pNoSpam, 1, 1)} + '%'">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- NUEVA: Día del mes + categoría (endpoint /dia-categoria) -->
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-xl p-8 shadow-md border border-gray-200">
+
+                <h2 class="text-xl font-bold text-gray-900 mb-2">
+                    ¿Qué día del mes se registraron hechos y en qué categoría?
+                </h2>
+                <p class="text-gray-600 mb-6">
+                    Listado de eventos por día (ordenado por día).
+                </p>
+
+                <!-- Tarjeta: día con más hechos (si hay empates, toma el primero) -->
+                <div class="mb-6"
+                     th:if="${diaCategoriaTop != null}"
+                     th:with="maxItem=${diaCategoriaTop}">
+
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-calendar-day text-3xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-indigo-100 text-sm mb-1">Día destacado</p>
+                                    <p class="text-3xl font-bold">
+                                        Día <span th:text="${maxItem.dia}">0</span>
+                                    </p>
+                                    <p class="text-indigo-100">
+                                        Categoría: <span class="font-semibold" th:text="${maxItem.categoria}">—</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-4xl font-bold" th:text="${maxItem.cantidad}">0</p>
+                                <p class="text-indigo-100">hechos</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 mt-3">
-                    <span class="text-sm text-gray-600 w-32">Legítimas</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-10">
-                        <div class="bg-green-500 h-full rounded-full flex items-center justify-between px-4 text-white font-semibold" style="width: 64%">
-                            <span>158</span>
-                        </div>
-                    </div>
+
+                <!-- Tabla -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead>
+                        <tr class="text-left text-gray-600 border-b">
+                            <th class="py-3 pr-4">Día</th>
+                            <th class="py-3 pr-4">Categoría</th>
+                            <th class="py-3 pr-4 text-right">Cantidad</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${diaCategoriaStats == null or #lists.isEmpty(diaCategoriaStats)}">
+                            <td class="py-4 text-gray-500" colspan="3">No hay datos para mostrar.</td>
+                        </tr>
+
+                        <tr th:each="row : ${diaCategoriaStats}" class="border-b last:border-b-0">
+                            <td class="py-3 pr-4 font-medium text-gray-900"
+                                th:text="${row.dia}">0</td>
+                            <td class="py-3 pr-4 text-gray-700"
+                                th:text="${row.categoria}">Categoria</td>
+                            <td class="py-3 pr-4 text-right font-bold text-gray-900"
+                                th:text="${row.cantidad}">0</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
+
             </div>
         </div>
     </section>
