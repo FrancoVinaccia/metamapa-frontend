@@ -1,3 +1,4 @@
+// language: java
 package ar.utn.ba.ddsi.metaMapa.controllers;
 
 
@@ -19,7 +20,6 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 @Controller
 @RequestMapping("/solicitudes")
 @RequiredArgsConstructor
-
 public class SolicitudController {
 
     private final SolicitudService solicitudService;
@@ -157,10 +157,9 @@ public class SolicitudController {
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes) {
-
         try{
             System.out.println("Creando solicitud de eliminacion: " + solicitud);
-            SolicitudEliminacionDTO solicitudCreada = solicitudService.crearSolicitudEliminacion(solicitud);
+            solicitudService.crearSolicitudEliminacion(solicitud);
             redirectAttributes.addFlashAttribute("success", "Solicitud creada con éxito.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
             return "redirect:/hechos";
@@ -170,8 +169,6 @@ public class SolicitudController {
             model.addAttribute("tipoMensaje", "danger");
             return "redirect:/hechos";
         }
-
-
     }
 
 
