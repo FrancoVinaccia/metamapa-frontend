@@ -9,7 +9,7 @@ Consume la API REST del backend: [metamapa-backend](https://github.com/FrancoVin
 ## Stack
 
 - Java + Spring Boot (Maven)
-- Vistas web renderizadas desde el servidor
+- Vistas con Thymeleaf
 
 ## Ejecutar
 
